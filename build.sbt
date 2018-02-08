@@ -23,3 +23,6 @@ npmDependencies in Compile ++= Seq(
   "react-dom" -> "15.6.1"
 )
 
+// improve the performance of the npm bundling process
+webpackBundlingMode := BundlingMode.LibraryOnly()
+emitSourceMaps := false
