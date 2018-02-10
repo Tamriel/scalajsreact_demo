@@ -5,6 +5,7 @@ import java.util.UUID
 import japgolly.scalajs.react.extra.StateSnapshot
 import japgolly.scalajs.react.vdom.html_<^.{<, _}
 import japgolly.scalajs.react.{Callback, ScalaComponent, _}
+import org.scalajs.dom.ext.KeyCode
 
 import scala.util.Random
 import scalacss.ScalaCssReact._
@@ -43,6 +44,16 @@ object MainComponent {
       def updateText(e: ReactEventFromInput) =
         mod(_.setText(item, e.target.value))
 
+      val editFieldKeyDown: ReactKeyboardEvent => Option[Callback] =
+        e =>
+          e.nativeEvent.keyCode match {
+            case KeyCode.Escape =>
+              Some(mod((s: SimpleDatabase) => s.copy(editing = None))) // todo:  resetText
+            case KeyCode.Enter =>
+              Some(mod(_.setText(item, "todo"))) // todo: and set editing to None
+            case _ => None
+        }
+
       val children = item.childrenIds.toVdomArray(childId =>
         TreeItemComponent.withKey(childId)(props.copy(itemId = childId)))
 
@@ -69,7 +80,8 @@ object MainComponent {
           ),
           <.input.text(if (editing) CSS.visible else CSS.invisible,
                        ^.value := item.text,
-                       ^.onChange ==> updateText),
+                       ^.onChange ==> updateText,
+                       ^.onKeyDown ==>? editFieldKeyDown),
           <.ul(children)
         )
       }
