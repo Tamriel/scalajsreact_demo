@@ -4,11 +4,6 @@ import japgolly.scalajs.react.vdom.html_<^.{<, _}
 import japgolly.scalajs.react.{Callback, ScalaComponent, _}
 import japgolly.scalajs.react.extra.StateSnapshot
 import japgolly.scalajs.react.vdom.html_<^._
-import japgolly.scalajs.react.{ReactKeyboardEvent, _}
-
-import org.scalajs.dom._
-
-import scala.scalajs.js
 import scala.util.Random
 
 object MainComponent {
@@ -36,24 +31,24 @@ object MainComponent {
     def render(props: Props): VdomElement = {
       val item = props.stateSnap.value.tree.items(props.itemId)
 
-      def updateText(e: ReactEventFromInput) =
-        props.stateSnap.modState(_.setText(props.itemId, e.target.value))
+      def mod(fn: SimpleDatabase => SimpleDatabase): Callback =
+        props.stateSnap.modState(fn)
 
-      val children = item.childrenIds.toVdomArray(
-        childId =>
-          TreeItemComponent.withKey(childId)(props.copy(itemId = childId))
-      )
+      def updateText(e: ReactEventFromInput) =
+        mod(_.setText(item, e.target.value))
+
+      val children = item.childrenIds.toVdomArray(childId =>
+        TreeItemComponent.withKey(childId)(props.copy(itemId = childId)))
 
       if (item.id == ROOTID)
-        <.ul(children) // don't show the text of the root item
+        <.ul(children) // the root item is invisible, just show its children
       else {
         <.li(
           <.input.text(^.value := item.text, ^.onChange ==> updateText),
-//              <.button(^.onClick --> mod(_.deleteItem(item)), "✖️"),
-//              <.button(^.onClick --> mod(_.addSibling(item)), "➕"),
-//              <.button(
-//                ^.onClick --> mod(_.addChild(item, item.childrenIds.length)),
-//                "➕➡"),
+          <.button(^.onClick --> mod(_.deleteItem(item)), "✖️"),
+          <.button(^.onClick --> mod(_.addSibling(item)), "➕"),
+          <.button(^.onClick --> mod(_.addChild(item, item.childrenIds.length)),
+                   "➕➡"),
 //              <.button(^.onClick --> mod(_.moveUp(item)), "⬆️"),
 //              <.button(^.onClick --> mod(_.moveDown(item)), "⬇️"),
 //              <.button(^.onClick --> mod(_.moveLeft(item)), "⬅️"),
@@ -74,7 +69,6 @@ object MainComponent {
       )
     }
   }
-
   val exampleTree = {
     val child1 = TreeItem("1")
     val child21 = TreeItem("2.1")
@@ -86,6 +80,11 @@ object MainComponent {
           child2.id -> child2,
           root.id -> root))
   }
+
+  val rootItem = TreeItem(id = ROOTID)
+  val emptyDatabase = SimpleDatabase(Tree(Map(ROOTID -> rootItem)))
+  val exampleDatabase =
+    emptyDatabase.addChild(rootItem, 0).addChild(rootItem, 1)
 
   val Component = ScalaComponent
     .builder[Unit]("TreeNote")
