@@ -7,8 +7,8 @@ import monocle.function.Index.index
 import monocle.macros.syntax.lens._
 
 case class SimpleDatabase(tree: Tree,
-                          editing: Option[String] = None // todo: use TodoId
-) {
+                          editing: Option[String] = None, // todo: use TodoId,
+                          textWhenEditStarts: String = "") {
 
   val itemsLens = GenLens[SimpleDatabase](_.tree.items)
   val textLens = GenLens[TreeItem](_.text)
@@ -16,10 +16,23 @@ case class SimpleDatabase(tree: Tree,
 
   def getItem(id: String) = tree.items(id)
 
-  def setText(item: TreeItem, newText: String): SimpleDatabase = {
+  def insertCharacter(item: TreeItem,
+                      pos: Int,
+                      char: String): SimpleDatabase = {
+    val (beginning, end) = item.text.splitAt(pos)
+    setText(item, beginning + char + end)
+  }
+
+  def setText(item: TreeItem,
+              newText: String,
+              stopEdit: Boolean = false): SimpleDatabase = {
     def modifyText(item: Option[TreeItem]): Option[TreeItem] =
       Some(textLens.set(newText)(item.get))
-    (itemsLens composeLens at(item.id)).modify(modifyText)(this)
+    val res = (itemsLens composeLens at(item.id)).modify(modifyText)(this)
+    if (stopEdit)
+      res.copy(editing = None)
+    else
+      res
   }
 
   def deleteItem(item: TreeItem): SimpleDatabase = {

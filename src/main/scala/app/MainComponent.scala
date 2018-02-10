@@ -41,17 +41,19 @@ object MainComponent {
       def mod(fn: SimpleDatabase => SimpleDatabase): Callback =
         props.stateSnap.modState(fn)
 
-      def updateText(e: ReactEventFromInput) =
-        mod(_.setText(item, e.target.value))
-
-      val editFieldKeyDown: ReactKeyboardEvent => Option[Callback] =
-        e =>
-          e.nativeEvent.keyCode match {
-            case KeyCode.Escape =>
-              Some(mod((s: SimpleDatabase) => s.copy(editing = None))) // todo:  resetText
-            case KeyCode.Enter =>
-              Some(mod(_.setText(item, "todo"))) // todo: and set editing to None
+      val editFieldKeyDown: ReactEventFromInput => Option[Callback] =
+        e => {
+          val pos = e.target.selectionStart
+          e.asInstanceOf[ReactKeyboardEvent].key match {
+            case "Escape" =>
+              Some(mod(_.setText(item, snap.textWhenEditStarts, true)))
+            case "Enter" => Some(mod(_.copy(editing = None)))
+//            case "Delete"    => mod(_.deleteCharacter(item, pos + 1))
+//            case "Backspace" => mod(_.deleteCharacter(item, pos))
+            case k: String if k.length == 1 =>
+              Some(mod(_.insertCharacter(item, pos, k)))
             case _ => None
+          }
         }
 
       val children = item.childrenIds.toVdomArray(childId =>
@@ -67,7 +69,9 @@ object MainComponent {
             if (editing) CSS.invisible else CSS.visible,
             <.label(item.text,
                     ^.onDoubleClick --> mod(
-                      (s: SimpleDatabase) => s.copy(editing = Some(item.id)))),
+                      (s: SimpleDatabase) =>
+                        s.copy(editing = Some(item.id),
+                               textWhenEditStarts = item.text))),
             <.button(^.onClick --> mod(_.deleteItem(item)), "✖️"),
             <.button(^.onClick --> mod(_.addSibling(item)), "➕"),
             <.button(
@@ -80,7 +84,6 @@ object MainComponent {
           ),
           <.input.text(if (editing) CSS.visible else CSS.invisible,
                        ^.value := item.text,
-                       ^.onChange ==> updateText,
                        ^.onKeyDown ==>? editFieldKeyDown),
           <.ul(children)
         )
