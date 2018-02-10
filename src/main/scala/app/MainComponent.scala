@@ -7,6 +7,7 @@ import japgolly.scalajs.react.vdom.html_<^.{<, _}
 import japgolly.scalajs.react.{Callback, ScalaComponent, _}
 
 import scala.util.Random
+import scalacss.ScalaCssReact._
 
 object MainComponent {
 
@@ -45,25 +46,30 @@ object MainComponent {
       val children = item.childrenIds.toVdomArray(childId =>
         TreeItemComponent.withKey(childId)(props.copy(itemId = childId)))
 
+      val editing = snap.editing.contains(item.id)
+
       if (item.id == ROOTID)
         <.ul(children) // the root item is invisible, just show its children
       else {
         <.li(
-          ^.classSet(
-            "editing" -> snap.editing.contains(item.id)
-          ),
-          <.label(item.text,
-                  ^.onDoubleClick --> mod(
-                    (s: SimpleDatabase) => s.copy(editing = Some(item.id)))),
-//          <.input.text(^.value := item.text, ^.onChange ==> updateText),
-          <.button(^.onClick --> mod(_.deleteItem(item)), "✖️"),
-          <.button(^.onClick --> mod(_.addSibling(item)), "➕"),
-          <.button(^.onClick --> mod(_.addChild(item, item.childrenIds.length)),
-                   "➕➡"),
+          <.div(
+            if (editing) CSS.invisible else CSS.visible,
+            <.label(item.text,
+                    ^.onDoubleClick --> mod(
+                      (s: SimpleDatabase) => s.copy(editing = Some(item.id)))),
+            <.button(^.onClick --> mod(_.deleteItem(item)), "✖️"),
+            <.button(^.onClick --> mod(_.addSibling(item)), "➕"),
+            <.button(
+              ^.onClick --> mod(_.addChild(item, item.childrenIds.length)),
+              "➕➡")
 //              <.button(^.onClick --> mod(_.moveUp(item)), "⬆️"),
 //              <.button(^.onClick --> mod(_.moveDown(item)), "⬇️"),
 //              <.button(^.onClick --> mod(_.moveLeft(item)), "⬅️"),
 //              <.button(^.onClick --> mod(_.moveRight(item)), "➡️"),
+          ),
+          <.input.text(if (editing) CSS.visible else CSS.invisible,
+                       ^.value := item.text,
+                       ^.onChange ==> updateText),
           <.ul(children)
         )
       }
