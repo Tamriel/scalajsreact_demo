@@ -1,12 +1,16 @@
 package app
 
+import java.util.UUID
+
+import japgolly.scalajs.react.extra.StateSnapshot
 import japgolly.scalajs.react.vdom.html_<^.{<, _}
 import japgolly.scalajs.react.{Callback, ScalaComponent, _}
-import japgolly.scalajs.react.extra.StateSnapshot
-import japgolly.scalajs.react.vdom.html_<^._
+
 import scala.util.Random
 
 object MainComponent {
+
+  case class TodoId(id: UUID)
 
   case class TreeItem(text: String = "",
                       id: String = Random.alphanumeric.take(10).mkString,
@@ -29,7 +33,8 @@ object MainComponent {
 
   class TreeItemBackend($ : BackendScope[Props, Unit]) {
     def render(props: Props): VdomElement = {
-      val item = props.stateSnap.value.tree.items(props.itemId)
+      val snap = props.stateSnap.value
+      val item = snap.tree.items(props.itemId)
 
       def mod(fn: SimpleDatabase => SimpleDatabase): Callback =
         props.stateSnap.modState(fn)
@@ -44,7 +49,13 @@ object MainComponent {
         <.ul(children) // the root item is invisible, just show its children
       else {
         <.li(
-          <.input.text(^.value := item.text, ^.onChange ==> updateText),
+          ^.classSet(
+            "editing" -> snap.editing.contains(item.id)
+          ),
+          <.label(item.text,
+                  ^.onDoubleClick --> mod(
+                    (s: SimpleDatabase) => s.copy(editing = Some(item.id)))),
+//          <.input.text(^.value := item.text, ^.onChange ==> updateText),
           <.button(^.onClick --> mod(_.deleteItem(item)), "✖️"),
           <.button(^.onClick --> mod(_.addSibling(item)), "➕"),
           <.button(^.onClick --> mod(_.addChild(item, item.childrenIds.length)),

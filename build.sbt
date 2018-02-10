@@ -12,6 +12,8 @@ libraryDependencies ++= Seq(
   "com.github.japgolly.scalajs-react" %%% "extra" % "1.1.1",
   "com.github.julien-truffaut" %%%  "monocle-core"  % "1.5.0",
   "com.github.julien-truffaut" %%%  "monocle-macro"  % "1.5.0",
+  "com.github.japgolly.scalacss" %%% "core" % "0.5.5",
+  "com.github.japgolly.scalacss" %%% "ext-react" % "0.5.5",
 )
 
 npmDependencies in Compile ++= Seq(

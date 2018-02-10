@@ -4,8 +4,11 @@ import app.MainComponent.{Tree, TreeItem}
 import monocle.macros.GenLens
 import monocle.function.At.at
 import monocle.function.Index.index
+import monocle.macros.syntax.lens._
 
-case class SimpleDatabase(tree: Tree) {
+case class SimpleDatabase(tree: Tree,
+                          editing: Option[String] = None // todo: use TodoId
+) {
 
   val itemsLens = GenLens[SimpleDatabase](_.tree.items)
   val textLens = GenLens[TreeItem](_.text)
