@@ -5,7 +5,7 @@ import japgolly.scalajs.react.{Callback, ScalaComponent, _}
 import japgolly.scalajs.react.extra.StateSnapshot
 import japgolly.scalajs.react.vdom.html_<^._
 import japgolly.scalajs.react.{ReactKeyboardEvent, _}
-import monocle.macros.Lenses
+
 import org.scalajs.dom._
 
 import scala.scalajs.js
@@ -21,12 +21,11 @@ object MainComponent {
     def indexOf(item: TreeItem): Int = childrenIds.indexOf(item.id)
   }
 
-  @Lenses
   case class Tree(items: Map[String, TreeItem])
 
   val ROOTID = "root"
 
-  case class Props(stateSnap: StateSnapshot[Tree], itemId: String)
+  case class Props(stateSnap: StateSnapshot[SimpleDatabase], itemId: String)
 
   val TreeItemComponent = ScalaComponent
     .builder[Props]("TreeItem")
@@ -35,12 +34,10 @@ object MainComponent {
 
   class TreeItemBackend($ : BackendScope[Props, Unit]) {
     def render(props: Props): VdomElement = {
-      val item = props.stateSnap.value.items(props.itemId)
+      val item = props.stateSnap.value.tree.items(props.itemId)
 
-      def updateText(e: ReactEventFromInput) = {
-        props.stateSnap.modState(_.copy(items = Map()))
-//  val key = e.asInstanceOf[ReactKeyboardEvent].key
-      }
+      def updateText(e: ReactEventFromInput) =
+        props.stateSnap.modState(_.setText(props.itemId, e.target.value))
 
       val children = item.childrenIds.toVdomArray(
         childId =>
@@ -51,7 +48,7 @@ object MainComponent {
         <.ul(children) // don't show the text of the root item
       else {
         <.li(
-          <.input.text(^.value := item.text, ^.onKeyDown ==> updateText),
+          <.input.text(^.value := item.text, ^.onChange ==> updateText),
 //              <.button(^.onClick --> mod(_.deleteItem(item)), "✖️"),
 //              <.button(^.onClick --> mod(_.addSibling(item)), "➕"),
 //              <.button(
@@ -67,10 +64,10 @@ object MainComponent {
     }
   }
 
-  class MainBackend($ : BackendScope[Unit, Tree]) {
-    def render(tree: Tree): VdomElement = {
+  class MainBackend($ : BackendScope[Unit, SimpleDatabase]) {
+    def render(db: SimpleDatabase): VdomElement = {
       val rootItem = TreeItemComponent.withKey(ROOTID)(
-        Props(StateSnapshot(tree).setStateVia($), ROOTID))
+        Props(StateSnapshot(db).setStateVia($), ROOTID))
       <.div(
         <.p("Tree:"),
         rootItem
@@ -92,7 +89,7 @@ object MainComponent {
 
   val Component = ScalaComponent
     .builder[Unit]("TreeNote")
-    .initialState(exampleTree)
+    .initialState(SimpleDatabase(exampleTree))
     .renderBackend[MainBackend]
     .build
 
