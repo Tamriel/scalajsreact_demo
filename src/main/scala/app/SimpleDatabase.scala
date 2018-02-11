@@ -23,16 +23,10 @@ case class SimpleDatabase(tree: Tree,
     setText(item, beginning + char + end)
   }
 
-  def setText(item: TreeItem,
-              newText: String,
-              stopEdit: Boolean = false): SimpleDatabase = {
+  def setText(item: TreeItem, newText: String): SimpleDatabase = {
     def modifyText(item: Option[TreeItem]): Option[TreeItem] =
       Some(textLens.set(newText)(item.get))
-    val res = (itemsLens composeLens at(item.id)).modify(modifyText)(this)
-    if (stopEdit)
-      res.copy(editing = None)
-    else
-      res
+    (itemsLens composeLens at(item.id)).modify(modifyText)(this)
   }
 
   def deleteItem(item: TreeItem): SimpleDatabase = {

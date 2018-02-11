@@ -46,7 +46,8 @@ object MainComponent {
           val pos = e.target.selectionStart
           e.asInstanceOf[ReactKeyboardEvent].key match {
             case "Escape" =>
-              Some(mod(_.setText(item, snap.textWhenEditStarts, true)))
+              Some(mod(
+                _.copy(editing = None).setText(item, snap.textWhenEditStarts)))
             case "Enter" => Some(mod(_.copy(editing = None)))
 //            case "Delete"    => mod(_.deleteCharacter(item, pos + 1))
 //            case "Backspace" => mod(_.deleteCharacter(item, pos))
