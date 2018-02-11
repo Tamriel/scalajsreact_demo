@@ -6,6 +6,7 @@ import japgolly.scalajs.react.extra.StateSnapshot
 import japgolly.scalajs.react.vdom.html_<^.{<, _}
 import japgolly.scalajs.react.{Callback, ScalaComponent, _}
 import org.scalajs.dom.ext.KeyCode
+import org.scalajs.dom.html
 
 import scala.util.Random
 import scalacss.ScalaCssReact._
@@ -34,6 +35,8 @@ object MainComponent {
     .build
 
   class TreeItemBackend($ : BackendScope[Props, Unit]) {
+    var inputRef: html.Input = _
+
     def render(props: Props): VdomElement = {
       val snap = props.stateSnap.value
       val item = snap.tree.items(props.itemId)
@@ -57,25 +60,29 @@ object MainComponent {
             }
           }
 
+        val selected = snap.selected.contains(item.id)
         val editing = snap.editing.contains(item.id)
         <.li(
           <.div(
-            if (editing) CSS.invisible else CSS.visible,
-            <.label(
-              item.text,
-              ^.onDoubleClick --> mod((s: SimpleDatabase) => s.copy(editing = Some(item.id)))),
-            <.button(^.onClick --> mod(_.deleteItem(item)), "✖️"),
-            <.button(^.onClick --> mod(_.addSibling(item)), "➕"),
-            <.button(^.onClick --> mod(_.addChild(item, item.childrenIds.length)), "➕➡")
+            if (selected) CSS.selected else CSS.unselected,
+            <.div(
+              if (editing) CSS.invisible else CSS.visible,
+              <.label(
+                item.text,
+                ^.onDoubleClick --> mod((s: SimpleDatabase) => s.copy(editing = Some(item.id)))),
+              <.button(^.onClick --> mod(_.deleteItem(item)), "✖️"),
+              <.button(^.onClick --> mod(_.addSibling(item)), "➕"),
+              <.button(^.onClick --> mod(_.addChild(item, item.childrenIds.length)), "➕➡")
 //              <.button(^.onClick --> mod(_.moveUp(item)), "⬆️"),
 //              <.button(^.onClick --> mod(_.moveDown(item)), "⬇️"),
 //              <.button(^.onClick --> mod(_.moveLeft(item)), "⬅️"),
 //              <.button(^.onClick --> mod(_.moveRight(item)), "➡️"),
+            ),
+            <.input(^.value := item.text,
+                    ^.onChange ==> updateText,
+                    ^.onKeyDown ==>? editFieldKeyDown)
+              .ref(inputRef = _)
           ),
-          <.input.text(if (editing) CSS.visible else CSS.invisible,
-                       ^.value := item.text,
-                       ^.onChange ==> updateText,
-                       ^.onKeyDown ==>? editFieldKeyDown),
           <.ul(children)
         )
       }
@@ -86,27 +93,39 @@ object MainComponent {
     def render(db: SimpleDatabase): VdomElement = {
       val rootItem =
         TreeItemComponent.withKey(ROOTID)(Props(StateSnapshot(db).setStateVia($), ROOTID))
+
+      val keyDown: ReactKeyboardEvent => Option[Callback] =
+        e => {
+          e.nativeEvent.keyCode match {
+            case KeyCode.Escape | KeyCode.Down => Some(Callback(println(e)))
+            case _                             => None
+          }
+        }
+
       <.div(
+        ^.onKeyDown ==>? keyDown,
         <.p("Tree:"),
         rootItem
       )
     }
   }
-  val exampleTree = {
+  val uglyExampleDatabase = {
     val child1 = TreeItem("1")
     val child21 = TreeItem("2.1")
     val child2 = TreeItem("2", childrenIds = Vector(child21.id))
     val root = TreeItem(id = ROOTID, childrenIds = Vector(child1.id, child2.id))
-    Tree(Map(child1.id -> child1, child21.id -> child21, child2.id -> child2, root.id -> root))
+    val tree = Tree(
+      Map(child1.id -> child1, child21.id -> child21, child2.id -> child2, root.id -> root))
+    SimpleDatabase(tree, selected = Some(child1.id))
   }
 
   val rootItem = TreeItem(id = ROOTID)
-  val emptyDatabase = SimpleDatabase(Tree(Map(ROOTID -> rootItem)))
+  val emptyDatabase = SimpleDatabase(Tree(Map(ROOTID -> rootItem)), selected = Some("todo"))
   val exampleDatabase = emptyDatabase.addChild(rootItem, 0).addChild(rootItem, 1)
 
   val Component = ScalaComponent
     .builder[Unit]("TreeNote")
-    .initialState(SimpleDatabase(exampleTree))
+    .initialState(uglyExampleDatabase)
     .renderBackend[MainBackend]
     .build
 
