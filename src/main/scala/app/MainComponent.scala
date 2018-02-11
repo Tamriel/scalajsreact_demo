@@ -60,13 +60,12 @@ object MainComponent {
             }
           }
 
-        val selected = snap.selected.contains(item.id)
         val editing = snap.editing.contains(item.id)
         <.li(
           <.div(
-            if (selected) CSS.selected else CSS.unselected,
+            CSS.selected.when(snap.selected.contains(item.id)),
             <.div(
-              if (editing) CSS.invisible else CSS.visible,
+              CSS.invisible.when(editing),
               <.label(
                 item.text,
                 ^.onDoubleClick --> mod((s: SimpleDatabase) => s.copy(editing = Some(item.id)))),
@@ -78,7 +77,8 @@ object MainComponent {
 //              <.button(^.onClick --> mod(_.moveLeft(item)), "⬅️"),
 //              <.button(^.onClick --> mod(_.moveRight(item)), "➡️"),
             ),
-            <.input(^.value := item.text,
+            <.input(CSS.invisible.unless(editing),
+                    ^.value := item.text,
                     ^.onChange ==> updateText,
                     ^.onKeyDown ==>? editFieldKeyDown)
               .ref(inputRef = _)
