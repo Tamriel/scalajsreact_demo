@@ -107,11 +107,10 @@ object MainComponent {
           }
         }
 
-      <.div(
-        ^.onKeyDown ==>? keyDown,
-        <.p("Tree:"),
-        rootItem
-      )
+      <.div(CSS.mainDiv,
+            ^.tabIndex := 0, // needs to be focusable to receive key presses
+            ^.onKeyDown ==>? keyDown,
+            rootItem)
     }
   }
   val uglyExampleDatabase = {
