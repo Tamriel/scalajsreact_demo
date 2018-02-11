@@ -5,6 +5,7 @@ import java.util.UUID
 import japgolly.scalajs.react.extra.StateSnapshot
 import japgolly.scalajs.react.vdom.html_<^.{<, _}
 import japgolly.scalajs.react.{Callback, ScalaComponent, _}
+import org.scalajs.dom.ext.KeyCode
 
 import scala.util.Random
 import scalacss.ScalaCssReact._
@@ -39,17 +40,14 @@ object MainComponent {
 
       def mod(fn: SimpleDatabase => SimpleDatabase): Callback = props.stateSnap.modState(fn)
 
-      val editFieldKeyDown: ReactEventFromInput => Option[Callback] =
+      def updateText(e: ReactEventFromInput) =
+        mod(_.setText(item, e.target.value))
+
+      val editFieldKeyDown: ReactKeyboardEvent => Option[Callback] =
         e => {
-          val pos = e.target.selectionStart
-          e.asInstanceOf[ReactKeyboardEvent].key match {
-            case "Escape" =>
-              Some(mod(_.copy(editing = None).setText(item, snap.textWhenEditStarts)))
-            case "Enter" => Some(mod(_.copy(editing = None)))
-//            case "Delete"    => mod(_.deleteCharacter(item, pos + 1))
-//            case "Backspace" => mod(_.deleteCharacter(item, pos))
-            case k: String if k.length == 1 => Some(mod(_.insertCharacter(item, pos, k)))
-            case _                          => None
+          e.nativeEvent.keyCode match {
+            case KeyCode.Escape | KeyCode.Enter => Some(mod(_.copy(editing = None)))
+            case _                              => None
           }
         }
 
@@ -64,9 +62,9 @@ object MainComponent {
         <.li(
           <.div(
             if (editing) CSS.invisible else CSS.visible,
-            <.label(item.text,
-                    ^.onDoubleClick --> mod((s: SimpleDatabase) =>
-                      s.copy(editing = Some(item.id), textWhenEditStarts = item.text))),
+            <.label(
+              item.text,
+              ^.onDoubleClick --> mod((s: SimpleDatabase) => s.copy(editing = Some(item.id)))),
             <.button(^.onClick --> mod(_.deleteItem(item)), "✖️"),
             <.button(^.onClick --> mod(_.addSibling(item)), "➕"),
             <.button(^.onClick --> mod(_.addChild(item, item.childrenIds.length)), "➕➡")
@@ -77,6 +75,7 @@ object MainComponent {
           ),
           <.input.text(if (editing) CSS.visible else CSS.invisible,
                        ^.value := item.text,
+                       ^.onChange ==> updateText,
                        ^.onKeyDown ==>? editFieldKeyDown),
           <.ul(children)
         )
