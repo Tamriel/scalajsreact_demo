@@ -5,7 +5,6 @@ import java.util.UUID
 import japgolly.scalajs.react.extra.StateSnapshot
 import japgolly.scalajs.react.vdom.html_<^.{<, _}
 import japgolly.scalajs.react.{Callback, ScalaComponent, _}
-import org.scalajs.dom.ext.KeyCode
 
 import scala.util.Random
 import scalacss.ScalaCssReact._
@@ -38,22 +37,19 @@ object MainComponent {
       val snap = props.stateSnap.value
       val item = snap.tree.items(props.itemId)
 
-      def mod(fn: SimpleDatabase => SimpleDatabase): Callback =
-        props.stateSnap.modState(fn)
+      def mod(fn: SimpleDatabase => SimpleDatabase): Callback = props.stateSnap.modState(fn)
 
       val editFieldKeyDown: ReactEventFromInput => Option[Callback] =
         e => {
           val pos = e.target.selectionStart
           e.asInstanceOf[ReactKeyboardEvent].key match {
             case "Escape" =>
-              Some(mod(
-                _.copy(editing = None).setText(item, snap.textWhenEditStarts)))
+              Some(mod(_.copy(editing = None).setText(item, snap.textWhenEditStarts)))
             case "Enter" => Some(mod(_.copy(editing = None)))
 //            case "Delete"    => mod(_.deleteCharacter(item, pos + 1))
 //            case "Backspace" => mod(_.deleteCharacter(item, pos))
-            case k: String if k.length == 1 =>
-              Some(mod(_.insertCharacter(item, pos, k)))
-            case _ => None
+            case k: String if k.length == 1 => Some(mod(_.insertCharacter(item, pos, k)))
+            case _                          => None
           }
         }
 
@@ -69,15 +65,11 @@ object MainComponent {
           <.div(
             if (editing) CSS.invisible else CSS.visible,
             <.label(item.text,
-                    ^.onDoubleClick --> mod(
-                      (s: SimpleDatabase) =>
-                        s.copy(editing = Some(item.id),
-                               textWhenEditStarts = item.text))),
+                    ^.onDoubleClick --> mod((s: SimpleDatabase) =>
+                      s.copy(editing = Some(item.id), textWhenEditStarts = item.text))),
             <.button(^.onClick --> mod(_.deleteItem(item)), "✖️"),
             <.button(^.onClick --> mod(_.addSibling(item)), "➕"),
-            <.button(
-              ^.onClick --> mod(_.addChild(item, item.childrenIds.length)),
-              "➕➡")
+            <.button(^.onClick --> mod(_.addChild(item, item.childrenIds.length)), "➕➡")
 //              <.button(^.onClick --> mod(_.moveUp(item)), "⬆️"),
 //              <.button(^.onClick --> mod(_.moveDown(item)), "⬇️"),
 //              <.button(^.onClick --> mod(_.moveLeft(item)), "⬅️"),
@@ -94,8 +86,8 @@ object MainComponent {
 
   class MainBackend($ : BackendScope[Unit, SimpleDatabase]) {
     def render(db: SimpleDatabase): VdomElement = {
-      val rootItem = TreeItemComponent.withKey(ROOTID)(
-        Props(StateSnapshot(db).setStateVia($), ROOTID))
+      val rootItem =
+        TreeItemComponent.withKey(ROOTID)(Props(StateSnapshot(db).setStateVia($), ROOTID))
       <.div(
         <.p("Tree:"),
         rootItem
@@ -107,17 +99,12 @@ object MainComponent {
     val child21 = TreeItem("2.1")
     val child2 = TreeItem("2", childrenIds = Vector(child21.id))
     val root = TreeItem(id = ROOTID, childrenIds = Vector(child1.id, child2.id))
-    Tree(
-      Map(child1.id -> child1,
-          child21.id -> child21,
-          child2.id -> child2,
-          root.id -> root))
+    Tree(Map(child1.id -> child1, child21.id -> child21, child2.id -> child2, root.id -> root))
   }
 
   val rootItem = TreeItem(id = ROOTID)
   val emptyDatabase = SimpleDatabase(Tree(Map(ROOTID -> rootItem)))
-  val exampleDatabase =
-    emptyDatabase.addChild(rootItem, 0).addChild(rootItem, 1)
+  val exampleDatabase = emptyDatabase.addChild(rootItem, 0).addChild(rootItem, 1)
 
   val Component = ScalaComponent
     .builder[Unit]("TreeNote")

@@ -16,16 +16,13 @@ case class SimpleDatabase(tree: Tree,
 
   def getItem(id: String) = tree.items(id)
 
-  def insertCharacter(item: TreeItem,
-                      pos: Int,
-                      char: String): SimpleDatabase = {
+  def insertCharacter(item: TreeItem, pos: Int, char: String): SimpleDatabase = {
     val (beginning, end) = item.text.splitAt(pos)
     setText(item, beginning + char + end)
   }
 
   def setText(item: TreeItem, newText: String): SimpleDatabase = {
-    def modifyText(item: Option[TreeItem]): Option[TreeItem] =
-      Some(textLens.set(newText)(item.get))
+    def modifyText(item: Option[TreeItem]): Option[TreeItem] = Some(textLens.set(newText)(item.get))
     (itemsLens composeLens at(item.id)).modify(modifyText)(this)
   }
 
@@ -34,9 +31,7 @@ case class SimpleDatabase(tree: Tree,
     val parent = getItem(item.parentId)
 
     def setChild(i: Option[TreeItem]): Option[TreeItem] =
-      Some(
-        (childrenLens composeOptional index(parent.indexOf(item)))
-          .set("aa")(i.get)) // todo
+      Some((childrenLens composeOptional index(parent.indexOf(item))).set("aa")(i.get)) // todo
     (itemsLens composeLens at(item.parentId)).modify(setChild)(newDatabase)
   }
 
@@ -48,19 +43,15 @@ case class SimpleDatabase(tree: Tree,
 
   def addChild(parentItem: TreeItem, position: Int): SimpleDatabase = {
     val newItem = TreeItem(parentId = parentItem.id)
-    val newDatabase =
-      (itemsLens composeLens at(newItem.id)).set(Some(newItem))(this)
+    val newDatabase = (itemsLens composeLens at(newItem.id)).set(Some(newItem))(this)
 
     def setChild(i: Option[TreeItem]): Option[TreeItem] =
-      Some(
-        (childrenLens composeOptional index(position))
-          .set(newItem.id)(i.get)) // Todo: keine auswirkung
+      Some((childrenLens composeOptional index(position)).set(newItem.id)(i.get)) // Todo: keine auswirkung
     (itemsLens composeLens at(parentItem.id)).modify(setChild)(newDatabase)
   }
 
 //  def moveUp(id: String): Tree = ???
 //      Some((childrenLens composeOptional index(position)).set("1")(item.get))
-
 // def moveDown(id: String): Tree = ???
 //
 //  def moveLeft(id: String): Tree = ???
