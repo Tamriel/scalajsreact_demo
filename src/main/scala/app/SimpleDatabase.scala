@@ -14,6 +14,8 @@ case class SimpleDatabase(tree: Tree,
   val textLens = GenLens[TreeItem](_.text)
   val childrenLens = GenLens[TreeItem](_.childrenIds)
 
+  def isEditing(itemId: String): Boolean = editing.contains(itemId)
+
   def getItem(id: String) = tree.items(id)
 
   def insertCharacter(item: TreeItem, pos: Int, char: String): SimpleDatabase = {

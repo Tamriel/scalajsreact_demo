@@ -32,6 +32,11 @@ object MainComponent {
   val TreeItemComponent = ScalaComponent
     .builder[Props]("TreeItem")
     .renderBackend[TreeItemBackend]
+    .componentDidUpdate(x =>
+      Callback {
+        if (x.currentProps.stateSnap.value.isEditing(x.currentProps.itemId))
+          x.raw.backend.inputRef.focus()
+    })
     .build
 
   class TreeItemBackend($ : BackendScope[Props, Unit]) {
@@ -60,7 +65,7 @@ object MainComponent {
             }
           }
 
-        val editing = snap.editing.contains(item.id)
+        val editing = snap.isEditing(item.id)
         <.li(
           <.div(
             CSS.selected.when(snap.selected.contains(item.id)),
