@@ -38,27 +38,26 @@ object MainComponent {
       val snap = props.stateSnap.value
       val item = snap.tree.items(props.itemId)
 
-      def mod(fn: SimpleDatabase => SimpleDatabase): Callback = props.stateSnap.modState(fn)
-
-      def updateText(e: ReactEventFromInput) =
-        mod(_.setText(item, e.target.value))
-
-      val editFieldKeyDown: ReactKeyboardEvent => Option[Callback] =
-        e => {
-          e.nativeEvent.keyCode match {
-            case KeyCode.Escape | KeyCode.Enter => Some(mod(_.copy(editing = None)))
-            case _                              => None
-          }
-        }
-
       val children = item.childrenIds.toVdomArray(childId =>
         TreeItemComponent.withKey(childId)(props.copy(itemId = childId)))
-
-      val editing = snap.editing.contains(item.id)
 
       if (item.id == ROOTID)
         <.ul(children) // the root item is invisible, just show its children
       else {
+        def mod(fn: SimpleDatabase => SimpleDatabase): Callback = props.stateSnap.modState(fn)
+
+        def updateText(e: ReactEventFromInput) =
+          mod(_.setText(item, e.target.value))
+
+        val editFieldKeyDown: ReactKeyboardEvent => Option[Callback] =
+          e => {
+            e.nativeEvent.keyCode match {
+              case KeyCode.Escape | KeyCode.Enter => Some(mod(_.copy(editing = None)))
+              case _                              => None
+            }
+          }
+
+        val editing = snap.editing.contains(item.id)
         <.li(
           <.div(
             if (editing) CSS.invisible else CSS.visible,
