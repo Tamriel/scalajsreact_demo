@@ -119,23 +119,10 @@ object MainComponent {
         .ref(mainDivRef = _)
     }
   }
-  private val uglyExampleDatabase = {
-    val child1 = TreeItem("1", parentId = ROOTID)
-    val child21 = TreeItem("2.1", parentId = "2")
-    val child2 = TreeItem("2", id = "2", childrenIds = Vector(child21.id), parentId = ROOTID)
-    val root = TreeItem(id = ROOTID, childrenIds = Vector(child1.id, child2.id))
-    val tree = Tree(
-      Map(child1.id -> child1, child21.id -> child21, child2.id -> child2, root.id -> root))
-    SimpleDatabase(tree).select(child1)
-  }
-
-  val rootItem = TreeItem(id = ROOTID)
-  private val emptyDatabase = SimpleDatabase(Tree(Map(ROOTID -> rootItem))).select("todo")
-  private val exampleDatabase = emptyDatabase.addChild(rootItem, 0).addChild(rootItem, 1)
 
   private val Component = ScalaComponent
     .builder[Unit]("TreeNote")
-    .initialState(uglyExampleDatabase)
+    .initialState(SimpleDatabase.exampleDatabase)
     .renderBackend[MainBackend]
     .componentDidMount(_.backend.init)
     .componentDidUpdate(x => x.backend.init.when(x.currentState.editing.isEmpty).void)

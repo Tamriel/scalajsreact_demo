@@ -87,7 +87,7 @@ case class SimpleDatabase(tree: Tree,
       val splitted = vector.splitAt(position)
       splitted._1 ++ Vector(newItem.id) ++ splitted._2
     }
-    result.modify(_.tree.items.at(parentItem.id).childrenIds).using(insert)
+    result.modify(_.tree.items.at(parentItem.id).childrenIds).using(insert).select(newItem)
   }
 
 //  def moveUp(id: String): Tree = ???
@@ -97,4 +97,12 @@ case class SimpleDatabase(tree: Tree,
 //  def moveLeft(id: String): Tree = ???
 //
 //  def moveRight(id: String): Tree = ???
+}
+
+case object SimpleDatabase {
+  def exampleDatabase: SimpleDatabase = {
+    val rootItem = TreeItem(id = ROOTID)
+    val emptyDatabase = SimpleDatabase(Tree(Map(ROOTID -> rootItem)))
+    emptyDatabase.addChild(rootItem, 0).addChild(rootItem, 1).addChild(rootItem, 2)
+  }
 }
