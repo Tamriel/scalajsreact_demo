@@ -64,8 +64,6 @@ object MainComponent {
               <.label(item.text,
                       ^.onDoubleClick --> mod(_.startEditing(item)),
                       ^.onClick --> mod(_.select(item))),
-              <.button(^.onClick --> mod(_.deleteItem(item)), "✖️"),
-              <.button(^.onClick --> mod(_.addSibling(item)), "➕"),
               <.button(^.onClick --> mod(_.addChild(item, item.childrenIds.length)), "➕➡")
 //              <.button(^.onClick --> mod(_.moveUp(item)), "⬆️"),
 //              <.button(^.onClick --> mod(_.moveDown(item)), "⬇️"),
@@ -101,10 +99,12 @@ object MainComponent {
         e => {
           if (db.editing.isEmpty) {
             e.nativeEvent.keyCode match {
-              case KeyCode.Up    => Some(snap.modState(_.select(Before)))
-              case KeyCode.Down  => Some(snap.modState(_.select(Next)))
-              case KeyCode.Left  => Some(snap.modState(_.collapse))
-              case KeyCode.Right => Some(snap.modState(_.expand))
+              case KeyCode.Delete => Some(snap.modState(_.deleteItem()))
+              case KeyCode.Enter  => Some(snap.modState(_.addSibling()))
+              case KeyCode.Up     => Some(snap.modState(_.select(Before)))
+              case KeyCode.Down   => Some(snap.modState(_.select(Next)))
+              case KeyCode.Left   => Some(snap.modState(_.collapse))
+              case KeyCode.Right  => Some(snap.modState(_.expand))
               case KeyCode.Tab =>
                 Some(snap.modState(_.startEditing) >> e.preventDefaultCB) // Tab shall not change focus
               case _ => None

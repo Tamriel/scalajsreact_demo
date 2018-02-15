@@ -69,12 +69,14 @@ case class SimpleDatabase(tree: Tree,
   def setText(item: TreeItem, newText: String): SimpleDatabase =
     this.modify(_.tree.items.at(item.id).text).setTo(newText)
 
-  def deleteItem(item: TreeItem): SimpleDatabase = {
+  def deleteItem(): SimpleDatabase = {
+    val item = getItem(selected.get)
     val result = this.modify(_.tree.items).using(_.filter(_._2 != item))
     result.modify(_.tree.items.at(item.parentId).childrenIds).using(_.filter(_ != item.id))
   }
 
-  def addSibling(item: TreeItem): SimpleDatabase = {
+  def addSibling(): SimpleDatabase = {
+    val item = getItem(selected.get)
     val parent = getItem(item.parentId)
     val ownPos = parent.indexOf(item)
     addChild(parent, ownPos + 1)
