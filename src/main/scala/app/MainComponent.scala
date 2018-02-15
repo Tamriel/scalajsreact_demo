@@ -75,7 +75,8 @@ object MainComponent {
             <.input(CSS.invisible.unless(editing),
                     ^.value := item.text,
                     ^.onChange ==> updateText,
-                    ^.onKeyDown ==>? editFieldKeyDown)
+                    ^.onKeyDown ==>? editFieldKeyDown,
+                    ^.onBlur --> mod(_.copy(editing = None)))
               .ref(inputRef = _)
           ),
           <.ul(children).when(item.expanded)
