@@ -54,7 +54,7 @@ object MainComponent {
 
         val editing = snap.isEditing(item.id)
         val expandSymbol = if (item.expanded) "▼" else "▶"
-        <.li(
+        val html = <.li(
           <.div(
             CSS.selected.when(snap.selected.contains(item.id)),
             <.span(expandSymbol, CSS.pointer, ^.onClick --> mod(_.toggleExpanded(item)))
@@ -80,6 +80,8 @@ object MainComponent {
           ),
           <.ul(children).when(item.expanded)
         )
+        if (editing) inputRef.setSelectionRange(0, 0)
+        html
       }
     }
   }
