@@ -28,21 +28,24 @@ case class SimpleDatabase(tree: Tree,
 
   def select(beforeNext: BeforeNext): SimpleDatabase = select(getItem(selected.get), beforeNext)
 
+  def select(item: TreeItem): SimpleDatabase = select(item.id)
+
+  def select(id: String): SimpleDatabase = copy(selected = Some(id))
+
   private def select(fromItem: TreeItem, beforeNext: BeforeNext): SimpleDatabase = {
     val parent = getItem(fromItem.parentId)
     val diff = if (beforeNext == Before) -1 else +1
     val newIndex = parent.indexOf(fromItem) + diff
     if (newIndex < 0) {
       if (parent.id == ROOTID) this
-      else this.copy(selected = Some(parent.id))
+      else select(parent)
     } else if (newIndex >= parent.childrenIds.length) {
       if (fromItem.id == ROOTID) this
       // if has children and expanded: select first child
-      else if (fromItem.expanded && fromItem.childrenIds.nonEmpty)
-        this.copy(selected = Some(fromItem.childrenIds(0)))
+      else if (fromItem.expanded && fromItem.childrenIds.nonEmpty) select(fromItem.childrenIds(0))
       // select next below parent
       else select(parent, beforeNext)
-    } else this.copy(selected = Some(parent.childrenIds(newIndex)))
+    } else select(parent.childrenIds(newIndex))
   }
 
   def expand: SimpleDatabase =

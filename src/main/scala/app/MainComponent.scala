@@ -61,9 +61,9 @@ object MainComponent {
               .when(item.childrenIds.nonEmpty),
             <.div(
               CSS.invisible.when(editing),
-              <.label(
-                item.text,
-                ^.onDoubleClick --> mod((s: SimpleDatabase) => s.copy(editing = Some(item.id)))),
+              <.label(item.text,
+                      ^.onDoubleClick --> mod(_.copy(editing = Some(item.id))),
+                      ^.onClick --> mod(_.select(item))),
               <.button(^.onClick --> mod(_.deleteItem(item)), "✖️"),
               <.button(^.onClick --> mod(_.addSibling(item)), "➕"),
               <.button(^.onClick --> mod(_.addChild(item, item.childrenIds.length)), "➕➡")
@@ -119,11 +119,11 @@ object MainComponent {
     val root = TreeItem(id = ROOTID, childrenIds = Vector(child1.id, child2.id))
     val tree = Tree(
       Map(child1.id -> child1, child21.id -> child21, child2.id -> child2, root.id -> root))
-    SimpleDatabase(tree, selected = Some(child1.id))
+    SimpleDatabase(tree).select(child1)
   }
 
   val rootItem = TreeItem(id = ROOTID)
-  val emptyDatabase = SimpleDatabase(Tree(Map(ROOTID -> rootItem)), selected = Some("todo"))
+  private val emptyDatabase = SimpleDatabase(Tree(Map(ROOTID -> rootItem))).select("todo")
   private val exampleDatabase = emptyDatabase.addChild(rootItem, 0).addChild(rootItem, 1)
 
   private val Component = ScalaComponent
