@@ -39,6 +39,24 @@ case class SimpleDatabase(tree: Tree,
     setText(item, beginning + char + end)
   }
 
+  def expand: SimpleDatabase =
+    selected match {
+      case Some(id) => {
+        val item = getItem(id)
+        if (item.expanded) this
+        else toggleExpanded(item)
+      }
+    }
+
+  def collapse: SimpleDatabase =
+    selected match {
+      case Some(id) => {
+        val item = getItem(id)
+        if (item.expanded) toggleExpanded(item)
+        else this
+      }
+    }
+
   def toggleExpanded(item: TreeItem): SimpleDatabase = {
     def toggle(itemO: Option[TreeItem]): Option[TreeItem] =
       Some(itemO.get.lens(_.expanded).set(!itemO.get.expanded))
