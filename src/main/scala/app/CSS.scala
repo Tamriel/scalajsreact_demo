@@ -9,24 +9,14 @@ object CSS extends StyleSheet.Inline {
   val visible = style(display.block)
   val invisible = style(display.none)
   val selected = style(backgroundColor(orange))
-  val mainDiv = style(
+  val maximize = style(
     height(100 %%),
-    backgroundColor(lightgrey)
+    margin.`0`,
   )
 
   style(
-    unsafeRoot("html")(
-      height(100 %%),
-      margin.`0`,
-      padding.`0`,
-    ),
-    unsafeRoot("body")(
-      height(100 %%),
-      margin.`0`,
-      padding.`0`,
-    ),
-    unsafeRoot("#root")(
-      height(100 %%)
-    )
+    unsafeRoot("html")(maximize),
+    unsafeRoot("body")(maximize),
+    unsafeRoot("#root")(maximize)
   )
 }

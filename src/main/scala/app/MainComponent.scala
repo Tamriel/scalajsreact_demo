@@ -3,6 +3,7 @@ package app
 import java.util.UUID
 
 import app.BeforeNext.{Before, Next}
+import japgolly.scalajs.react.component.Scala.Unmounted
 import japgolly.scalajs.react.extra.StateSnapshot
 import japgolly.scalajs.react.vdom.html_<^.{<, _}
 import japgolly.scalajs.react.{Callback, ScalaComponent, _}
@@ -30,7 +31,7 @@ object MainComponent {
 
   case class Props(stateSnap: StateSnapshot[SimpleDatabase], itemId: String)
 
-  val TreeItemComponent = ScalaComponent
+  private val TreeItemComponent = ScalaComponent
     .builder[Props]("TreeItem")
     .renderBackend[TreeItemBackend]
     .componentDidUpdate(x =>
@@ -51,7 +52,7 @@ object MainComponent {
         TreeItemComponent.withKey(childId)(props.copy(itemId = childId)))
 
       if (item.id == ROOTID)
-        <.ul(children) // the root item is invisible, just show its children
+        <.ul(CSS.maximize, children) // the root item is invisible, just show its children
       else {
         def mod(fn: SimpleDatabase => SimpleDatabase): Callback = props.stateSnap.modState(fn)
 
@@ -96,6 +97,10 @@ object MainComponent {
   }
 
   class MainBackend($ : BackendScope[Unit, SimpleDatabase]) {
+    private var mainDivRef: html.Element = _
+
+    def init: Callback = Callback(mainDivRef.focus())
+
     def render(db: SimpleDatabase): VdomElement = {
       val snap = StateSnapshot(db).setStateVia($)
       val rootItem =
@@ -110,13 +115,14 @@ object MainComponent {
           }
         }
 
-      <.div(CSS.mainDiv,
+      <.div(CSS.maximize,
             ^.tabIndex := 0, // needs to be focusable to receive key presses
             ^.onKeyDown ==>? keyDown,
             rootItem)
+        .ref(mainDivRef = _)
     }
   }
-  val uglyExampleDatabase = {
+  private val uglyExampleDatabase = {
     val child1 = TreeItem("1", parentId = ROOTID)
     val child21 = TreeItem("2.1", parentId = child1.id)
     val child2 = TreeItem("2", childrenIds = Vector(child21.id), parentId = ROOTID)
@@ -128,13 +134,14 @@ object MainComponent {
 
   val rootItem = TreeItem(id = ROOTID)
   val emptyDatabase = SimpleDatabase(Tree(Map(ROOTID -> rootItem)), selected = Some("todo"))
-  val exampleDatabase = emptyDatabase.addChild(rootItem, 0).addChild(rootItem, 1)
+  private val exampleDatabase = emptyDatabase.addChild(rootItem, 0).addChild(rootItem, 1)
 
-  val Component = ScalaComponent
+  private val Component = ScalaComponent
     .builder[Unit]("TreeNote")
     .initialState(uglyExampleDatabase)
     .renderBackend[MainBackend]
+    .componentDidMount(_.backend.init)
     .build
 
-  def apply() = Component()
+  def apply(): Unmounted[Unit, SimpleDatabase, MainBackend] = Component()
 }
