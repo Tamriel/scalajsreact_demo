@@ -2,6 +2,7 @@ package app
 
 import java.util.UUID
 
+import app.BeforeNext.{Before, Next}
 import japgolly.scalajs.react.extra.StateSnapshot
 import japgolly.scalajs.react.vdom.html_<^.{<, _}
 import japgolly.scalajs.react.{Callback, ScalaComponent, _}
@@ -96,14 +97,16 @@ object MainComponent {
 
   class MainBackend($ : BackendScope[Unit, SimpleDatabase]) {
     def render(db: SimpleDatabase): VdomElement = {
+      val snap = StateSnapshot(db).setStateVia($)
       val rootItem =
-        TreeItemComponent.withKey(ROOTID)(Props(StateSnapshot(db).setStateVia($), ROOTID))
+        TreeItemComponent.withKey(ROOTID)(Props(snap, ROOTID))
 
       val keyDown: ReactKeyboardEvent => Option[Callback] =
         e => {
           e.nativeEvent.keyCode match {
-            case KeyCode.Escape | KeyCode.Down => Some(Callback(println(e)))
-            case _                             => None
+            case KeyCode.Up   => Some(snap.modState(_.select(Before)))
+            case KeyCode.Down => Some(snap.modState(_.select(Next)))
+            case _            => None
           }
         }
 
@@ -114,9 +117,9 @@ object MainComponent {
     }
   }
   val uglyExampleDatabase = {
-    val child1 = TreeItem("1")
-    val child21 = TreeItem("2.1")
-    val child2 = TreeItem("2", childrenIds = Vector(child21.id))
+    val child1 = TreeItem("1", parentId = ROOTID)
+    val child21 = TreeItem("2.1", parentId = child1.id)
+    val child2 = TreeItem("2", childrenIds = Vector(child21.id), parentId = ROOTID)
     val root = TreeItem(id = ROOTID, childrenIds = Vector(child1.id, child2.id))
     val tree = Tree(
       Map(child1.id -> child1, child21.id -> child21, child2.id -> child2, root.id -> root))
