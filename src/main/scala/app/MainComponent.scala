@@ -21,7 +21,8 @@ object MainComponent {
                       id: String = Random.alphanumeric.take(10).mkString,
                       parentId: String = "is set later",
                       childrenIds: Vector[String] = Vector.empty,
-                      deleted: Boolean = false) {
+                      deleted: Boolean = false,
+                      expanded: Boolean = true) {
     def indexOf(item: TreeItem): Int = childrenIds.indexOf(item.id)
   }
 
@@ -68,9 +69,12 @@ object MainComponent {
           }
 
         val editing = snap.isEditing(item.id)
+        val expandSymbol = if (item.expanded) "▼" else "▶"
         <.li(
           <.div(
             CSS.selected.when(snap.selected.contains(item.id)),
+            <.span(expandSymbol, CSS.pointer, ^.onClick --> mod(_.toggleExpanded(item)))
+              .when(item.childrenIds.nonEmpty),
             <.div(
               CSS.invisible.when(editing),
               <.label(
@@ -90,7 +94,7 @@ object MainComponent {
                     ^.onKeyDown ==>? editFieldKeyDown)
               .ref(inputRef = _)
           ),
-          <.ul(children)
+          <.ul(children).when(item.expanded)
         )
       }
     }

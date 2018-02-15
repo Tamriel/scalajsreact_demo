@@ -39,8 +39,15 @@ case class SimpleDatabase(tree: Tree,
     setText(item, beginning + char + end)
   }
 
+  def toggleExpanded(item: TreeItem): SimpleDatabase = {
+    def toggle(itemO: Option[TreeItem]): Option[TreeItem] =
+      Some(itemO.get.lens(_.expanded).set(!itemO.get.expanded))
+    (itemsLens composeLens at(item.id)).modify(toggle)(this)
+  }
+
   def setText(item: TreeItem, newText: String): SimpleDatabase = {
-    def modifyText(item: Option[TreeItem]): Option[TreeItem] = Some(textLens.set(newText)(item.get))
+    def modifyText(itemO: Option[TreeItem]): Option[TreeItem] =
+      Some(textLens.set(newText)(itemO.get))
     (itemsLens composeLens at(item.id)).modify(modifyText)(this)
   }
 

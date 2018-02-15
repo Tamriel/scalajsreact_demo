@@ -9,6 +9,7 @@ object CSS extends StyleSheet.Inline {
   val visible = style(display.block)
   val invisible = style(display.none)
   val selected = style(backgroundColor(orange))
+  val pointer = style(cursor.pointer)
   val maximize = style(
     height(100 %%),
     margin.`0`,
