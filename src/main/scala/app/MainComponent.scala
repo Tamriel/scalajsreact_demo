@@ -80,7 +80,7 @@ object MainComponent {
           ),
           <.ul(children).when(item.expanded)
         )
-        if (editing) inputRef.setSelectionRange(0, 0)
+        if (editing) inputRef.setSelectionRange(item.text.length, item.text.length)
         html
       }
     }
