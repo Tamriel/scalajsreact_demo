@@ -83,7 +83,11 @@ case class SimpleDatabase(tree: Tree,
   def addChild(parentItem: TreeItem, position: Int): SimpleDatabase = {
     val newItem = TreeItem(parentId = parentItem.id)
     val result = this.modify(_.tree.items).using(_ + (newItem.id -> newItem))
-    result.modify(_.tree.items.at(parentItem.id).childrenIds).using(_ :+ newItem.id)
+    def insert(vector: Vector[String]) = {
+      val splitted = vector.splitAt(position)
+      splitted._1 ++ Vector(newItem.id) ++ splitted._2
+    }
+    result.modify(_.tree.items.at(parentItem.id).childrenIds).using(insert)
   }
 
 //  def moveUp(id: String): Tree = ???
