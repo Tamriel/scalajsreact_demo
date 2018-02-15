@@ -1,34 +1,18 @@
 package app
 
-import java.util.UUID
-
 import app.BeforeNext.{Before, Next}
+import app.DataModel.{Tree, TreeItem}
 import japgolly.scalajs.react.component.Scala.Unmounted
 import japgolly.scalajs.react.extra.StateSnapshot
 import japgolly.scalajs.react.vdom.html_<^.{<, _}
 import japgolly.scalajs.react.{Callback, ScalaComponent, _}
 import org.scalajs.dom.ext.KeyCode
 import org.scalajs.dom.html
+import DataModel.ROOTID
 
-import scala.util.Random
 import scalacss.ScalaCssReact._
 
 object MainComponent {
-
-  case class TodoId(id: UUID)
-
-  case class TreeItem(text: String = "",
-                      id: String = Random.alphanumeric.take(10).mkString,
-                      parentId: String = "is set later",
-                      childrenIds: Vector[String] = Vector.empty,
-                      deleted: Boolean = false,
-                      expanded: Boolean = true) {
-    def indexOf(item: TreeItem): Int = childrenIds.indexOf(item.id)
-  }
-
-  case class Tree(items: Map[String, TreeItem])
-
-  val ROOTID = "root"
 
   case class Props(stateSnap: StateSnapshot[SimpleDatabase], itemId: String)
 
@@ -130,8 +114,8 @@ object MainComponent {
   }
   private val uglyExampleDatabase = {
     val child1 = TreeItem("1", parentId = ROOTID)
-    val child21 = TreeItem("2.1", parentId = child1.id)
-    val child2 = TreeItem("2", childrenIds = Vector(child21.id), parentId = ROOTID)
+    val child21 = TreeItem("2.1", parentId = "2")
+    val child2 = TreeItem("2", id = "2", childrenIds = Vector(child21.id), parentId = ROOTID)
     val root = TreeItem(id = ROOTID, childrenIds = Vector(child1.id, child2.id))
     val tree = Tree(
       Map(child1.id -> child1, child21.id -> child21, child2.id -> child2, root.id -> root))

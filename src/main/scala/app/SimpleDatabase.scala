@@ -1,11 +1,12 @@
 package app
 
 import app.BeforeNext.Before
-import app.MainComponent.{Tree, TreeItem}
+import app.DataModel.{Tree, TreeItem}
 import monocle.macros.GenLens
 import monocle.function.At.at
 import monocle.function.Index.index
 import monocle.macros.syntax.lens._
+import DataModel.ROOTID
 
 sealed trait BeforeNext
 object BeforeNext {
@@ -17,44 +18,49 @@ case class SimpleDatabase(tree: Tree,
                           selected: Option[String] = None,
                           editing: Option[String] = None) {
 
-  val itemsLens = GenLens[SimpleDatabase](_.tree.items)
-  val textLens = GenLens[TreeItem](_.text)
-  val childrenLens = GenLens[TreeItem](_.childrenIds)
+  private val itemsLens = GenLens[SimpleDatabase](_.tree.items)
+  private val textLens = GenLens[TreeItem](_.text)
+  private val childrenLens = GenLens[TreeItem](_.childrenIds)
 
   def isEditing(itemId: String): Boolean = editing.contains(itemId)
 
   def getItem(id: String) = tree.items(id)
 
-  def select(beforeNext: BeforeNext): SimpleDatabase = {
-    val selectedItem = getItem(selected.get)
-    val parent = getItem(selectedItem.parentId)
-    val diff = if (beforeNext == Before) -1 else +1
-    val newIndex = parent.indexOf(selectedItem) + diff
-    if (newIndex < 0 || newIndex >= parent.childrenIds.length) this
-    else this.copy(selected = Some(parent.childrenIds(newIndex)))
-  }
+  def select(beforeNext: BeforeNext): SimpleDatabase = select(getItem(selected.get), beforeNext)
 
-  def insertCharacter(item: TreeItem, pos: Int, char: String): SimpleDatabase = {
-    val (beginning, end) = item.text.splitAt(pos)
-    setText(item, beginning + char + end)
+  private def select(fromItem: TreeItem, beforeNext: BeforeNext): SimpleDatabase = {
+    val parent = getItem(fromItem.parentId)
+    val diff = if (beforeNext == Before) -1 else +1
+    val newIndex = parent.indexOf(fromItem) + diff
+    if (newIndex < 0) {
+      if (parent.id == ROOTID) this
+      else this.copy(selected = Some(parent.id))
+    } else if (newIndex >= parent.childrenIds.length) {
+      if (fromItem.id == ROOTID) this
+      // if has children and expanded: select first child
+      else if (fromItem.expanded && fromItem.childrenIds.nonEmpty)
+        this.copy(selected = Some(fromItem.childrenIds(0)))
+      // select next below parent
+      else select(parent, beforeNext)
+    } else this.copy(selected = Some(parent.childrenIds(newIndex)))
   }
 
   def expand: SimpleDatabase =
     selected match {
-      case Some(id) => {
+      case Some(id) =>
         val item = getItem(id)
         if (item.expanded) this
         else toggleExpanded(item)
-      }
+      case _ => this // todo: cleaner
     }
 
   def collapse: SimpleDatabase =
     selected match {
-      case Some(id) => {
+      case Some(id) =>
         val item = getItem(id)
         if (item.expanded) toggleExpanded(item)
         else this
-      }
+      case _ => this
     }
 
   def toggleExpanded(item: TreeItem): SimpleDatabase = {
