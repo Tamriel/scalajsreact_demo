@@ -1,12 +1,8 @@
 package app
 
 import app.BeforeNext.Before
-import app.DataModel.{Tree, TreeItem}
-import monocle.macros.GenLens
-import monocle.function.At.at
-import monocle.function.Index.index
-import monocle.macros.syntax.lens._
-import DataModel.ROOTID
+import app.DataModel.{ROOTID, Tree, TreeItem}
+import com.softwaremill.quicklens._
 
 sealed trait BeforeNext
 object BeforeNext {
@@ -17,10 +13,6 @@ object BeforeNext {
 case class SimpleDatabase(tree: Tree,
                           selected: Option[String] = None,
                           editing: Option[String] = None) {
-
-  private val itemsLens = GenLens[SimpleDatabase](_.tree.items)
-  private val textLens = GenLens[TreeItem](_.text)
-  private val childrenLens = GenLens[TreeItem](_.childrenIds)
 
   def isEditing(itemId: String): Boolean = editing.contains(itemId)
 
@@ -71,25 +63,15 @@ case class SimpleDatabase(tree: Tree,
       case _ => this
     }
 
-  def toggleExpanded(item: TreeItem): SimpleDatabase = {
-    def toggle(itemO: Option[TreeItem]): Option[TreeItem] =
-      Some(itemO.get.lens(_.expanded).set(!itemO.get.expanded))
-    (itemsLens composeLens at(item.id)).modify(toggle)(this)
-  }
+  def toggleExpanded(item: TreeItem): SimpleDatabase =
+    this.modify(_.tree.items.at(item.id).expanded).setTo(!item.expanded)
 
-  def setText(item: TreeItem, newText: String): SimpleDatabase = {
-    def modifyText(itemO: Option[TreeItem]): Option[TreeItem] =
-      Some(textLens.set(newText)(itemO.get))
-    (itemsLens composeLens at(item.id)).modify(modifyText)(this)
-  }
+  def setText(item: TreeItem, newText: String): SimpleDatabase =
+    this.modify(_.tree.items.at(item.id).text).setTo(newText)
 
   def deleteItem(item: TreeItem): SimpleDatabase = {
-    val newDatabase = (itemsLens composeLens at(item.id)).set(None)(this)
-    val parent = getItem(item.parentId)
-
-    def setChild(i: Option[TreeItem]): Option[TreeItem] =
-      Some((childrenLens composeOptional index(parent.indexOf(item))).set("aa")(i.get)) // todo
-    (itemsLens composeLens at(item.parentId)).modify(setChild)(newDatabase)
+    val result = this.modify(_.tree.items).using(_.filter(_._2 != item))
+    result.modify(_.tree.items.at(item.parentId).childrenIds).using(_.filter(_ != item.id))
   }
 
   def addSibling(item: TreeItem): SimpleDatabase = {
@@ -100,11 +82,8 @@ case class SimpleDatabase(tree: Tree,
 
   def addChild(parentItem: TreeItem, position: Int): SimpleDatabase = {
     val newItem = TreeItem(parentId = parentItem.id)
-    val newDatabase = (itemsLens composeLens at(newItem.id)).set(Some(newItem))(this)
-
-    def setChild(i: Option[TreeItem]): Option[TreeItem] =
-      Some((childrenLens composeOptional index(position)).set(newItem.id)(i.get)) // Todo: keine auswirkung
-    (itemsLens composeLens at(parentItem.id)).modify(setChild)(newDatabase)
+    val result = this.modify(_.tree.items).using(_ + (newItem.id -> newItem))
+    result.modify(_.tree.items.at(parentItem.id).childrenIds).using(_ :+ newItem.id)
   }
 
 //  def moveUp(id: String): Tree = ???
