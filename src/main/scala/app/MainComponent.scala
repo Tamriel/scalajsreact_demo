@@ -96,13 +96,15 @@ object MainComponent {
 
       val keyDown: ReactKeyboardEvent => Option[Callback] =
         e => {
-          e.nativeEvent.keyCode match {
-            case KeyCode.Up    => Some(snap.modState(_.select(Before)))
-            case KeyCode.Down  => Some(snap.modState(_.select(Next)))
-            case KeyCode.Left  => Some(snap.modState(_.collapse))
-            case KeyCode.Right => Some(snap.modState(_.expand))
-            case _             => None
-          }
+          if (db.editing.isEmpty) {
+            e.nativeEvent.keyCode match {
+              case KeyCode.Up    => Some(snap.modState(_.select(Before)))
+              case KeyCode.Down  => Some(snap.modState(_.select(Next)))
+              case KeyCode.Left  => Some(snap.modState(_.collapse))
+              case KeyCode.Right => Some(snap.modState(_.expand))
+              case _             => None
+            }
+          } else None
         }
 
       <.div(CSS.maximize,
