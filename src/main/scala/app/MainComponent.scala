@@ -137,6 +137,7 @@ object MainComponent {
     .initialState(uglyExampleDatabase)
     .renderBackend[MainBackend]
     .componentDidMount(_.backend.init)
+    .componentDidUpdate(x => x.backend.init.when(x.currentState.editing.isEmpty).void)
     .build
 
   def apply(): Unmounted[Unit, SimpleDatabase, MainBackend] = Component()
