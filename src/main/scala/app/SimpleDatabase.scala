@@ -24,6 +24,11 @@ case class SimpleDatabase(tree: Tree,
 
   def isEditing(itemId: String): Boolean = editing.contains(itemId)
 
+  def startEditing: SimpleDatabase =
+    if (selected.isDefined) startEditing(getItem(selected.get)) else this
+
+  def startEditing(item: TreeItem): SimpleDatabase = copy(editing = Some(item.id))
+
   def getItem(id: String) = tree.items(id)
 
   def select(beforeNext: BeforeNext): SimpleDatabase = select(getItem(selected.get), beforeNext)

@@ -62,7 +62,7 @@ object MainComponent {
             <.div(
               CSS.invisible.when(editing),
               <.label(item.text,
-                      ^.onDoubleClick --> mod(_.copy(editing = Some(item.id))),
+                      ^.onDoubleClick --> mod(_.startEditing(item)),
                       ^.onClick --> mod(_.select(item))),
               <.button(^.onClick --> mod(_.deleteItem(item)), "✖️"),
               <.button(^.onClick --> mod(_.addSibling(item)), "➕"),
@@ -104,7 +104,9 @@ object MainComponent {
               case KeyCode.Down  => Some(snap.modState(_.select(Next)))
               case KeyCode.Left  => Some(snap.modState(_.collapse))
               case KeyCode.Right => Some(snap.modState(_.expand))
-              case _             => None
+              case KeyCode.Tab =>
+                Some(snap.modState(_.startEditing) >> e.preventDefaultCB) // Tab shall not change focus
+              case _ => None
             }
           } else None
         }
