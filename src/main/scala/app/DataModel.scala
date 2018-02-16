@@ -7,9 +7,9 @@ import scala.util.Random
 object DataModel {
   case class TodoId(id: UUID)
 
-  case class TreeItem(text: String = "",
+  case class TreeItem(parentId: String,
+                      text: String = "",
                       id: String = Random.alphanumeric.take(10).mkString,
-                      parentId: String = "is set later",
                       childrenIds: Vector[String] = Vector.empty,
                       deleted: Boolean = false,
                       expanded: Boolean = true) {

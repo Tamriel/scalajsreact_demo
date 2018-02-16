@@ -95,13 +95,13 @@ object MainComponent {
       def handleKey(e: ReactKeyboardEvent): Callback = {
         def plainKey: CallbackOption[Unit] = // CallbackOption will stop if a key isn't matched
           CallbackOption.keyCodeSwitch(e) {
-            case KeyCode.Delete => snap.modState(_.deleteItem())
-            case KeyCode.Enter  => snap.modState(_.addSibling().startEditing())
-            case KeyCode.Up     => snap.modState(_.select(Before))
-            case KeyCode.Down   => snap.modState(_.select(Next))
-            case KeyCode.Left   => snap.modState(_.collapse())
-            case KeyCode.Right  => snap.modState(_.expand())
-            case KeyCode.Tab    => snap.modState(_.startEditing())
+            case KeyCode.Delete           => snap.modState(_.deleteItem())
+            case KeyCode.Enter            => snap.modState(_.addSibling().startEditing())
+            case KeyCode.Up               => snap.modState(_.select(Before))
+            case KeyCode.Down             => snap.modState(_.select(Next))
+            case KeyCode.Left             => snap.modState(_.collapse())
+            case KeyCode.Right            => snap.modState(_.expand())
+            case KeyCode.Tab | KeyCode.F2 => snap.modState(_.startEditing())
           }
 
         def ctrlKey: CallbackOption[Unit] =

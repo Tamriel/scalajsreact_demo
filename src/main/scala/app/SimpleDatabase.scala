@@ -92,16 +92,21 @@ case class SimpleDatabase(tree: Tree,
 
   def deleteItem(): SimpleDatabase = {
     val item = getItem(selected.get)
-    val result = this.modify(_.tree.items).using(_.filter(_._2 != item))
-    result.modify(_.tree.items.at(item.parentId).childrenIds).using(_.filter(_ != item.id))
+    val res0 = select(Before).modify(_.tree.items).using(_.filter(_._2 != item))
+    val res1 = res0.modify(_.tree.items.at(item.parentId).childrenIds).using(_.filter(_ != item.id))
+    if (res1.selected.get == item.id) // if not changed due to being the top item
+      res1.select(item, Next)
+    else res1
   }
 
-  def addSibling(): SimpleDatabase = {
-    val item = getItem(selected.get)
-    val parent = getItem(item.parentId)
-    val ownPos = parent.indexOf(item)
-    addChild(parent, ownPos + 1)
-  }
+  def addSibling(): SimpleDatabase =
+    if (getItem(ROOTID).childrenIds.isEmpty) addChild(getItem(ROOTID), 0)
+    else {
+      val item = getItem(selected.get)
+      val parent = getItem(item.parentId)
+      val ownPos = parent.indexOf(item)
+      addChild(parent, ownPos + 1)
+    }
 
   def addChild(): SimpleDatabase = addChild(getItem(selected.get), 0)
 
@@ -126,7 +131,7 @@ case class SimpleDatabase(tree: Tree,
 
 case object SimpleDatabase {
   def exampleDatabase: SimpleDatabase = {
-    val rootItem = TreeItem(id = ROOTID)
+    val rootItem = TreeItem(id = ROOTID, parentId = "not needed for root")
     val emptyDatabase = SimpleDatabase(Tree(Map(ROOTID -> rootItem)))
     emptyDatabase.addChild(rootItem, 0).addChild(rootItem, 1).addChild(rootItem, 2)
   }
