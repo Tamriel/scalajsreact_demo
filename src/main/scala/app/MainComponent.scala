@@ -52,12 +52,9 @@ object MainComponent {
         def updateText(e: ReactEventFromInput) =
           mod(_.setText(item, e.target.value))
 
-        val editFieldKeyDown: ReactKeyboardEvent => Option[Callback] =
-          e => {
-            e.nativeEvent.keyCode match {
-              case KeyCode.Escape | KeyCode.Enter => Some(mod(_.copy(editing = None)))
-              case _                              => None
-            }
+        def editFieldKeyDown(e: ReactKeyboardEvent): Callback =
+          CallbackOption.keyCodeSwitch(e) {
+            case KeyCode.Escape | KeyCode.Enter => mod(_.copy(editing = None))
           }
 
         val editing = snap.isEditing(item.id)
@@ -76,7 +73,7 @@ object MainComponent {
             <.input(CSS.invisible.unless(editing),
                     ^.value := item.text,
                     ^.onChange ==> updateText,
-                    ^.onKeyDown ==>? editFieldKeyDown,
+                    ^.onKeyDown ==> editFieldKeyDown,
                     ^.onBlur --> mod(_.copy(editing = None)))
               .ref(inputRef = _)
           ),
