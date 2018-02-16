@@ -166,7 +166,7 @@ case class SimpleDatabase(tree: Tree,
     if (currentPosition != 0) {
       val newParent = getItem(parent.childrenIds(currentPosition - 1))
       val res = deleteId(parent.id, item.id)
-      res.insertId(newParent.id, 0, item.id)
+      res.insertId(newParent.id, newParent.childrenIds.length, item.id)
     } else this
   }
 }
