@@ -19,15 +19,19 @@ object MainComponent {
   private val TreeItemComponent = ScalaComponent
     .builder[Props]("TreeItem")
     .renderBackend[TreeItemBackend]
-    .componentDidUpdate(x =>
-      Callback {
-        if (x.currentProps.stateSnap.value.isEditing(x.currentProps.itemId))
-          x.raw.backend.inputRef.focus()
-    })
+    .componentDidMount(x => x.backend.focusInput(x.props))
+    .componentDidUpdate(x => x.backend.focusInput(x.currentProps))
     .build
 
   class TreeItemBackend($ : BackendScope[Props, Unit]) {
     var inputRef: html.Input = _
+
+    def focusInput(props: Props) = Callback {
+      if (props.stateSnap.value.isEditing(props.itemId)) {
+        inputRef.focus()
+        inputRef.setSelectionRange(0, 0)
+      }
+    }
 
     def render(props: Props): VdomElement = {
       val snap = props.stateSnap.value
@@ -54,7 +58,7 @@ object MainComponent {
 
         val editing = snap.isEditing(item.id)
         val expandSymbol = if (item.expanded) "▼" else "▶"
-        val html = <.li(
+        <.li(
           <.div(
             CSS.selected.when(snap.selected.contains(item.id)),
             <.span(expandSymbol, CSS.pointer, ^.onClick --> mod(_.toggleExpanded(item)))
@@ -79,8 +83,6 @@ object MainComponent {
           ),
           <.ul(children).when(item.expanded)
         )
-        if (editing) inputRef.setSelectionRange(item.text.length, item.text.length)
-        html
       }
     }
   }
@@ -100,7 +102,7 @@ object MainComponent {
           if (db.editing.isEmpty) {
             e.nativeEvent.keyCode match {
               case KeyCode.Delete => Some(snap.modState(_.deleteItem()))
-              case KeyCode.Enter  => Some(snap.modState(_.addSibling()))
+              case KeyCode.Enter  => Some(snap.modState(_.addSibling().startEditing()))
               case KeyCode.Up     => Some(snap.modState(_.select(Before)))
               case KeyCode.Down   => Some(snap.modState(_.select(Next)))
               case KeyCode.Left   => Some(snap.modState(_.collapse()))
