@@ -1,6 +1,6 @@
 package app
 
-import app.BeforeNext.Before
+import app.BeforeNext.{Before, Next}
 import app.DataModel.{ROOTID, Tree, TreeItem}
 import com.softwaremill.quicklens._
 
@@ -33,16 +33,37 @@ case class SimpleDatabase(tree: Tree,
     val parent = getItem(fromItem.parentId)
     val diff = if (beforeNext == Before) -1 else +1
     val newIndex = parent.indexOf(fromItem) + diff
-    if (newIndex < 0) {
-      if (parent.id == ROOTID) this
+    // if has children and expanded: select first child
+    if (beforeNext == Next && fromItem.expanded && fromItem.childrenIds.nonEmpty)
+      select(fromItem.childrenIds.head)
+    else if (newIndex < 0) {
+      if (parent.id == ROOTID) this // don't change selection if at top
       else select(parent)
     } else if (newIndex >= parent.childrenIds.length) {
-      if (fromItem.id == ROOTID) this
-      // if has children and expanded: select first child
-      else if (fromItem.expanded && fromItem.childrenIds.nonEmpty) select(fromItem.childrenIds(0))
-      // select next below parent
-      else select(parent, beforeNext)
-    } else select(parent.childrenIds(newIndex))
+      if (parent.id == ROOTID) this // don't change selection if at bottom
+      else {
+        def selectNextParentFromChild(parentId: String, lastChild: TreeItem): SimpleDatabase = {
+          val parentItem = getItem(parentId)
+          parentItem.childrenIds.lift(parentItem.indexOf(lastChild) + 1) match {
+            case Some(childId) => select(childId)
+            case None          => selectNextParentFromChild(parentItem.parentId, parentItem)
+          }
+        }
+        selectNextParentFromChild(parent.parentId, parent)
+      }
+    } else {
+      val newId = parent.childrenIds(newIndex)
+      if (beforeNext == Next) select(newId)
+      else {
+        def selectBeforeChildFromParent(id: String): SimpleDatabase = {
+          val beforeItem = getItem(id)
+          if (beforeItem.expanded && beforeItem.childrenIds.nonEmpty)
+            selectBeforeChildFromParent(beforeItem.childrenIds.last)
+          else select(beforeItem)
+        }
+        selectBeforeChildFromParent(newId)
+      }
+    }
   }
 
   def expand(): SimpleDatabase =

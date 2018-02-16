@@ -65,9 +65,9 @@ object MainComponent {
               .when(item.childrenIds.nonEmpty),
             <.div(
               CSS.invisible.when(editing),
-              <.label(item.text,
-                      ^.onDoubleClick --> mod(_.startEditing(item)),
-                      ^.onClick --> mod(_.select(item)))
+              <.p("Platzhaltertext | " + item.text,
+                  ^.onDoubleClick --> mod(_.startEditing(item)),
+                  ^.onClick --> mod(_.select(item)))
             ),
             <.input(CSS.invisible.unless(editing),
                     ^.value := item.text,
