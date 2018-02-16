@@ -16,7 +16,7 @@ case class SimpleDatabase(tree: Tree,
 
   def isEditing(itemId: String): Boolean = editing.contains(itemId)
 
-  def startEditing: SimpleDatabase =
+  def startEditing(): SimpleDatabase =
     if (selected.isDefined) startEditing(getItem(selected.get)) else this
 
   def startEditing(item: TreeItem): SimpleDatabase = copy(editing = Some(item.id))
@@ -45,7 +45,7 @@ case class SimpleDatabase(tree: Tree,
     } else select(parent.childrenIds(newIndex))
   }
 
-  def expand: SimpleDatabase =
+  def expand(): SimpleDatabase =
     selected match {
       case Some(id) =>
         val item = getItem(id)
@@ -54,7 +54,7 @@ case class SimpleDatabase(tree: Tree,
       case _ => this // todo: cleaner
     }
 
-  def collapse: SimpleDatabase =
+  def collapse(): SimpleDatabase =
     selected match {
       case Some(id) =>
         val item = getItem(id)

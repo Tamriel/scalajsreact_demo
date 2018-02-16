@@ -12,7 +12,8 @@ libraryDependencies ++= Seq(
   "com.github.japgolly.scalajs-react" %%% "extra" % "1.1.1",
   "com.github.japgolly.scalacss" %%% "core" % "0.5.5",
   "com.github.japgolly.scalacss" %%% "ext-react" % "0.5.5",
-  "com.softwaremill.quicklens" %%% "quicklens" % "1.4.11"
+  "com.softwaremill.quicklens" %%% "quicklens" % "1.4.11",
+  "com.lihaoyi" %%% "pprint" % "0.5.3"
 )
 
 npmDependencies in Compile ++= Seq(
