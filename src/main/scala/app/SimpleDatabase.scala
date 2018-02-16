@@ -66,20 +66,23 @@ case class SimpleDatabase(tree: Tree,
     }
   }
 
-  def expand(): SimpleDatabase =
+  def expandOrSelectChild(): SimpleDatabase =
     selected match {
       case Some(id) =>
         val item = getItem(id)
-        if (item.expanded) this
-        else toggleExpanded(item)
+        if (item.childrenIds.nonEmpty) {
+          if (!item.expanded) toggleExpanded(item)
+          else select(Next)
+        } else this
       case _ => this // todo: cleaner
     }
 
-  def collapse(): SimpleDatabase =
+  def collapseOrJumpUp(): SimpleDatabase =
     selected match {
       case Some(id) =>
         val item = getItem(id)
-        if (item.expanded) toggleExpanded(item)
+        if (item.childrenIds.nonEmpty && item.expanded) toggleExpanded(item)
+        else if (item.parentId != ROOTID) select(item.parentId)
         else this
       case _ => this
     }
