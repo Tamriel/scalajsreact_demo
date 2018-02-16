@@ -96,17 +96,17 @@ object MainComponent {
       def handleKey(e: ReactKeyboardEvent): Callback = {
         def plainKey: CallbackOption[Unit] = // CallbackOption will stop if a key isn't matched
           CallbackOption.keyCodeSwitch(e) {
-            case KeyCode.Delete           => snap.modState(_.deleteItem())
-            case KeyCode.Enter            => snap.modState(_.addSibling().startEditing())
-            case KeyCode.Up               => snap.modState(_.select(Before))
-            case KeyCode.Down             => snap.modState(_.select(Next))
-            case KeyCode.Left             => snap.modState(_.collapseOrJumpUp())
-            case KeyCode.Right            => snap.modState(_.expandOrSelectChild())
-            case KeyCode.W                => snap.modState(_.moveUp())
-            case KeyCode.S                => snap.modState(_.moveDown())
-            case KeyCode.A                => snap.modState(_.moveLeft())
-            case KeyCode.D                => snap.modState(_.moveRight())
-            case KeyCode.Tab | KeyCode.F2 => snap.modState(_.startEditing())
+            case KeyCode.Delete | KeyCode.Backspace => snap.modState(_.deleteItem())
+            case KeyCode.Enter                      => snap.modState(_.addSibling().startEditing())
+            case KeyCode.Up                         => snap.modState(_.select(Before))
+            case KeyCode.Down                       => snap.modState(_.select(Next))
+            case KeyCode.Left                       => snap.modState(_.collapseOrJumpUp())
+            case KeyCode.Right                      => snap.modState(_.expandOrSelectChild())
+            case KeyCode.W                          => snap.modState(_.moveUp())
+            case KeyCode.S                          => snap.modState(_.moveDown())
+            case KeyCode.A                          => snap.modState(_.moveLeft())
+            case KeyCode.D                          => snap.modState(_.moveRight())
+            case KeyCode.Tab | KeyCode.F2           => snap.modState(_.startEditing())
           }
 
         def ctrlKey: CallbackOption[Unit] =
