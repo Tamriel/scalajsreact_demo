@@ -20,16 +20,20 @@ object MainComponent {
     .builder[Props]("TreeItem")
     .renderBackend[TreeItemBackend]
     .componentDidMount(x => x.backend.focusInput(x.props))
-    .componentDidUpdate(x => x.backend.focusInput(x.currentProps))
+    .componentDidUpdate(x => x.backend.focusInput(x.currentProps, Some(x.prevProps)))
     .build
 
   class TreeItemBackend($ : BackendScope[Props, Unit]) {
     var inputRef: html.Input = _
 
-    def focusInput(props: Props) = Callback {
-      if (props.stateSnap.value.isEditing(props.itemId)) {
+    def focusInput(props: Props, prevProps: Option[Props] = None) = Callback {
+      val db = props.stateSnap.value
+      if (db.isEditing(props.itemId) &&
+          // don't focus, if previous Props was editing
+          (prevProps.isEmpty || !prevProps.get.stateSnap.value.isEditing(props.itemId))) {
         inputRef.focus()
-        inputRef.setSelectionRange(0, 0)
+        val end = db.getItem(props.itemId).text.length
+        inputRef.setSelectionRange(end, end)
       }
     }
 
