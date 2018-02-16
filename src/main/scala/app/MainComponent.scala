@@ -101,6 +101,10 @@ object MainComponent {
             case KeyCode.Down             => snap.modState(_.select(Next))
             case KeyCode.Left             => snap.modState(_.collapse())
             case KeyCode.Right            => snap.modState(_.expand())
+            case KeyCode.W                => snap.modState(_.moveUp())
+            case KeyCode.S                => snap.modState(_.moveDown())
+            case KeyCode.A                => snap.modState(_.moveLeft())
+            case KeyCode.D                => snap.modState(_.moveRight())
             case KeyCode.Tab | KeyCode.F2 => snap.modState(_.startEditing())
           }
 

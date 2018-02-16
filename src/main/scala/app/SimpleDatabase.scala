@@ -93,11 +93,14 @@ case class SimpleDatabase(tree: Tree,
   def deleteItem(): SimpleDatabase = {
     val item = getItem(selected.get)
     val res0 = select(Before).modify(_.tree.items).using(_.filter(_._2 != item))
-    val res1 = res0.modify(_.tree.items.at(item.parentId).childrenIds).using(_.filter(_ != item.id))
+    val res1 = res0.deleteId(item.parentId, item.id)
     if (res1.selected.get == item.id) // if not changed due to being the top item
       res1.select(item, Next)
     else res1
   }
+
+  private def deleteId(parentId: String, id: String): SimpleDatabase =
+    this.modify(_.tree.items.at(parentId).childrenIds).using(_.filter(_ != id))
 
   def addSibling(): SimpleDatabase =
     if (getItem(ROOTID).childrenIds.isEmpty) addChild(getItem(ROOTID), 0)
@@ -113,27 +116,61 @@ case class SimpleDatabase(tree: Tree,
     else addChild(getItem(selected.get), 0)
 
   def addChild(parentItem: TreeItem, position: Int): SimpleDatabase = {
-    val newItem = TreeItem(parentId = parentItem.id)
+    val newItem = TreeItem()
     val result = this.modify(_.tree.items).using(_ + (newItem.id -> newItem))
-    def insert(vector: Vector[String]) = {
-      val splitted = vector.splitAt(position)
-      splitted._1 ++ Vector(newItem.id) ++ splitted._2
-    }
-    result.modify(_.tree.items.at(parentItem.id).childrenIds).using(insert).select(newItem)
+    result.insertId(parentItem.id, position, newItem.id).select(newItem)
   }
 
-//  def moveUp(id: String): Tree = ???
-//      Some((childrenLens composeOptional index(position)).set("1")(item.get))
-// def moveDown(id: String): Tree = ???
-//
-//  def moveLeft(id: String): Tree = ???
-//
-//  def moveRight(id: String): Tree = ???
+  private def insertId(parentId: String, position: Int, id: String): SimpleDatabase = {
+    def insert(vector: Vector[String]) = {
+      val splitted = vector.splitAt(position)
+      splitted._1 ++ Vector(id) ++ splitted._2
+    }
+    val res = this.modify(_.tree.items.at(parentId).childrenIds).using(insert)
+    res.modify(_.tree.items.at(id).parentId).setTo(parentId)
+  }
+
+  def moveUp(): SimpleDatabase = moveVertically(Before)
+
+  def moveDown(): SimpleDatabase = moveVertically(Next)
+
+  private def moveVertically(beforeNext: BeforeNext): SimpleDatabase = {
+    val item = getItem(selected.get)
+    val parent = getItem(item.parentId)
+    val diff = if (beforeNext == Before) -1 else +1
+    val newPosition = parent.indexOf(item) + diff
+    if (newPosition >= 0 && newPosition <= parent.childrenIds.length) {
+      val res = deleteId(parent.id, item.id)
+      res.insertId(item.parentId, newPosition, item.id)
+    } else this
+  }
+
+  def moveLeft(): SimpleDatabase = {
+    val item = getItem(selected.get)
+    val parent = getItem(item.parentId)
+    if (parent.id != ROOTID) {
+      val newParent = getItem(parent.parentId)
+      val newPosition = newParent.indexOf(parent) + 1
+      val res = deleteId(parent.id, item.id)
+      res.insertId(newParent.id, newPosition, item.id)
+    } else this
+  }
+
+  def moveRight(): SimpleDatabase = {
+    val item = getItem(selected.get)
+    val parent = getItem(item.parentId)
+    val currentPosition = parent.indexOf(item)
+    if (currentPosition != 0) {
+      val newParent = getItem(parent.childrenIds(currentPosition - 1))
+      val res = deleteId(parent.id, item.id)
+      res.insertId(newParent.id, 0, item.id)
+    } else this
+  }
 }
 
 case object SimpleDatabase {
   def exampleDatabase: SimpleDatabase = {
-    val rootItem = TreeItem(id = ROOTID, parentId = "not needed for root")
+    val rootItem = TreeItem(id = ROOTID)
     val emptyDatabase = SimpleDatabase(Tree(Map(ROOTID -> rootItem)))
     emptyDatabase.addChild(rootItem, 0).addChild(rootItem, 1).addChild(rootItem, 2)
   }
