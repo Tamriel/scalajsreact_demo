@@ -82,6 +82,8 @@ case class SimpleDatabase(tree: Tree,
     addChild(parent, ownPos + 1)
   }
 
+  def addChild(): SimpleDatabase = addChild(getItem(selected.get), 0)
+
   def addChild(parentItem: TreeItem, position: Int): SimpleDatabase = {
     val newItem = TreeItem(parentId = parentItem.id)
     val result = this.modify(_.tree.items).using(_ + (newItem.id -> newItem))

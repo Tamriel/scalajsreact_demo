@@ -67,12 +67,7 @@ object MainComponent {
               CSS.invisible.when(editing),
               <.label(item.text,
                       ^.onDoubleClick --> mod(_.startEditing(item)),
-                      ^.onClick --> mod(_.select(item))),
-              <.button(^.onClick --> mod(_.addChild(item, item.childrenIds.length)), "➕➡")
-//              <.button(^.onClick --> mod(_.moveUp(item)), "⬆️"),
-//              <.button(^.onClick --> mod(_.moveDown(item)), "⬇️"),
-//              <.button(^.onClick --> mod(_.moveLeft(item)), "⬅️"),
-//              <.button(^.onClick --> mod(_.moveRight(item)), "➡️"),
+                      ^.onClick --> mod(_.select(item)))
             ),
             <.input(CSS.invisible.unless(editing),
                     ^.value := item.text,
@@ -97,26 +92,31 @@ object MainComponent {
       val rootItem =
         TreeItemComponent.withKey(ROOTID)(Props(snap, ROOTID))
 
-      val keyDown: ReactKeyboardEvent => Option[Callback] =
-        e => {
-          if (db.editing.isEmpty) {
-            e.nativeEvent.keyCode match {
-              case KeyCode.Delete => Some(snap.modState(_.deleteItem()))
-              case KeyCode.Enter  => Some(snap.modState(_.addSibling().startEditing()))
-              case KeyCode.Up     => Some(snap.modState(_.select(Before)))
-              case KeyCode.Down   => Some(snap.modState(_.select(Next)))
-              case KeyCode.Left   => Some(snap.modState(_.collapse()))
-              case KeyCode.Right  => Some(snap.modState(_.expand()))
-              case KeyCode.Tab =>
-                Some(snap.modState(_.startEditing()) >> e.preventDefaultCB) // Tab shall not change focus
-              case _ => None
-            }
-          } else None
-        }
+      def handleKey(e: ReactKeyboardEvent): Callback = {
+        def plainKey: CallbackOption[Unit] = // CallbackOption will stop if a key isn't matched
+          CallbackOption.keyCodeSwitch(e) {
+            case KeyCode.Delete => snap.modState(_.deleteItem())
+            case KeyCode.Enter  => snap.modState(_.addSibling().startEditing())
+            case KeyCode.Up     => snap.modState(_.select(Before))
+            case KeyCode.Down   => snap.modState(_.select(Next))
+            case KeyCode.Left   => snap.modState(_.collapse())
+            case KeyCode.Right  => snap.modState(_.expand())
+            case KeyCode.Tab    => snap.modState(_.startEditing())
+          }
+
+        def ctrlKey: CallbackOption[Unit] =
+          CallbackOption.keyCodeSwitch(e, shiftKey = true) {
+            case KeyCode.Enter => snap.modState(_.addChild().startEditing())
+          }
+
+        if (db.editing.isEmpty)
+          (plainKey orElse ctrlKey) >> e.preventDefaultCB
+        else Callback()
+      }
 
       <.div(CSS.maximize,
             ^.tabIndex := 0, // needs to be focusable to receive key presses
-            ^.onKeyDown ==>? keyDown,
+            ^.onKeyDown ==> handleKey,
             rootItem)
         .ref(mainDivRef = _)
     }
