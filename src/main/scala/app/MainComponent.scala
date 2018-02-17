@@ -20,7 +20,9 @@ object MainComponent {
   private val InstructionComponent = ScalaComponent
     .builder[Instruction]("Instruction")
     .render_P { instruction =>
-      <.li(instruction.text + " " + instruction.completed.toString)
+      <.li(CSS.veryLightGrey.when(instruction.completed),
+           <.i(if (instruction.completed) CSS.checkSquare else CSS.square),
+           " " + instruction.text)
     }
     .build
 
@@ -31,11 +33,16 @@ object MainComponent {
         InstructionComponent.withKey(instruction.text)(instruction)
       <.div(
         <.ul(
-          <.div(<.p("Ansehen"), <.ul(comp(ins.upDown), comp(ins.right), comp(ins.left))),
-          <.div(<.p("Bearbeiten"), <.ul(comp(ins.edit), comp(ins.completeEdit))),
-          <.div(<.p("Hinzufügen"), <.ul(comp(ins.create), comp(ins.createChild), comp(ins.delete))),
+          <.div(<.p("Ansehen"),
+                <.ul(CSS.fontAwesomeUl, comp(ins.upDown), comp(ins.right), comp(ins.left))),
+          <.div(<.p("Bearbeiten"), <.ul(CSS.fontAwesomeUl, comp(ins.edit), comp(ins.completeEdit))),
+          <.div(<.p("Hinzufügen"),
+                <.ul(CSS.fontAwesomeUl, comp(ins.create), comp(ins.createChild), comp(ins.delete))),
           <.div(<.p("Srukturieren"),
-                <.ul(comp(ins.moveVertically), comp(ins.moveLeft), comp(ins.moveRight)))
+                <.ul(CSS.fontAwesomeUl,
+                     comp(ins.moveVertically),
+                     comp(ins.moveLeft),
+                     comp(ins.moveRight)))
         ),
         <.ul(
           <.p(
@@ -102,11 +109,12 @@ object MainComponent {
           }
 
         val editing = snap.isEditing(item.id)
-        val expandSymbol = if (item.expanded) "▼" else "▶"
         <.li(
           <.div(
             if (snap.selected.contains(item.id)) CSS.selected else CSS.hover,
-            <.span(expandSymbol, CSS.pointer, ^.onClick --> mod(_.toggleExpanded(item)))
+            <.i(if (item.expanded) CSS.angleDown else CSS.angleRight,
+                CSS.pointer,
+                ^.onClick --> mod(_.toggleExpanded(item)))
               .when(item.childrenIds.nonEmpty),
             <.div(
               CSS.invisible.when(editing),
