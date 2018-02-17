@@ -109,18 +109,21 @@ object MainComponent {
           }
 
         val editing = snap.isEditing(item.id)
-        <.li(
-          <.div(
-            if (snap.selected.contains(item.id)) CSS.selected else CSS.hover,
+        val expandIcon =
+          if (item.childrenIds.nonEmpty)
             <.i(if (item.expanded) CSS.angleDown else CSS.angleRight,
                 CSS.pointer,
                 ^.onClick --> mod(_.toggleExpanded(item)))
-              .when(item.childrenIds.nonEmpty),
-            <.div(
+          else <.i(CSS.blankIcon)
+        <.div(
+          <.div(
+            if (snap.selected.contains(item.id)) CSS.selected else CSS.hover,
+            expandIcon,
+            <.span(
               CSS.invisible.when(editing),
-              <.p("Platzhaltertext | " + item.text,
-                  ^.onDoubleClick --> mod(_.startEditing(item)),
-                  ^.onClick --> mod(_.select(item)))
+              <.span(item.text,
+                     ^.onDoubleClick --> mod(_.startEditing(item)),
+                     ^.onClick --> mod(_.select(item)))
             ),
             <.input(
               CSS.input,
