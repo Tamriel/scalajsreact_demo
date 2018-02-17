@@ -24,7 +24,7 @@ object CSS extends StyleSheet.Inline {
   val selected = style(backgroundColor.orange)
   val pointer = style(cursor.pointer)
   val hover = style(&.hover(backgroundColor.lightgrey))
-  val noMargin = style(marginTop.`0`, marginBottom.`0`)
+  val ulMargins = style(marginTop.`0`, marginBottom.`0`, marginLeft(45 px))
   val maximize = style(
     height(100 %%),
     margin.`0`,
