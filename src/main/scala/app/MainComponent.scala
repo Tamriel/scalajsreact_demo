@@ -77,7 +77,7 @@ object MainComponent {
 
         def editFieldKeyDown(e: ReactKeyboardEvent): Callback =
           CallbackOption.keyCodeSwitch(e) {
-            case KeyCode.Escape | KeyCode.Enter => mod(_.copy(editing = None))
+            case KeyCode.Escape | KeyCode.Enter => mod(_.completeEdit())
           }
 
         val editing = snap.isEditing(item.id)
