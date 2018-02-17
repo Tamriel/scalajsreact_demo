@@ -30,7 +30,7 @@ object CSS extends StyleSheet.Inline {
   val rightColumm = style(addClassName("column col-7"))
 
   style(
-    unsafeRoot("html")(maximize),
+    unsafeRoot("html")(maximize, style(fontSize(24 px))),
     unsafeRoot("body")(maximize, overflowY.scroll), // always show the scrollbar
     unsafeRoot("#root")(maximize)
   )
