@@ -114,6 +114,7 @@ object MainComponent {
           if (item.childrenIds.nonEmpty)
             <.i(if (item.expanded) CSS.angleDown else CSS.angleRight,
                 CSS.pointer,
+                CSS.centerVertically,
                 ^.onClick --> mod(_.toggleExpanded(item)))
           else <.i(CSS.blankIcon)
         <.div(
@@ -121,13 +122,13 @@ object MainComponent {
             CSS.row,
             if (snap.selected.contains(item.id)) CSS.selected else CSS.hover,
             expandIcon,
-            <.span(
-              CSS.invisible.when(editing),
-              <.span(item.text,
-                     ^.onDoubleClick --> mod(_.startEditing(item)),
-                     ^.onClick --> mod(_.select(item)))
-            ),
+            <.span(CSS.centerVertically,
+                   CSS.invisible.when(editing),
+                   item.text,
+                   ^.onDoubleClick --> mod(_.startEditing(item)),
+                   ^.onClick --> mod(_.select(item))),
             <.input(
+              CSS.centerVertically,
               CSS.input,
               CSS.invisible.unless(editing),
               ^.value := item.text,
