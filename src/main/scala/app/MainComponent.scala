@@ -20,7 +20,7 @@ object MainComponent {
   private val InstructionComponent = ScalaComponent
     .builder[Instruction]("Instruction")
     .render_P { instruction =>
-      <.p(instruction.text + " " + instruction.completed.toString)
+      <.li(instruction.text + " " + instruction.completed.toString)
     }
     .build
 
@@ -29,12 +29,33 @@ object MainComponent {
     .render_P { ins =>
       def comp(instruction: Instruction) =
         InstructionComponent.withKey(instruction.text)(instruction)
-      <.ul(
-        <.div(<.p("Ansehen"), <.ul(comp(ins.upDown), comp(ins.right), comp(ins.left))),
-        <.div(<.p("Bearbeiten"), <.ul(comp(ins.edit), comp(ins.completeEdit))),
-        <.div(<.p("Hinzufügen"), <.ul(comp(ins.create), comp(ins.createChild), comp(ins.delete))),
-        <.div(<.p("Srukturieren"),
-              <.ul(comp(ins.moveVertically), comp(ins.moveLeft), comp(ins.moveRight)))
+      <.div(
+        <.ul(
+          <.div(<.p("Ansehen"), <.ul(comp(ins.upDown), comp(ins.right), comp(ins.left))),
+          <.div(<.p("Bearbeiten"), <.ul(comp(ins.edit), comp(ins.completeEdit))),
+          <.div(<.p("Hinzufügen"), <.ul(comp(ins.create), comp(ins.createChild), comp(ins.delete))),
+          <.div(<.p("Srukturieren"),
+                <.ul(comp(ins.moveVertically), comp(ins.moveLeft), comp(ins.moveRight)))
+        ),
+        <.ul(
+          <.p(
+            "Flexibel",
+            <.p("Mit verschachtelten Listen lässt sich ALLES abbilden.\n" +
+              "TreeNote ist für jeden Anwendungsfall geeignet und dabei intuitiv bedienbar!")
+          ),
+          <.p(
+            "Das fertige Produkt",
+            <.ul(
+              <.li("Kalender und Erinnerungen."),
+              <.li("Gemeinsam, gleichzeitig bearbeiten."),
+              <.li("Auch offline und auf dem Smartphone nutzbar."),
+              <.li("Als einzige Projektmanagement-Software auch für sensible Daten - dank Verschlüsselung."),
+            )
+          )
+        ).when(
+          ins.upDown.completed && ins.right.completed && ins.left.completed && ins.completeEdit.completed &&
+            ins.create.completed && ins.createChild.completed && ins.delete.completed && ins.moveVertically.completed &&
+            ins.moveRight.completed && ins.moveLeft.completed)
       )
     }
     .build
