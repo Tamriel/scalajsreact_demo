@@ -13,7 +13,10 @@ libraryDependencies ++= Seq(
   "com.github.japgolly.scalacss" %%% "core" % "0.5.5",
   "com.github.japgolly.scalacss" %%% "ext-react" % "0.5.5",
   "com.softwaremill.quicklens" %%% "quicklens" % "1.4.11",
-  "com.lihaoyi" %%% "pprint" % "0.5.3"
+  "com.lihaoyi" %%% "pprint" % "0.5.3",
+  "io.circe" %%% "circe-core" % "0.9.1",
+  "io.circe" %%% "circe-generic" % "0.9.1",
+  "io.circe" %%% "circe-parser" % "0.9.1"
 )
 
 npmDependencies in Compile ++= Seq(

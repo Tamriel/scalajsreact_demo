@@ -3,6 +3,8 @@ package app
 import app.BeforeNext.{Before, Next}
 import app.DataModel.{ROOTID, Tree, TreeItem}
 import com.softwaremill.quicklens._
+import io.circe.generic.auto._
+import io.circe.parser._
 
 sealed trait BeforeNext
 object BeforeNext {
@@ -172,9 +174,11 @@ case class SimpleDatabase(tree: Tree,
 }
 
 case object SimpleDatabase {
-  def exampleDatabase: SimpleDatabase = {
+  def simpleDatabase: SimpleDatabase = {
     val rootItem = TreeItem(id = ROOTID)
     val emptyDatabase = SimpleDatabase(Tree(Map(ROOTID -> rootItem)))
     emptyDatabase.addChild(rootItem, 0).addChild(rootItem, 1).addChild(rootItem, 2)
   }
+
+  def exampleDatabase: SimpleDatabase = decode[SimpleDatabase](ExampleDatabase.json).right.get
 }

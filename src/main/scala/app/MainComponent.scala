@@ -1,14 +1,15 @@
 package app
 
 import app.BeforeNext.{Before, Next}
-import app.DataModel.{Tree, TreeItem}
+import app.DataModel.ROOTID
+import io.circe.generic.auto._
+import io.circe.syntax._
 import japgolly.scalajs.react.component.Scala.Unmounted
 import japgolly.scalajs.react.extra.StateSnapshot
 import japgolly.scalajs.react.vdom.html_<^.{<, _}
 import japgolly.scalajs.react.{Callback, ScalaComponent, _}
 import org.scalajs.dom.ext.KeyCode
 import org.scalajs.dom.html
-import DataModel.ROOTID
 
 import scalacss.ScalaCssReact._
 
@@ -119,11 +120,14 @@ object MainComponent {
         else Callback()
       }
 
-      <.div(CSS.maximize,
-            ^.tabIndex := 0, // needs to be focusable to receive key presses
-            ^.onKeyDown ==> handleKey,
-            rootItem)
-        .ref(mainDivRef = _)
+      <.div(
+        CSS.maximize,
+        ^.tabIndex := 0, // needs to be focusable to receive key presses
+        ^.onKeyDown ==> handleKey,
+        rootItem
+//        <.button(^.onClick --> Callback(println(snap.value.asJson)),
+//                 "Print tree as JSON to developer console")
+      ).ref(mainDivRef = _)
     }
   }
 
