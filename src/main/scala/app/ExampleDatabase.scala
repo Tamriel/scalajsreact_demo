@@ -456,6 +456,52 @@ object ExampleDatabase {
     }
     },
     "selected" : "63FgYaOpPo",
-    "editing" : null
+    "editing" : null,
+  "instructions" : {
+    "upDown" : {
+    "text" : "Wandere mit 'Pfeiltaste oben und unten' durch die Einträge.",
+    "completed" : false
+  },
+    "right" : {
+    "text" : "Klappe mit 'Pfeiltaste rechts' den selektierten Eintrag aus.",
+    "completed" : false
+  },
+    "left" : {
+    "text" : "'Pfeiltaste links' klappt den selektierten Eintrag ein. Drücke die Taste erneut, um zum Eltern-Eintrag zu springen.",
+    "completed" : false
+  },
+    "edit" : {
+    "text" : "Doppelklicke auf einen Eintrag  oder drücke  'Tabulator', um den Text eines Eintrags zu bearbeiten.",
+    "completed" : false
+  },
+    "completeEdit" : {
+    "text" : "Schließe das Bearbeiten ab, indem du 'Enter' drückst.",
+    "completed" : false
+  },
+    "create" : {
+    "text" : "Erstelle einen Eintrag, indem du 'Enter' drückst.",
+    "completed" : false
+  },
+    "createChild" : {
+    "text" : "'Shift+Enter' erstellt einen Unter-Eintrag.",
+    "completed" : false
+  },
+    "delete" : {
+    "text" : "Lösche den selektierten Eintrag mit 'entf'.",
+    "completed" : false
+  },
+    "moveVertically" : {
+    "text" : "Bewege den selektierten Eintrag mit den Tasten 'W' und 'S' nach oben und unten.",
+    "completed" : false
+  },
+    "moveLeft" : {
+    "text" : "Die Taste 'D', verschiebt den selektierten Eintrag eine Ebene tiefer (in diese Richtung 'hand nach rechts' ).",
+    "completed" : false
+  },
+    "moveRight" : {
+    "text" : "Die Taste 'A' verschiebt den selektierten Eintrag in die entgegengesetze Richtung ('hand nach links' ).",
+    "completed" : false
+  }
+  }
   }"""
 }

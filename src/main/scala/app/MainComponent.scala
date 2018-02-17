@@ -2,6 +2,8 @@ package app
 
 import app.BeforeNext.{Before, Next}
 import app.DataModel.ROOTID
+import io.circe.generic.auto._
+import io.circe.syntax._
 import japgolly.scalajs.react.component.Scala.Unmounted
 import japgolly.scalajs.react.extra.StateSnapshot
 import japgolly.scalajs.react.vdom.html_<^.{<, _}
@@ -18,7 +20,7 @@ object MainComponent {
   private val InstructionComponent = ScalaComponent
     .builder[Instruction]("Instruction")
     .render_P { instruction =>
-      <.p(instruction.text)
+      <.p(instruction.text + " " + instruction.completed.toString)
     }
     .build
 
@@ -158,7 +160,7 @@ object MainComponent {
 
   private val Component = ScalaComponent
     .builder[Unit]("TreeNote")
-    .initialState(SimpleDatabase.simpleDatabase)
+    .initialState(SimpleDatabase.exampleDatabase)
     .renderBackend[MainBackend]
     .componentDidMount(_.backend.init)
     .componentDidUpdate(x => x.backend.init.when(x.currentState.editing.isEmpty).void)

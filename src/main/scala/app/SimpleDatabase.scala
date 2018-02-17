@@ -30,7 +30,8 @@ case class SimpleDatabase(tree: Tree,
 
   def select(item: TreeItem): SimpleDatabase = select(item.id)
 
-  def select(id: String): SimpleDatabase = copy(selected = Some(id))
+  def select(id: String): SimpleDatabase =
+    copy(selected = Some(id)).modify(_.instructions.upDown.completed).setTo(true)
 
   private def select(fromItem: TreeItem, beforeNext: BeforeNext): SimpleDatabase = {
     val parent = getItem(fromItem.parentId)
