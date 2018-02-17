@@ -115,18 +115,22 @@ object MainComponent {
             <.i(if (item.expanded) CSS.angleDown else CSS.angleRight,
                 CSS.pointer,
                 CSS.centerVertically,
+                CSS.icon,
                 ^.onClick --> mod(_.toggleExpanded(item)))
-          else <.i(CSS.blankIcon)
+          else <.i(CSS.icon)
         <.div(
           <.div(
             CSS.row,
             if (snap.selected.contains(item.id)) CSS.selected else CSS.hover,
             expandIcon,
-            <.span(CSS.centerVertically,
-                   CSS.invisible.when(editing),
-                   item.text,
-                   ^.onDoubleClick --> mod(_.startEditing(item)),
-                   ^.onClick --> mod(_.select(item))),
+            <.span(
+              CSS.centerVertically,
+              CSS.invisible.when(editing),
+              CSS.marginTextToIcon,
+              item.text,
+              ^.onDoubleClick --> mod(_.startEditing(item)),
+              ^.onClick --> mod(_.select(item))
+            ),
             <.input(
               CSS.centerVertically,
               CSS.input,
