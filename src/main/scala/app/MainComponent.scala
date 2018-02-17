@@ -2,8 +2,6 @@ package app
 
 import app.BeforeNext.{Before, Next}
 import app.DataModel.ROOTID
-import io.circe.generic.auto._
-import io.circe.syntax._
 import japgolly.scalajs.react.component.Scala.Unmounted
 import japgolly.scalajs.react.extra.StateSnapshot
 import japgolly.scalajs.react.vdom.html_<^.{<, _}
@@ -24,24 +22,18 @@ object MainComponent {
     }
     .build
 
-  private val InstructionHeaderComponent = ScalaComponent
-    .builder[InstructionHeader]("InstructionHeader")
-    .render_P { instructionHeader =>
-      val instructions =
-        instructionHeader.instructions.toVdomArray(instruction =>
-          InstructionComponent.withKey(instruction.text)(instruction))
-      <.div(
-        <.p(instructionHeader.text),
-        <.ul(instructions)
-      )
-    }
-    .build
-
   private val IntroComponent = ScalaComponent
-    .builder[Vector[InstructionHeader]]("Intro")
-    .render_P { vec =>
-      <.div(<.ul(vec.toVdomArray(instructionHeader =>
-        InstructionHeaderComponent.withKey(instructionHeader.text)(instructionHeader))))
+    .builder[Instructions]("Intro")
+    .render_P { ins =>
+      def comp(instruction: Instruction) =
+        InstructionComponent.withKey(instruction.text)(instruction)
+      <.ul(
+        <.div(<.p("Ansehen"), <.ul(comp(ins.upDown), comp(ins.right), comp(ins.left))),
+        <.div(<.p("Bearbeiten"), <.ul(comp(ins.edit), comp(ins.completeEdit))),
+        <.div(<.p("Hinzufügen"), <.ul(comp(ins.create), comp(ins.createChild), comp(ins.delete))),
+        <.div(<.p("Srukturieren"),
+              <.ul(comp(ins.moveVertically), comp(ins.moveLeft), comp(ins.moveRight)))
+      )
     }
     .build
 
@@ -156,7 +148,7 @@ object MainComponent {
         ^.tabIndex := 0, // needs to be focusable to receive key presses
         ^.onKeyDown ==> handleKey,
         <.div(CSS.columns,
-              <.div(CSS.leftColumm, IntroComponent(db.instructionHeaders)),
+              <.div(CSS.leftColumm, IntroComponent(db.instructions)),
               <.div(CSS.rightColumm, rootItem))
 //      <.button(^.onClick --> Callback(println(snap.value.asJson)),
 //                 "Print tree as JSON to developer console")

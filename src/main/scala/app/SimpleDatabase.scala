@@ -12,14 +12,10 @@ object BeforeNext {
   case object Next extends BeforeNext
 }
 
-case class Instruction(text: String, completed: Boolean = false)
-
-case class InstructionHeader(text: String, instructions: Vector[Instruction])
-
 case class SimpleDatabase(tree: Tree,
                           selected: Option[String] = None,
                           editing: Option[String] = None,
-                          instructionHeaders: Vector[InstructionHeader] = Vector.empty) {
+                          instructions: Instructions = Instructions()) {
 
   def isEditing(itemId: String): Boolean = editing.contains(itemId)
 
@@ -181,48 +177,29 @@ case class SimpleDatabase(tree: Tree,
   }
 }
 
+case class Instruction(text: String, completed: Boolean = false)
+case class Instructions(
+    upDown: Instruction = Instruction("Wandere mit 'Pfeiltaste oben und unten' durch die Einträge."),
+    right: Instruction = Instruction("Klappe mit 'Pfeiltaste rechts' den selektierten Eintrag aus."),
+    left: Instruction = Instruction(
+      "'Pfeiltaste links' klappt den selektierten Eintrag ein. Drücke die Taste erneut, um zum Eltern-Eintrag zu springen."),
+    edit: Instruction = Instruction(
+      "Doppelklicke auf einen Eintrag  oder drücke  'Tabulator', um den Text eines Eintrags zu bearbeiten."),
+    completeEdit: Instruction = Instruction("Schließe das Bearbeiten ab, indem du 'Enter' drückst."),
+    create: Instruction = Instruction("Erstelle einen Eintrag, indem du 'Enter' drückst."),
+    createChild: Instruction = Instruction("'Shift+Enter' erstellt einen Unter-Eintrag."),
+    delete: Instruction = Instruction("Lösche den selektierten Eintrag mit 'entf'."),
+    moveVertically: Instruction = Instruction(
+      "Bewege den selektierten Eintrag mit den Tasten 'W' und 'S' nach oben und unten."),
+    moveLeft: Instruction = Instruction(
+      "Die Taste 'D', verschiebt den selektierten Eintrag eine Ebene tiefer (in diese Richtung 'hand nach rechts' )."),
+    moveRight: Instruction = Instruction(
+      "Die Taste 'A' verschiebt den selektierten Eintrag in die entgegengesetze Richtung ('hand nach links' )."))
+
 case object SimpleDatabase {
   def simpleDatabase: SimpleDatabase = {
-    val instructionHeaders = Vector(
-      InstructionHeader(
-        "Ansehen",
-        Vector(
-          Instruction("Wandere mit 'Pfeiltaste oben und unten' durch die Einträge."),
-          Instruction("Klappe mit 'Pfeiltaste rechts' den selektierten Eintrag aus."),
-          Instruction(
-            "'Pfeiltaste links' klappt den selektierten Eintrag ein. Drücke die Taste erneut, um zum Eltern-Eintrag zu springen.")
-        )
-      ),
-      InstructionHeader(
-        "Bearbeiten",
-        Vector(
-          Instruction(
-            "Doppelklicke auf einen Eintrag  oder drücke  'Tabulator', um den Text eines Eintrags zu bearbeiten."),
-          Instruction("Schließe das Bearbeiten ab, indem du 'Enter' drückst.")
-        )
-      ),
-      InstructionHeader(
-        "Hinzufügen",
-        Vector(
-          Instruction("Erstelle einen Eintrag, indem du 'Enter' drückst."),
-          Instruction("'Shift+Enter' erstellt einen Unter-Eintrag."),
-          Instruction("Lösche den selektierten Eintrag mit 'entf'.")
-        )
-      ),
-      InstructionHeader(
-        "Srukturieren",
-        Vector(
-          Instruction(
-            "Bewege den selektierten Eintrag mit den Tasten 'W' und 'S' nach oben und unten."),
-          Instruction(
-            "Die Taste 'D', verschiebt den selektierten Eintrag eine Ebene tiefer (in diese Richtung 'hand nach rechts' )."),
-          Instruction(
-            "Die Taste 'A' verschiebt den selektierten Eintrag in die entgegengesetze Richtung ('hand nach links' ).")
-        )
-      )
-    )
     val rootItem = TreeItem(id = ROOTID)
-    val db = SimpleDatabase(Tree(Map(ROOTID -> rootItem)), instructionHeaders = instructionHeaders)
+    val db = SimpleDatabase(Tree(Map(ROOTID -> rootItem)))
     db.addChild(rootItem, 0).addChild(rootItem, 1).addChild(rootItem, 2)
   }
 
