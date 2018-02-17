@@ -135,7 +135,7 @@ object MainComponent {
               ^.onBlur --> mod(_.copy(editing = None))
             ).ref(inputRef = _)
           ),
-          <.ul(children).when(item.expanded)
+          <.ul(CSS.noMargin, children).when(item.expanded)
         )
       }
     }
