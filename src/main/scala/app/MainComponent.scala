@@ -71,12 +71,14 @@ object MainComponent {
                   ^.onDoubleClick --> mod(_.startEditing(item)),
                   ^.onClick --> mod(_.select(item)))
             ),
-            <.input(CSS.invisible.unless(editing),
-                    ^.value := item.text,
-                    ^.onChange ==> updateText,
-                    ^.onKeyDown ==> editFieldKeyDown,
-                    ^.onBlur --> mod(_.copy(editing = None)))
-              .ref(inputRef = _)
+            <.input(
+              CSS.input,
+              CSS.invisible.unless(editing),
+              ^.value := item.text,
+              ^.onChange ==> updateText,
+              ^.onKeyDown ==> editFieldKeyDown,
+              ^.onBlur --> mod(_.copy(editing = None))
+            ).ref(inputRef = _)
           ),
           <.ul(children).when(item.expanded)
         )

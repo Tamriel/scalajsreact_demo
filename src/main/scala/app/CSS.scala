@@ -6,6 +6,7 @@ object CSS extends StyleSheet.Inline {
 
   import dsl._
 
+  val input = style(addClassNames("form-input"))
   val visible = style(display.block)
   val invisible = style(display.none)
   val selected = style(backgroundColor.orange)
