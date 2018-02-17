@@ -117,6 +117,7 @@ object MainComponent {
           else <.i(CSS.blankIcon)
         <.div(
           <.div(
+            CSS.row,
             if (snap.selected.contains(item.id)) CSS.selected else CSS.hover,
             expandIcon,
             <.span(
