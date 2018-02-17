@@ -109,6 +109,11 @@ object MainComponent {
               mod(_.completeEdit()) >> e.preventDefaultCB
           }
 
+        def toggleExpanded(e: ReactEvent) = {
+          e.stopPropagation() // the select on click handler shall not be called
+          mod(_.toggleExpanded(item))
+        }
+
         val editing = snap.isEditing(item.id)
         val expandIcon =
           if (item.childrenIds.nonEmpty)
@@ -116,21 +121,19 @@ object MainComponent {
                 CSS.pointer,
                 CSS.centerVertically,
                 CSS.icon,
-                ^.onClick --> mod(_.toggleExpanded(item)))
+                ^.onClick ==> toggleExpanded)
           else <.i(CSS.icon)
         <.div(
           <.div(
             CSS.row,
             if (snap.selected.contains(item.id)) CSS.selected else CSS.hover,
+            ^.onDoubleClick --> mod(_.startEditing(item)),
+            ^.onClick --> mod(_.select(item)),
             expandIcon,
-            <.span(
-              CSS.centerVertically,
-              CSS.invisible.when(editing),
-              CSS.marginTextToIcon,
-              item.text,
-              ^.onDoubleClick --> mod(_.startEditing(item)),
-              ^.onClick --> mod(_.select(item))
-            ),
+            <.span(CSS.centerVertically,
+                   CSS.invisible.when(editing),
+                   CSS.marginTextToIcon,
+                   item.text),
             <.input(
               CSS.centerVertically,
               CSS.input,
