@@ -62,7 +62,7 @@ object MainComponent {
         val expandSymbol = if (item.expanded) "▼" else "▶"
         <.li(
           <.div(
-            CSS.selected.when(snap.selected.contains(item.id)),
+            if (snap.selected.contains(item.id)) CSS.selected else CSS.hover,
             <.span(expandSymbol, CSS.pointer, ^.onClick --> mod(_.toggleExpanded(item)))
               .when(item.childrenIds.nonEmpty),
             <.div(

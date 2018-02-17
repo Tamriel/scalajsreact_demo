@@ -10,6 +10,7 @@ object CSS extends StyleSheet.Inline {
   val invisible = style(display.none)
   val selected = style(backgroundColor.orange)
   val pointer = style(cursor.pointer)
+  val hover = style(&.hover(backgroundColor.lightgrey))
   val maximize = style(
     height(100 %%),
     margin.`0`,
@@ -18,7 +19,6 @@ object CSS extends StyleSheet.Inline {
   style(
     unsafeRoot("html")(maximize),
     unsafeRoot("body")(maximize),
-    unsafeRoot("#root")(maximize),
-    unsafeRoot("li:hover")(backgroundColor.lightgrey),
+    unsafeRoot("#root")(maximize)
   )
 }
