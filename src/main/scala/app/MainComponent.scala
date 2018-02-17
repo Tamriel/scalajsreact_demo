@@ -188,7 +188,7 @@ object MainComponent {
 
       <.div(
         CSS.maximize,
-        CSS.container,
+        CSS.mainContainer,
         ^.tabIndex := 0, // needs to be focusable to receive key presses
         ^.onKeyDown ==> handleKey,
         <.div(CSS.columns,

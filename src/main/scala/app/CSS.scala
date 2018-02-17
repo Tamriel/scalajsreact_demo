@@ -34,7 +34,7 @@ object CSS extends StyleSheet.Inline {
     height(100 %%),
     margin.`0`,
   )
-  val container = style(addClassName("container"))
+  val mainContainer = style(addClassName("container"), outline.none)
   val columns = style(addClassName("columns"))
   val leftColumm = style(addClassName("column col-5"))
   val rightColumm = style(addClassName("column col-7"))
