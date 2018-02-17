@@ -89,8 +89,10 @@ case class SimpleDatabase(tree: Tree,
       case _ => this
     }
 
-  def toggleExpanded(item: TreeItem): SimpleDatabase =
-    this.modify(_.tree.items.at(item.id).expanded).setTo(!item.expanded)
+  def toggleExpanded(item: TreeItem): SimpleDatabase = setExpanded(item, !item.expanded)
+
+  def setExpanded(item: TreeItem, expanded: Boolean): SimpleDatabase =
+    this.modify(_.tree.items.at(item.id).expanded).setTo(expanded)
 
   def setText(item: TreeItem, newText: String): SimpleDatabase =
     this.modify(_.tree.items.at(item.id).text).setTo(newText)
@@ -167,8 +169,9 @@ case class SimpleDatabase(tree: Tree,
     val currentPosition = parent.indexOf(item)
     if (currentPosition != 0) {
       val newParent = getItem(parent.childrenIds(currentPosition - 1))
-      val res = deleteId(parent.id, item.id)
-      res.insertId(newParent.id, newParent.childrenIds.length, item.id)
+      val res0 = deleteId(parent.id, item.id)
+      val res1 = res0.insertId(newParent.id, newParent.childrenIds.length, item.id)
+      res1.setExpanded(newParent, expanded = true)
     } else this
   }
 }
