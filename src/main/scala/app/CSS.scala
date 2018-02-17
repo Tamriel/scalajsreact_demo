@@ -6,7 +6,10 @@ object CSS extends StyleSheet.Inline {
 
   import dsl._
 
-  val veryLightGrey = style(color(c"#d9d9d9"))
+  val veryLightGreyColor = c"#d9d9d9"
+  val brightViolet = c"#e2e2ff"
+  val veryBrightViolet = c"#f9f9ff"
+  val veryLightGrey = style(color(veryLightGreyColor))
   val checkSquare = style(addClassName("fa-li far fa-check-square"))
   val square = style(addClassName("fa-li far fa-square"))
   val angleRight = style(addClassName("fa-angle-right"))
@@ -16,14 +19,16 @@ object CSS extends StyleSheet.Inline {
   val input = style(marginLeft(6 px), addClassName("form-input"), width(94 %%), padding(2 px))
   val fontAwesomeUl = style(addClassName("fa-ul"))
   val row = style(
+    borderRadius(4 px),
     height(47 px),
     // https://stackoverflow.com/a/13075912
-    &.before(content := """""""", display.inlineBlock, height(100 %%), verticalAlign.middle))
+    &.before(content := """""""", display.inlineBlock, height(100 %%), verticalAlign.middle)
+  )
   val centerVertically = style(display.inlineBlock, verticalAlign.middle)
   val invisible = style(display.none)
-  val selected = style(backgroundColor.orange)
+  val selected = style(backgroundColor(brightViolet))
   val pointer = style(cursor.pointer)
-  val hover = style(&.hover(backgroundColor.lightgrey))
+  val hover = style(&.hover(backgroundColor(veryBrightViolet)))
   val ulMargins = style(marginTop.`0`, marginBottom.`0`, marginLeft(45 px))
   val maximize = style(
     height(100 %%),
