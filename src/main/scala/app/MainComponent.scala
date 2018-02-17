@@ -17,6 +17,34 @@ object MainComponent {
 
   case class Props(stateSnap: StateSnapshot[SimpleDatabase], itemId: String)
 
+  private val InstructionComponent = ScalaComponent
+    .builder[Instruction]("Instruction")
+    .render_P { instruction =>
+      <.p(instruction.text)
+    }
+    .build
+
+  private val InstructionHeaderComponent = ScalaComponent
+    .builder[InstructionHeader]("InstructionHeader")
+    .render_P { instructionHeader =>
+      val instructions =
+        instructionHeader.instructions.toVdomArray(instruction =>
+          InstructionComponent.withKey(instruction.text)(instruction))
+      <.div(
+        <.p(instructionHeader.text),
+        <.ul(instructions)
+      )
+    }
+    .build
+
+  private val IntroComponent = ScalaComponent
+    .builder[Vector[InstructionHeader]]("Intro")
+    .render_P { vec =>
+      <.div(<.ul(vec.toVdomArray(instructionHeader =>
+        InstructionHeaderComponent.withKey(instructionHeader.text)(instructionHeader))))
+    }
+    .build
+
   private val TreeItemComponent = ScalaComponent
     .builder[Props]("TreeItem")
     .renderBackend[TreeItemBackend]
@@ -124,10 +152,13 @@ object MainComponent {
 
       <.div(
         CSS.maximize,
+        CSS.container,
         ^.tabIndex := 0, // needs to be focusable to receive key presses
         ^.onKeyDown ==> handleKey,
-        rootItem
-//        <.button(^.onClick --> Callback(println(snap.value.asJson)),
+        <.div(CSS.columns,
+              <.div(CSS.leftColumm, IntroComponent(db.instructionHeaders)),
+              <.div(CSS.rightColumm, rootItem))
+//      <.button(^.onClick --> Callback(println(snap.value.asJson)),
 //                 "Print tree as JSON to developer console")
       ).ref(mainDivRef = _)
     }
@@ -135,7 +166,7 @@ object MainComponent {
 
   private val Component = ScalaComponent
     .builder[Unit]("TreeNote")
-    .initialState(SimpleDatabase.exampleDatabase)
+    .initialState(SimpleDatabase.simpleDatabase)
     .renderBackend[MainBackend]
     .componentDidMount(_.backend.init)
     .componentDidUpdate(x => x.backend.init.when(x.currentState.editing.isEmpty).void)

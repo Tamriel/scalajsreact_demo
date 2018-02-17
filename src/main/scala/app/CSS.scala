@@ -16,6 +16,10 @@ object CSS extends StyleSheet.Inline {
     height(100 %%),
     margin.`0`,
   )
+  val container = style(addClassNames("container"))
+  val columns = style(addClassNames("columns"))
+  val leftColumm = style(addClassNames("column col-5"))
+  val rightColumm = style(addClassNames("column col-7"))
 
   style(
     unsafeRoot("html")(maximize),

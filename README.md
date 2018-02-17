@@ -1,8 +1,8 @@
 # TreeNote Client
 
+- Compile by executing `sbt` and then `~fastOptJS::webpack` in a command prompt
+- Drag'n'drop the file `index-dev.html` from your file manager to your browser
 - IntelliJ: Import, check 'Use sbt shell for build and import'
-- Compile by executing `sbt > ~fastOptJS::webpack` in a command prompt or `~fastOptJS::webpack` in the 'sbt shell' of IntelliJ
-- Drag'n'drop the file `index-dev.html` to your browser
 
 
 # Development
