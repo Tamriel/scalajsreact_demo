@@ -48,26 +48,7 @@ object MainComponent {
                      comp(ins.moveVertically),
                      comp(ins.moveRight),
                      comp(ins.moveLeft)))
-        ),
-        <.ul(
-          <.h6(
-            "Flexibel",
-            <.p("Mit verschachtelten Listen lässt sich ALLES abbilden.\n" +
-              "TreeNote ist für jeden Anwendungsfall geeignet und dabei intuitiv bedienbar!")
-          ),
-          <.h6(
-            "Das fertige Produkt",
-            <.ul(
-              <.li("Kalender und Erinnerungen."),
-              <.li("Gemeinsam, gleichzeitig bearbeiten."),
-              <.li("Auch offline und auf dem Smartphone nutzbar."),
-              <.li("Als einzige Projektmanagement-Software auch für sensible Daten - dank Verschlüsselung."),
-            )
-          )
-        ).when(
-          ins.upDown.completed && ins.right.completed && ins.left.completed && ins.clickEdit.completed &&
-            ins.create.completed && ins.createChild.completed && ins.delete.completed && ins.moveVertically.completed &&
-            ins.moveRight.completed && ins.moveLeft.completed)
+        )
       )
     }
     .build
