@@ -8,6 +8,7 @@ import japgolly.scalajs.react.component.Scala.Unmounted
 import japgolly.scalajs.react.extra.StateSnapshot
 import japgolly.scalajs.react.vdom.html_<^.{<, _}
 import japgolly.scalajs.react.{Callback, ScalaComponent, _}
+import org.scalajs.dom
 import org.scalajs.dom.ext.KeyCode
 import org.scalajs.dom.html
 
@@ -56,14 +57,15 @@ object MainComponent {
   private val TreeItemComponent = ScalaComponent
     .builder[Props]("TreeItem")
     .renderBackend[TreeItemBackend]
-    .componentDidMount(x => x.backend.focusInput(x.props))
-    .componentDidUpdate(x => x.backend.focusInput(x.currentProps, Some(x.prevProps)))
+    .componentDidMount(x => x.backend.focusInputAndScrollTo(x.props))
+    .componentDidUpdate(x => x.backend.focusInputAndScrollTo(x.currentProps, Some(x.prevProps)))
     .build
 
   class TreeItemBackend($ : BackendScope[Props, Unit]) {
     var inputRef: html.Input = _
+    var rowRef: html.Element = _
 
-    def focusInput(props: Props, prevProps: Option[Props] = None) = Callback {
+    def focusInputAndScrollTo(props: Props, prevProps: Option[Props] = None) = Callback {
       val db = props.stateSnap.value
       if (db.isEditing(props.itemId) &&
           // don't focus, if previous Props was editing
@@ -71,6 +73,18 @@ object MainComponent {
         inputRef.focus()
         val end = db.getItem(props.itemId).text.length
         inputRef.setSelectionRange(end, end)
+      }
+
+      // scroll to selection if it's outside the viewport
+      if (db.selected.contains(props.itemId) && rowRef != null) {
+        val rect = rowRef.getBoundingClientRect()
+        if (rect.top < 0 || rect.bottom > dom.window.innerHeight)
+          db.lastSelectDirection match {
+            case (Before) => // top of the element will be aligned to the top of the visible area
+              rowRef.scrollIntoView(true)
+            case Next => //  the bottom of the element will be aligned to the bottom of the visible area
+              rowRef.scrollIntoView(false)
+          }
       }
     }
 
@@ -129,7 +143,7 @@ object MainComponent {
               ^.onKeyDown ==> editFieldKeyDown,
               ^.onBlur --> mod(_.copy(editing = None))
             ).ref(inputRef = _)
-          ),
+          ).ref(rowRef = _),
           <.ul(CSS.ulMargins, children).when(item.expanded)
         )
       }
@@ -214,7 +228,7 @@ object MainComponent {
 
   private val Component = ScalaComponent
     .builder[Unit]("TreeNote")
-    .initialState(SimpleDatabase.exampleDatabase)
+    .initialState(SimpleDatabase.simpleDatabase)
     .renderBackend[MainBackend]
     .componentDidMount(_.backend.init)
     .componentDidUpdate(x => x.backend.init.when(x.currentState.editing.isEmpty).void)

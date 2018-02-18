@@ -15,7 +15,8 @@ object BeforeNext {
 case class SimpleDatabase(tree: Tree,
                           selected: Option[String] = None,
                           editing: Option[String] = None,
-                          instructions: Instructions = Instructions()) {
+                          instructions: Instructions = Instructions(),
+                          lastSelectDirection: BeforeNext = Before) {
 
   def isEditing(itemId: String): Boolean = editing.contains(itemId)
 
@@ -44,17 +45,17 @@ case class SimpleDatabase(tree: Tree,
     val newIndex = parent.indexOf(fromItem) + diff
     // if has children and expanded: select first child
     if (beforeNext == Next && fromItem.expanded && fromItem.childrenIds.nonEmpty)
-      select(fromItem.childrenIds.head)
+      select(fromItem.childrenIds.head).copy(lastSelectDirection = Next)
     else if (newIndex < 0) {
       if (parent.id == ROOTID) this // don't change selection if at top
-      else select(parent)
+      else select(parent).copy(lastSelectDirection = Before)
     } else if (newIndex >= parent.childrenIds.length) {
       if (parent.id == ROOTID) this // don't change selection if at bottom
       else {
         def selectNextParentFromChild(parentId: String, lastChild: TreeItem): SimpleDatabase = {
           val parentItem = getItem(parentId)
           parentItem.childrenIds.lift(parentItem.indexOf(lastChild) + 1) match {
-            case Some(childId) => select(childId)
+            case Some(childId) => select(childId).copy(lastSelectDirection = Next)
             case None          => selectNextParentFromChild(parentItem.parentId, parentItem)
           }
         }
@@ -62,13 +63,13 @@ case class SimpleDatabase(tree: Tree,
       }
     } else {
       val newId = parent.childrenIds(newIndex)
-      if (beforeNext == Next) select(newId)
+      if (beforeNext == Next) select(newId).copy(lastSelectDirection = Next)
       else {
         def selectBeforeChildFromParent(id: String): SimpleDatabase = {
           val beforeItem = getItem(id)
           if (beforeItem.expanded && beforeItem.childrenIds.nonEmpty)
             selectBeforeChildFromParent(beforeItem.childrenIds.last)
-          else select(beforeItem)
+          else select(beforeItem).copy(lastSelectDirection = Before)
         }
         selectBeforeChildFromParent(newId)
       }

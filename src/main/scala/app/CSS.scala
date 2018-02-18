@@ -36,7 +36,7 @@ object CSS extends StyleSheet.Inline {
   val treeDiv = style(marginTop(1 em),
                       backgroundColor.white,
                       borderRadius(4 px),
-                      border.solid,
+                      borderStyle(solid),
                       borderWidth(1 px),
                       borderColor(c"#ddd"))
 
