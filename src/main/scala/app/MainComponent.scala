@@ -34,25 +34,28 @@ object MainComponent {
       def comp(instruction: Instruction) =
         InstructionComponent.withKey(instruction.text)(instruction)
       <.div(
+        <.h5("Anleitung"),
         <.ul(
-          <.div(<.p("Ansehen"),
+          ^.marginLeft := "0",
+          <.div(<.h6(CSS.topMargin, "Ansehen"),
                 <.ul(CSS.fontAwesomeUl, comp(ins.upDown), comp(ins.right), comp(ins.left))),
-          <.div(<.p("Bearbeiten"), <.ul(CSS.fontAwesomeUl, comp(ins.tabEdit), comp(ins.clickEdit))),
-          <.div(<.p("Hinzufügen"),
+          <.div(<.h6(CSS.topMargin, "Bearbeiten"),
+                <.ul(CSS.fontAwesomeUl, comp(ins.tabEdit), comp(ins.clickEdit))),
+          <.div(<.h6(CSS.topMargin, "Hinzufügen"),
                 <.ul(CSS.fontAwesomeUl, comp(ins.create), comp(ins.createChild), comp(ins.delete))),
-          <.div(<.p("Srukturieren"),
+          <.div(<.h6(CSS.topMargin, "Srukturieren"),
                 <.ul(CSS.fontAwesomeUl,
                      comp(ins.moveVertically),
                      comp(ins.moveRight),
                      comp(ins.moveLeft)))
         ),
         <.ul(
-          <.p(
+          <.h6(
             "Flexibel",
             <.p("Mit verschachtelten Listen lässt sich ALLES abbilden.\n" +
               "TreeNote ist für jeden Anwendungsfall geeignet und dabei intuitiv bedienbar!")
           ),
-          <.p(
+          <.h6(
             "Das fertige Produkt",
             <.ul(
               <.li("Kalender und Erinnerungen."),
@@ -196,14 +199,14 @@ object MainComponent {
         <.div(
           CSS.columns,
           ^.paddingTop := "10px",
-          ^.paddingBottom := "40px",
+          ^.paddingBottom := "55px",
           <.div(^.className := "column col-5",
-                <.img(^.src := "res/logo_violett_100px.png", ^.className := "float-right")),
+                <.img(^.src := "res/logo_violett_90px.png", ^.className := "float-right")),
           <.div(
             ^.className := "column col-7",
             <.h1("TreeNote",
                  ^.fontSize := "1.6rem",
-                 ^.marginTop := ".2em",
+                 ^.marginTop := ".05em",
                  ^.marginBottom := ".2em"),
             <.h2("Kollaboratives Wissens- und Projektmanagement",
                  ^.fontSize := ".9rem",
@@ -213,7 +216,7 @@ object MainComponent {
         <.div(
           CSS.columns,
           <.div(^.className := "column col-4 col-ml-auto", IntroComponent(db.instructions)),
-          <.div(^.className := "column col-4 col-mr-auto", rootItem)
+          <.div(^.className := "column col-4 col-mr-auto", <.div(<.h5("Beispielbaum"), rootItem))
         )
 //      <.button(^.onClick --> Callback(println(snap.value.asJson)),
 //                 "Print tree as JSON to developer console")
