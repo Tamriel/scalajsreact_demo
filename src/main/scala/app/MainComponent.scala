@@ -193,9 +193,28 @@ object MainComponent {
         CSS.mainContainer,
         ^.tabIndex := 0, // needs to be focusable to receive key presses
         ^.onKeyDown ==> handleKey,
-        <.div(CSS.columns,
-              <.div(CSS.leftColumm, IntroComponent(db.instructions)),
-              <.div(CSS.rightColumm, rootItem))
+        <.div(
+          CSS.columns,
+          ^.paddingTop := "10px",
+          ^.paddingBottom := "40px",
+          <.div(^.className := "column col-5",
+                <.img(^.src := "res/logo_violett_100px.png", ^.className := "float-right")),
+          <.div(
+            ^.className := "column col-7",
+            <.h1("TreeNote",
+                 ^.fontSize := "1.6rem",
+                 ^.marginTop := ".2em",
+                 ^.marginBottom := ".2em"),
+            <.h2("Kollaboratives Wissens- und Projektmanagement",
+                 ^.fontSize := ".9rem",
+                 ^.fontWeight := "400")
+          )
+        ),
+        <.div(
+          CSS.columns,
+          <.div(^.className := "column col-4 col-ml-auto", IntroComponent(db.instructions)),
+          <.div(^.className := "column col-4 col-mr-auto", rootItem)
+        )
 //      <.button(^.onClick --> Callback(println(snap.value.asJson)),
 //                 "Print tree as JSON to developer console")
       ).ref(mainDivRef = _)

@@ -3,13 +3,12 @@ package app
 import CssSettings._
 
 object CSS extends StyleSheet.Inline {
-
   import dsl._
 
-  val veryLightGreyColor = c"#d9d9d9"
+  val backgroundGrey = c"#f8f9fa"
   val brightViolet = c"#e2e2ff"
   val veryBrightViolet = c"#f9f9ff"
-  val veryLightGrey = style(color(veryLightGreyColor))
+  val veryLightGrey = style(color(c"#d9d9d9"))
   val checkSquare = style(addClassName("fa-li far fa-check-square"))
   val square = style(addClassName("fa-li far fa-square"))
   val angleRight = style(addClassName("fa-angle-right"))
@@ -33,8 +32,6 @@ object CSS extends StyleSheet.Inline {
   val maximize = style(height(100 %%), margin.`0`)
   val mainContainer = style(addClassName("container"), outline.none)
   val columns = style(addClassName("columns"))
-  val leftColumm = style(addClassName("column col-5"))
-  val rightColumm = style(addClassName("column col-7"))
 
   style(
     unsafeRoot("kbd")(
@@ -51,7 +48,7 @@ object CSS extends StyleSheet.Inline {
       boxShadow := "inset 0 -1px 0 #959da5"
     ),
     unsafeRoot("html")(maximize, style(fontSize(24 px))),
-    unsafeRoot("body")(maximize, overflowY.scroll), // always show the scrollbar
+    unsafeRoot("body")(maximize, overflowY.scroll, backgroundColor(backgroundGrey)), // always show the scrollbar
     unsafeRoot("#root")(maximize)
   )
 }
