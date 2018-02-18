@@ -137,7 +137,7 @@ case class SimpleDatabase(tree: Tree,
     val newItem = TreeItem()
     val res0 = this.modify(_.tree.items).using(_ + (newItem.id -> newItem))
     val res1 = res0.insertId(parentItem.id, position, newItem.id).select(newItem)
-    res1.setExpanded(parentItem, expanded = true)
+    res1.setExpanded(parentItem, expanded = true).copy(lastSelectDirection = Next)
   }
 
   private def insertId(parentId: String, position: Int, id: String): SimpleDatabase = {
@@ -151,7 +151,7 @@ case class SimpleDatabase(tree: Tree,
 
   def moveUp(): SimpleDatabase = moveVertically(Before)
 
-  def moveDown(): SimpleDatabase = moveVertically(Next)
+  def moveDown(): SimpleDatabase = moveVertically(Next).copy(lastSelectDirection = Next)
 
   private def moveVertically(beforeNext: BeforeNext): SimpleDatabase = {
     val item = getItem(selected.get)
