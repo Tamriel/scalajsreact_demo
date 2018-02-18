@@ -459,47 +459,47 @@ object ExampleDatabase {
     "editing" : null,
   "instructions" : {
     "upDown" : {
-    "text" : "Wandere mit 'Pfeiltaste oben und unten' durch die Einträge.",
+    "text" : "Wandere mit den Pfeiltasten <kbd><i class=\"fas fa-arrow-up fa-xs\"></i></kbd> und <kbd><i class=\"fas fa-arrow-down fa-xs\"></i></kbd> durch die Einträge.",
     "completed" : false
   },
     "right" : {
-    "text" : "Klappe mit 'Pfeiltaste rechts' den selektierten Eintrag aus.",
+    "text" : "Klappe mit <kbd><i class=\"fas fa-arrow-right fa-xs\"></i></kbd> den selektierten Eintrag aus.",
     "completed" : false
   },
     "left" : {
-    "text" : "'Pfeiltaste links' klappt den selektierten Eintrag ein. Drücke die Taste erneut, um zum Eltern-Eintrag zu springen.",
+    "text" : "Springe mit <kbd><i class=\"fas fa-arrow-left fa-xs\"></i></kbd> zum Eltern-Eintrag.",
     "completed" : false
   },
-    "edit" : {
-    "text" : "Doppelklicke auf einen Eintrag  oder drücke  'Tabulator', um den Text eines Eintrags zu bearbeiten.",
+    "tabEdit" : {
+    "text" : "Bearbeite den Text, indem du <kbd>Tab</kbd> drückst.",
     "completed" : false
   },
-    "completeEdit" : {
-    "text" : "Schließe das Bearbeiten ab, indem du 'Enter' drückst.",
+    "clickEdit" : {
+    "text" : "Oder indem du einen Eintrag doppelklickst.",
     "completed" : false
   },
     "create" : {
-    "text" : "Erstelle einen Eintrag, indem du 'Enter' drückst.",
+    "text" : "Erstelle einen Eintrag mit <kbd>Enter</kbd>.",
     "completed" : false
   },
     "createChild" : {
-    "text" : "'Shift+Enter' erstellt einen Unter-Eintrag.",
+    "text" : "Erstelle einen Unter-Eintrag mit <kbd>Shift</kbd> + <kbd>Enter</kbd>.",
     "completed" : false
   },
     "delete" : {
-    "text" : "Lösche den selektierten Eintrag mit 'entf'.",
+    "text" : "Lösche den selektierten Eintrag mit <kbd>Entf</kbd>.",
     "completed" : false
   },
     "moveVertically" : {
-    "text" : "Bewege den selektierten Eintrag mit den Tasten 'W' und 'S' nach oben und unten.",
-    "completed" : false
-  },
-    "moveLeft" : {
-    "text" : "Die Taste 'D', verschiebt den selektierten Eintrag eine Ebene tiefer (in diese Richtung 'hand nach rechts' ).",
+    "text" : "Bewege den selektierten Eintrag mit <kbd>W</kbd> und <kbd>S</kbd> nach oben und unten.",
     "completed" : false
   },
     "moveRight" : {
-    "text" : "Die Taste 'A' verschiebt den selektierten Eintrag in die entgegengesetze Richtung ('hand nach links' ).",
+    "text" : "<kbd>D</kbd> verschiebt den selektierten Eintrag eine Ebene tiefer, in diese Richtung <i class=\"fas fa-hand-point-right\"></i>.",
+    "completed" : false
+  },
+    "moveLeft" : {
+    "text" : "<kbd>A</kbd> verschiebt den selektierten Eintrag eine Ebene höher, in diese Richtung <i class=\"fas fa-hand-point-left\"></i>.",
     "completed" : false
   }
   }

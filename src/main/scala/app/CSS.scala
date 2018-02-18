@@ -30,16 +30,26 @@ object CSS extends StyleSheet.Inline {
   val pointer = style(cursor.pointer)
   val hover = style(&.hover(backgroundColor(veryBrightViolet)))
   val ulMargins = style(marginTop.`0`, marginBottom.`0`, marginLeft(45 px))
-  val maximize = style(
-    height(100 %%),
-    margin.`0`,
-  )
+  val maximize = style(height(100 %%), margin.`0`)
   val mainContainer = style(addClassName("container"), outline.none)
   val columns = style(addClassName("columns"))
   val leftColumm = style(addClassName("column col-5"))
   val rightColumm = style(addClassName("column col-7"))
 
   style(
+    unsafeRoot("kbd")(
+      padding(3 px, 5 px),
+      border(1 px, solid, c"#c6cbd1"),
+      fontSize(17 px),
+      backgroundColor(c"#fafbfc"),
+      color(c"#444d56"),
+      borderRadius(3 px),
+      display.inlineBlock,
+      margin(0 px, 0.1 em),
+      lineHeight(13 px),
+      verticalAlign.middle,
+      boxShadow := "inset 0 -1px 0 #959da5"
+    ),
     unsafeRoot("html")(maximize, style(fontSize(24 px))),
     unsafeRoot("body")(maximize, overflowY.scroll), // always show the scrollbar
     unsafeRoot("#root")(maximize)

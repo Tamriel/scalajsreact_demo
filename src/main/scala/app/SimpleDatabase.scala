@@ -20,13 +20,14 @@ case class SimpleDatabase(tree: Tree,
   def isEditing(itemId: String): Boolean = editing.contains(itemId)
 
   def startEditing(): SimpleDatabase =
-    if (selected.isDefined) startEditing(getItem(selected.get)) else this
+    if (selected.isDefined)
+      copy(editing = Some(selected.get)).modify(_.instructions.tabEdit.completed).setTo(true)
+    else this
 
   def startEditing(item: TreeItem): SimpleDatabase =
-    copy(editing = Some(item.id)).modify(_.instructions.edit.completed).setTo(true)
+    copy(editing = Some(item.id)).modify(_.instructions.clickEdit.completed).setTo(true)
 
-  def completeEdit(): SimpleDatabase =
-    copy(editing = None).modify(_.instructions.completeEdit.completed).setTo(true)
+  def completeEdit(): SimpleDatabase = copy(editing = None)
 
   def getItem(id: String) = tree.items(id)
 
@@ -190,28 +191,29 @@ case class SimpleDatabase(tree: Tree,
 
 case class Instruction(text: String, completed: Boolean = false)
 case class Instructions(
-    upDown: Instruction = Instruction("Wandere mit 'Pfeiltaste oben und unten' durch die Einträge."),
-    right: Instruction = Instruction("Klappe mit 'Pfeiltaste rechts' den selektierten Eintrag aus."),
+    upDown: Instruction = Instruction(
+      "Wandere mit den Pfeiltasten <kbd><i class=\"fas fa-arrow-up fa-xs\"></i></kbd> und <kbd><i class=\"fas fa-arrow-down fa-xs\"></i></kbd> durch die Einträge."),
+    right: Instruction = Instruction(
+      "Klappe mit <kbd><i class=\"fas fa-arrow-right fa-xs\"></i></kbd> den selektierten Eintrag aus."),
     left: Instruction = Instruction(
-      "'Pfeiltaste links' klappt den selektierten Eintrag ein. Drücke die Taste erneut, um zum Eltern-Eintrag zu springen."),
-    edit: Instruction = Instruction(
-      "Doppelklicke auf einen Eintrag  oder drücke  'Tabulator', um den Text eines Eintrags zu bearbeiten."),
-    completeEdit: Instruction = Instruction("Schließe das Bearbeiten ab, indem du 'Enter' drückst."),
-    create: Instruction = Instruction("Erstelle einen Eintrag, indem du 'Enter' drückst."),
-    createChild: Instruction = Instruction("'Shift+Enter' erstellt einen Unter-Eintrag."),
-    delete: Instruction = Instruction("Lösche den selektierten Eintrag mit 'entf'."),
+      "Springe mit <kbd><i class=\"fas fa-arrow-left fa-xs\"></i></kbd> zum Eltern-Eintrag."),
+    tabEdit: Instruction = Instruction("Bearbeite den Text, indem du <kbd>Tab</kbd> drückst."),
+    clickEdit: Instruction = Instruction("Oder indem du einen Eintrag doppelklickst."),
+    create: Instruction = Instruction("Erstelle einen Eintrag mit <kbd>Enter</kbd>."),
+    createChild: Instruction = Instruction(
+      "Erstelle einen Unter-Eintrag mit <kbd>Shift</kbd> + <kbd>Enter</kbd>."),
+    delete: Instruction = Instruction("Lösche den selektierten Eintrag mit <kbd>Entf</kbd>."),
     moveVertically: Instruction = Instruction(
-      "Bewege den selektierten Eintrag mit den Tasten 'W' und 'S' nach oben und unten."),
+      "Bewege den selektierten Eintrag mit <kbd>W</kbd> und <kbd>S</kbd> nach oben und unten."),
     moveRight: Instruction = Instruction(
-      "Die Taste 'D', verschiebt den selektierten Eintrag eine Ebene tiefer (in diese Richtung 'hand nach rechts' )."),
+      "<kbd>D</kbd> verschiebt den selektierten Eintrag eine Ebene tiefer, in diese Richtung <i class=\"fas fa-hand-point-right\"></i>."),
     moveLeft: Instruction = Instruction(
-      "Die Taste 'A' verschiebt den selektierten Eintrag in die entgegengesetze Richtung ('hand nach links' )."))
+      "<kbd>A</kbd> verschiebt den selektierten Eintrag eine Ebene höher, in diese Richtung <i class=\"fas fa-hand-point-left\"></i>."))
 
 case object SimpleDatabase {
   def simpleDatabase: SimpleDatabase = {
     val rootItem = TreeItem(id = ROOTID)
-    val db = SimpleDatabase(Tree(Map(ROOTID -> rootItem)))
-    db.addChild(rootItem, 0).addChild(rootItem, 1).addChild(rootItem, 2)
+    SimpleDatabase(Tree(Map(ROOTID -> rootItem))).addChild(rootItem, 0)
   }
 
   def exampleDatabase: SimpleDatabase = decode[SimpleDatabase](ExampleDatabase.json).right.get

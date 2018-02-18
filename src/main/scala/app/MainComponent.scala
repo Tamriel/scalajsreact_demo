@@ -20,9 +20,11 @@ object MainComponent {
   private val InstructionComponent = ScalaComponent
     .builder[Instruction]("Instruction")
     .render_P { instruction =>
-      <.li(CSS.veryLightGrey.when(instruction.completed),
-           <.i(if (instruction.completed) CSS.checkSquare else CSS.square),
-           " " + instruction.text)
+      <.li(
+        CSS.veryLightGrey.when(instruction.completed),
+        <.i(if (instruction.completed) CSS.checkSquare else CSS.square),
+        <.span(^.dangerouslySetInnerHtml := " " + instruction.text)
+      )
     }
     .build
 
@@ -35,14 +37,14 @@ object MainComponent {
         <.ul(
           <.div(<.p("Ansehen"),
                 <.ul(CSS.fontAwesomeUl, comp(ins.upDown), comp(ins.right), comp(ins.left))),
-          <.div(<.p("Bearbeiten"), <.ul(CSS.fontAwesomeUl, comp(ins.edit), comp(ins.completeEdit))),
+          <.div(<.p("Bearbeiten"), <.ul(CSS.fontAwesomeUl, comp(ins.tabEdit), comp(ins.clickEdit))),
           <.div(<.p("Hinzufügen"),
                 <.ul(CSS.fontAwesomeUl, comp(ins.create), comp(ins.createChild), comp(ins.delete))),
           <.div(<.p("Srukturieren"),
                 <.ul(CSS.fontAwesomeUl,
                      comp(ins.moveVertically),
-                     comp(ins.moveLeft),
-                     comp(ins.moveRight)))
+                     comp(ins.moveRight),
+                     comp(ins.moveLeft)))
         ),
         <.ul(
           <.p(
@@ -60,7 +62,7 @@ object MainComponent {
             )
           )
         ).when(
-          ins.upDown.completed && ins.right.completed && ins.left.completed && ins.completeEdit.completed &&
+          ins.upDown.completed && ins.right.completed && ins.left.completed && ins.clickEdit.completed &&
             ins.create.completed && ins.createChild.completed && ins.delete.completed && ins.moveVertically.completed &&
             ins.moveRight.completed && ins.moveLeft.completed)
       )
