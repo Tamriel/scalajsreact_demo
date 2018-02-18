@@ -502,6 +502,11 @@ object ExampleDatabase {
     "text" : "<kbd>A</kbd> verschiebt den selektierten Eintrag eine Ebene höher, in diese Richtung <i class=\"fas fa-hand-point-left\"></i>.",
     "completed" : false
   }
+  },
+  "lastSelectDirection" : {
+    "Next" : {
+
+  }
   }
   }"""
 }

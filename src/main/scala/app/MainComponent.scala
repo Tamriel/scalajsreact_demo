@@ -236,7 +236,7 @@ object MainComponent {
 
   private val Component = ScalaComponent
     .builder[Unit]("TreeNote")
-    .initialState(SimpleDatabase.simpleDatabase)
+    .initialState(SimpleDatabase.exampleDatabase)
     .renderBackend[MainBackend]
     .componentDidMount(_.backend.init)
     .componentDidUpdate(x => x.backend.init.when(x.currentState.editing.isEmpty).void)
