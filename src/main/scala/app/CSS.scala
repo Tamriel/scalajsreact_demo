@@ -15,7 +15,7 @@ object CSS extends StyleSheet.Inline {
   val angleDown = style(addClassName("fa-angle-down"))
   val icon = style(addClassName("fas fa-lg"), width(16 px), marginLeft(8 px))
   val marginTextToIcon = style(marginLeft(9.3 px))
-  val input = style(marginLeft(6 px), addClassName("form-input"), width(94 %%), padding(2 px))
+  val input = style(marginLeft(6 px), addClassName("form-input"), width(90 %%), padding(2 px))
   val fontAwesomeUl = style(addClassName("fa-ul"))
   val row = style(
     borderRadius(4 px),
@@ -33,6 +33,12 @@ object CSS extends StyleSheet.Inline {
   val mainContainer = style(addClassName("container"), outline.none)
   val columns = style(addClassName("columns"))
   val topMargin = style(marginTop(32 px))
+  val treeDiv = style(marginTop(1 em),
+                      backgroundColor.white,
+                      borderRadius(4 px),
+                      border.solid,
+                      borderWidth(1 px),
+                      borderColor(c"#ddd"))
 
   style(
     unsafeRoot("kbd")(

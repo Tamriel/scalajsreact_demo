@@ -215,12 +215,15 @@ object MainComponent {
         ),
         <.div(
           CSS.columns,
-          <.div(^.className := "column col-4 col-ml-auto",
-                ^.paddingRight := "3em",
-                IntroComponent(db.instructions)),
-          <.div(^.className := "column col-4 col-mr-auto",
-                ^.paddingLeft := "3em",
-                <.div(<.h5("Beispielbaum"), <.div(^.marginTop := "1em", rootItem)))
+          <.div(
+            ^.className := "column col-5 col-xl-6 col-ml-auto", // width of 5, but width of 6 on screens < 1280px
+            ^.paddingRight := "2em",
+            ^.paddingLeft := "1em",
+            IntroComponent(db.instructions)
+          ),
+          <.div(^.className := "column col-5 col-xl-6 col-mr-auto",
+                ^.paddingLeft := "2em",
+                <.div(<.h5("Beispielbaum"), <.div(CSS.treeDiv, rootItem)))
         )
 //      <.button(^.onClick --> Callback(println(snap.value.asJson)),
 //                 "Print tree as JSON to developer console")
