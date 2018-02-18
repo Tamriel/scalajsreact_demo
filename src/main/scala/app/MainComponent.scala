@@ -203,7 +203,7 @@ object MainComponent {
           <.div(^.className := "column col-5",
                 <.img(^.src := "res/logo_violett_90px.png", ^.className := "float-right")),
           <.div(
-            ^.className := "column col-7",
+            ^.className := "column col-4",
             <.h1("TreeNote",
                  ^.fontSize := "1.6rem",
                  ^.marginTop := ".05em",
@@ -215,8 +215,12 @@ object MainComponent {
         ),
         <.div(
           CSS.columns,
-          <.div(^.className := "column col-4 col-ml-auto", IntroComponent(db.instructions)),
-          <.div(^.className := "column col-4 col-mr-auto", <.div(<.h5("Beispielbaum"), rootItem))
+          <.div(^.className := "column col-4 col-ml-auto",
+                ^.paddingRight := "3em",
+                IntroComponent(db.instructions)),
+          <.div(^.className := "column col-4 col-mr-auto",
+                ^.paddingLeft := "3em",
+                <.div(<.h5("Beispielbaum"), <.div(^.marginTop := "1em", rootItem)))
         )
 //      <.button(^.onClick --> Callback(println(snap.value.asJson)),
 //                 "Print tree as JSON to developer console")

@@ -32,7 +32,7 @@ object CSS extends StyleSheet.Inline {
   val maximize = style(height(100 %%), margin.`0`)
   val mainContainer = style(addClassName("container"), outline.none)
   val columns = style(addClassName("columns"))
-  val topMargin = style(marginTop(40 px))
+  val topMargin = style(marginTop(32 px))
 
   style(
     unsafeRoot("kbd")(
