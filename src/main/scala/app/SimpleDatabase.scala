@@ -134,8 +134,9 @@ case class SimpleDatabase(tree: Tree,
 
   def addChild(parentItem: TreeItem, position: Int): SimpleDatabase = {
     val newItem = TreeItem()
-    val result = this.modify(_.tree.items).using(_ + (newItem.id -> newItem))
-    result.insertId(parentItem.id, position, newItem.id).select(newItem)
+    val res0 = this.modify(_.tree.items).using(_ + (newItem.id -> newItem))
+    val res1 = res0.insertId(parentItem.id, position, newItem.id).select(newItem)
+    res1.setExpanded(parentItem, expanded = true)
   }
 
   private def insertId(parentId: String, position: Int, id: String): SimpleDatabase = {
