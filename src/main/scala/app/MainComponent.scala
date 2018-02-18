@@ -65,11 +65,11 @@ object MainComponent {
     var inputRef: html.Input = _
     var rowRef: html.Element = _
 
-    def focusInputAndScrollTo(props: Props, prevProps: Option[Props] = None) = Callback {
+    def focusInputAndScrollTo(props: Props, prevPropsOpt: Option[Props] = None) = Callback {
       val db = props.stateSnap.value
+
       if (db.isEditing(props.itemId) &&
-          // don't focus, if previous Props was editing
-          (prevProps.isEmpty || !prevProps.get.stateSnap.value.isEditing(props.itemId))) {
+          (prevPropsOpt.isEmpty || !prevPropsOpt.get.stateSnap.value.isEditing(props.itemId))) {
         inputRef.focus()
         val end = db.getItem(props.itemId).text.length
         inputRef.setSelectionRange(end, end)
@@ -78,13 +78,15 @@ object MainComponent {
       // scroll to selection if it's outside the viewport
       if (db.selected.contains(props.itemId) && rowRef != null) {
         val rect = rowRef.getBoundingClientRect()
-        if (rect.top < 0 || rect.bottom > dom.window.innerHeight)
+        val isInViewport = rect.top.toInt >= 0 && rect.bottom.toInt <= dom.window.innerHeight
+        if (!isInViewport) {
           db.lastSelectDirection match {
             case (Before) => // top of the element will be aligned to the top of the visible area
               rowRef.scrollIntoView(true)
             case Next => //  the bottom of the element will be aligned to the bottom of the visible area
               rowRef.scrollIntoView(false)
           }
+        }
       }
     }
 
@@ -141,7 +143,7 @@ object MainComponent {
               ^.value := item.text,
               ^.onChange ==> updateText,
               ^.onKeyDown ==> editFieldKeyDown,
-              ^.onBlur --> mod(_.copy(editing = None))
+              ^.onBlur --> mod(_.completeEdit())
             ).ref(inputRef = _)
           ).ref(rowRef = _),
           <.ul(CSS.ulMargins, children).when(item.expanded)
@@ -153,7 +155,13 @@ object MainComponent {
   class MainBackend($ : BackendScope[Unit, SimpleDatabase]) {
     private var mainDivRef: html.Element = _
 
-    def init: Callback = Callback(mainDivRef.focus())
+    def init: Callback =
+      Callback { // The mainDiv needs focus to capture keys. But focus without scrolling.
+        val x = dom.window.pageXOffset.toInt
+        val y = dom.window.pageYOffset.toInt
+        mainDivRef.focus()
+        dom.window.scrollTo(x, y)
+      }
 
     def render(db: SimpleDatabase): VdomElement = {
       val snap = StateSnapshot(db).setStateVia($)
