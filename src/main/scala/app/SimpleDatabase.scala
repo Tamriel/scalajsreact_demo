@@ -30,7 +30,9 @@ case class SimpleDatabase(tree: Tree,
 
   def completeEdit(): SimpleDatabase = copy(editing = None)
 
-  def getItem(id: String) = tree.items(id)
+  def getParent(item: TreeItem): TreeItem = getItem(item.parentId)
+
+  def getItem(id: String): TreeItem = tree.items(id)
 
   def select(beforeNext: BeforeNext): SimpleDatabase = select(getItem(selected.get), beforeNext)
 
@@ -40,7 +42,7 @@ case class SimpleDatabase(tree: Tree,
     copy(selected = Some(id)).modify(_.instructions.upDown.completed).setTo(true)
 
   private def select(fromItem: TreeItem, beforeNext: BeforeNext): SimpleDatabase = {
-    val parent = getItem(fromItem.parentId)
+    val parent = getParent(fromItem)
     val diff = if (beforeNext == Before) -1 else +1
     val newIndex = parent.indexOf(fromItem) + diff
     // if has children and expanded: select first child
@@ -52,14 +54,12 @@ case class SimpleDatabase(tree: Tree,
     } else if (newIndex >= parent.childrenIds.length) {
       if (parent.id == ROOTID) this // don't change selection if at bottom
       else {
-        def selectNextParentFromChild(parentId: String, lastChild: TreeItem): SimpleDatabase = {
-          val parentItem = getItem(parentId)
+        def selectNextParentFromChild(parentItem: TreeItem, lastChild: TreeItem): SimpleDatabase =
           parentItem.childrenIds.lift(parentItem.indexOf(lastChild) + 1) match {
             case Some(childId) => select(childId).copy(lastSelectDirection = Next)
-            case None          => selectNextParentFromChild(parentItem.parentId, parentItem)
+            case None          => selectNextParentFromChild(getParent(parentItem), parentItem)
           }
-        }
-        selectNextParentFromChild(parent.parentId, parent)
+        selectNextParentFromChild(getParent(parent), parent)
       }
     } else {
       val newId = parent.childrenIds(newIndex)
@@ -124,7 +124,7 @@ case class SimpleDatabase(tree: Tree,
     if (getItem(ROOTID).childrenIds.isEmpty) addChild(getItem(ROOTID), 0)
     else {
       val item = getItem(selected.get)
-      val parent = getItem(item.parentId)
+      val parent = getParent(item)
       val ownPos = parent.indexOf(item)
       addChild(parent, ownPos + 1).modify(_.instructions.create.completed).setTo(true)
     }
@@ -155,7 +155,7 @@ case class SimpleDatabase(tree: Tree,
 
   private def moveVertically(beforeNext: BeforeNext): SimpleDatabase = {
     val item = getItem(selected.get)
-    val parent = getItem(item.parentId)
+    val parent = getParent(item)
     val diff = if (beforeNext == Before) -1 else +1
     val newPosition = parent.indexOf(item) + diff
     if (newPosition >= 0 && newPosition <= parent.childrenIds.length) {
@@ -167,9 +167,9 @@ case class SimpleDatabase(tree: Tree,
 
   def moveLeft(): SimpleDatabase = {
     val item = getItem(selected.get)
-    val parent = getItem(item.parentId)
+    val parent = getParent(item)
     if (parent.id != ROOTID) {
-      val newParent = getItem(parent.parentId)
+      val newParent = getParent(parent)
       val newPosition = newParent.indexOf(parent) + 1
       val res0 = deleteId(parent.id, item.id)
       val res1 = res0.insertId(newParent.id, newPosition, item.id)
@@ -179,7 +179,7 @@ case class SimpleDatabase(tree: Tree,
 
   def moveRight(): SimpleDatabase = {
     val item = getItem(selected.get)
-    val parent = getItem(item.parentId)
+    val parent = getParent(item)
     val currentPosition = parent.indexOf(item)
     if (currentPosition != 0) {
       val newParent = getItem(parent.childrenIds(currentPosition - 1))
