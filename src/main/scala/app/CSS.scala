@@ -21,6 +21,7 @@ object CSS extends StyleSheet.Inline {
           addClassName("form-input"),
           width(90 %%),
           padding(2 px),
+          paddingTop(9.8 px),
           resize.none)
   val fontAwesomeUl = style(addClassName("fa-ul"))
   val row = style(
