@@ -1,8 +1,6 @@
 package app
 
 import app.BeforeNext.{Before, Next}
-import io.circe.generic.auto._
-import io.circe.syntax._
 import app.DataModel.{ItemId, ROOTID}
 import japgolly.scalajs.react.component.Scala.Unmounted
 import japgolly.scalajs.react.extra.StateSnapshot

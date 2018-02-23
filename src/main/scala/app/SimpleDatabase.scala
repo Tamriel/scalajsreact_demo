@@ -5,8 +5,10 @@ import java.util.UUID
 import app.BeforeNext.{Before, Next}
 import app.DataModel.{ItemId, ROOTID, Tree, TreeItem}
 import com.softwaremill.quicklens._
+import io.circe.{KeyDecoder, KeyEncoder}
 import io.circe.generic.auto._
 import io.circe.parser._
+import io.circe.syntax._
 
 sealed trait BeforeNext
 object BeforeNext {
@@ -194,6 +196,26 @@ case class SimpleDatabase(tree: Tree,
       res2.modify(_.instructions.moveRight.completed).setTo(true)
     } else this
   }
+
+  def toJson: String = {
+    // https://circe.github.io/circe/codec.html#custom-key-types
+    implicit val itemIdKeyEncoder: KeyEncoder[ItemId] = (item: ItemId) => item.id.toString
+    this.asJson.toString()
+  }
+}
+
+case object SimpleDatabase {
+  def exampleDatabase: SimpleDatabase = {
+    implicit val itemIdKeyDecoder: KeyDecoder[ItemId] =
+      (key: String) => Some(ItemId(UUID.fromString(key)))
+    decode[SimpleDatabase](ExampleDatabase.json).right.get
+  }
+  def simpleDatabase: SimpleDatabase = {
+    // for the parent UUID of the root exists no TreeItem, so getting the root parent item will throw NoSuchElementException
+    val rootsParentId = ItemId(UUID.fromString("f52ac4f6-0aca-47f8-b9cc-f4a89599b005"))
+    val rootItem = TreeItem(rootsParentId, ROOTID)
+    SimpleDatabase(Tree(Map(rootItem.id -> rootItem))).addChild(rootItem, 0)
+  }
 }
 
 case class Instruction(text: String, completed: Boolean = false)
@@ -216,13 +238,3 @@ case class Instructions(
       "<kbd>D</kbd> verschiebt den selektierten Eintrag eine Ebene tiefer, in diese Richtung <i class=\"fas fa-hand-point-right\"></i>."),
     moveLeft: Instruction = Instruction(
       "<kbd>A</kbd> verschiebt den selektierten Eintrag eine Ebene höher, in diese Richtung <i class=\"fas fa-hand-point-left\"></i>."))
-
-case object SimpleDatabase {
-  def simpleDatabase: SimpleDatabase = {
-    // for the parent UUID of the root exists no TreeItem, so getting the root parent item will throw NoSuchElementException
-    val rootsParentId = ItemId(UUID.fromString("f52ac4f6-0aca-47f8-b9cc-f4a89599b005"))
-    val rootItem = TreeItem(rootsParentId, ROOTID)
-    SimpleDatabase(Tree(Map(rootItem.id -> rootItem))).addChild(rootItem, 0)
-  }
-//  def exampleDatabase: SimpleDatabase = decode[SimpleDatabase](ExampleDatabase.json).right.get
-}
