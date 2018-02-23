@@ -15,7 +15,13 @@ object CSS extends StyleSheet.Inline {
   val angleDown = style(addClassName("fa-angle-down"))
   val icon = style(addClassName("fas fa-lg"), width(16 px), marginLeft(8 px))
   val marginTextToIcon = style(marginLeft(9.3 px))
-  val input = style(marginLeft(6 px), addClassName("form-input"), width(90 %%), padding(2 px))
+  val input =
+    style(marginLeft(6 px),
+          height(45 px).important,
+          addClassName("form-input"),
+          width(90 %%),
+          padding(2 px),
+          resize.none)
   val fontAwesomeUl = style(addClassName("fa-ul"))
   val row = style(
     borderRadius(4 px),

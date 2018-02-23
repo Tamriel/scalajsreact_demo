@@ -140,11 +140,16 @@ case class SimpleDatabase(tree: Tree,
     if (rootItem.childrenIds.isEmpty) addChild(rootItem, 0)
     else addChild(getItem(selected.get), 0).modify(_.instructions.createChild.completed).setTo(true)
 
-  def addChild(parentItem: TreeItem, position: Int): SimpleDatabase = {
-    val newItem = TreeItem(parentItem.id)
+  def addChild(parentItem: TreeItem, position: Int): SimpleDatabase =
+    addChild(parentItem, position, "")._1
+
+  def addChild(parentItem: TreeItem,
+               position: Int,
+               text: String = ""): (SimpleDatabase, TreeItem) = {
+    val newItem = TreeItem(parentItem.id, text = text)
     val res0 = this.modify(_.tree.items).using(_ + (newItem.id -> newItem))
     val res1 = res0.insertId(parentItem.id, position, newItem.id).select(newItem)
-    res1.setExpanded(parentItem, expanded = true).copy(lastSelectDirection = Next)
+    (res1.setExpanded(parentItem, expanded = true).copy(lastSelectDirection = Next), newItem)
   }
 
   private def insertId(parentId: ItemId, position: Int, id: ItemId): SimpleDatabase = {
@@ -201,6 +206,44 @@ case class SimpleDatabase(tree: Tree,
     // https://circe.github.io/circe/codec.html#custom-key-types
     implicit val itemIdKeyEncoder: KeyEncoder[ItemId] = (item: ItemId) => item.id.toString
     this.asJson.toString()
+  }
+
+  def toPlainText: String = {
+    def itemString(item: TreeItem, level: Int): String = {
+      val buf = new StringBuilder
+      buf ++= "\t" * level + "- " + item.text + "\n"
+      for (childId <- item.childrenIds) {
+        buf ++= itemString(tree.items(childId), level + 1)
+      }
+      buf.toString()
+    }
+    itemString(rootItem, 0)
+  }
+
+  /** Builds a tree structure out of indented rows.
+    * Idea: Insert new items from top to bottom.
+    * When inserting a new item, the parent is the last inserted item with the same indention minus one.
+    * We save the last inserted index position per indention level, to know where to insert the next item. */
+  def addFromPlainText(text: String): SimpleDatabase = {
+    def add(db0: SimpleDatabase,
+            lines: List[String],
+            indentionToInsertIndex: Map[Int, Int],
+            indentionToParent: Map[Int, TreeItem]): SimpleDatabase =
+      lines match {
+        case line :: remainingLines => {
+          val strippedLine = line.dropWhile(_.toString == "\t")
+          val indention = line.length - strippedLine.length
+          val parent = indentionToParent(indention - 1)
+          val index = indentionToInsertIndex.getOrElse(indention, 0)
+          val (db1, newItem) = db0.addChild(parent, index, strippedLine.stripPrefix("- "))
+          add(db1,
+              remainingLines,
+              indentionToInsertIndex + (indention -> (index + 1)),
+              indentionToParent + (indention -> newItem))
+        }
+        case _ => db0
+      }
+    add(this, text.split('\n').toList, Map.empty, Map(-1 -> rootItem))
   }
 }
 

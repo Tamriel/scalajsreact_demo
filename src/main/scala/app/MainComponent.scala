@@ -60,7 +60,7 @@ object MainComponent {
     .build
 
   class TreeItemBackend($ : BackendScope[Props, Unit]) {
-    var inputRef: html.Input = _
+    var inputRef: html.TextArea = _
     var rowRef: html.Element = _
 
     def focusInputAndScrollTo(props: Props, prevPropsOpt: Option[Props] = None) = Callback {
@@ -134,14 +134,14 @@ object MainComponent {
                    CSS.invisible.when(editing),
                    CSS.marginTextToIcon,
                    item.text),
-            <.input(
+            <.textarea(
               CSS.centerVertically,
               CSS.input,
               CSS.invisible.unless(editing),
               ^.value := item.text,
               ^.onChange ==> updateText,
               ^.onKeyDown ==> editFieldKeyDown,
-              ^.onBlur --> mod(_.completeEdit())
+              ^.onBlur --> mod(_.completeEdit()),
             ).ref(inputRef = _)
           ).ref(rowRef = _),
           <.ul(CSS.ulMargins, children).when(item.expanded)
@@ -181,13 +181,23 @@ object MainComponent {
             case KeyCode.Tab | KeyCode.F2           => snap.modState(_.startEditing())
           }
 
-        def ctrlKey: CallbackOption[Unit] =
+        def shiftKey: CallbackOption[Unit] =
           CallbackOption.keyCodeSwitch(e, shiftKey = true) {
             case KeyCode.Enter => snap.modState(_.addChild().startEditing())
           }
 
+        def ctrlKey: CallbackOption[Unit] =
+          CallbackOption.keyCodeSwitch(e, ctrlKey = true) {
+            case KeyCode.I => snap.modState(x => x.addFromPlainText(x.getItem(x.selected.get).text))
+            case KeyCode.P =>
+              Callback {
+                println(snap.value.toJson)
+                println(snap.value.toPlainText)
+              }
+          }
+
         if (db.editing.isEmpty)
-          (plainKey orElse ctrlKey) >> e.preventDefaultCB
+          (plainKey orElse shiftKey orElse ctrlKey) >> e.preventDefaultCB
         else Callback()
       }
 
@@ -225,8 +235,6 @@ object MainComponent {
                 ^.paddingLeft := "2em",
                 <.div(<.h5("Beispielbaum"), <.div(CSS.treeDiv, rootItem)))
         )
-//      <.button(^.onClick --> Callback(println(snap.value.asJson)),
-//                 "Print tree as JSON to developer console")
       ).ref(mainDivRef = _)
     }
   }
