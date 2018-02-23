@@ -1,7 +1,9 @@
 package app
 
+import java.util.UUID
+
 import app.BeforeNext.{Before, Next}
-import app.DataModel.{ROOTID, Tree, TreeItem}
+import app.DataModel.{ItemId, ROOTID, Tree, TreeItem}
 import com.softwaremill.quicklens._
 import io.circe.generic.auto._
 import io.circe.parser._
@@ -13,12 +15,12 @@ object BeforeNext {
 }
 
 case class SimpleDatabase(tree: Tree,
-                          selected: Option[String] = None,
-                          editing: Option[String] = None,
+                          selected: Option[ItemId] = None,
+                          editing: Option[ItemId] = None,
                           instructions: Instructions = Instructions(),
                           lastSelectDirection: BeforeNext = Before) {
 
-  def isEditing(itemId: String): Boolean = editing.contains(itemId)
+  def isEditing(itemId: ItemId): Boolean = editing.contains(itemId)
 
   def startEditing(): SimpleDatabase =
     if (selected.isDefined)
@@ -32,13 +34,15 @@ case class SimpleDatabase(tree: Tree,
 
   def getParent(item: TreeItem): TreeItem = getItem(item.parentId)
 
-  def getItem(id: String): TreeItem = tree.items(id)
+  def getItem(id: ItemId): TreeItem = tree.items(id)
+
+  def rootItem: TreeItem = getItem(ROOTID)
 
   def select(beforeNext: BeforeNext): SimpleDatabase = select(getItem(selected.get), beforeNext)
 
   def select(item: TreeItem): SimpleDatabase = select(item.id)
 
-  def select(id: String): SimpleDatabase =
+  def select(id: ItemId): SimpleDatabase =
     copy(selected = Some(id)).modify(_.instructions.upDown.completed).setTo(true)
 
   private def select(fromItem: TreeItem, beforeNext: BeforeNext): SimpleDatabase = {
@@ -65,7 +69,7 @@ case class SimpleDatabase(tree: Tree,
       val newId = parent.childrenIds(newIndex)
       if (beforeNext == Next) select(newId).copy(lastSelectDirection = Next)
       else {
-        def selectBeforeChildFromParent(id: String): SimpleDatabase = {
+        def selectBeforeChildFromParent(id: ItemId): SimpleDatabase = {
           val beforeItem = getItem(id)
           if (beforeItem.expanded && beforeItem.childrenIds.nonEmpty)
             selectBeforeChildFromParent(beforeItem.childrenIds.last)
@@ -92,9 +96,10 @@ case class SimpleDatabase(tree: Tree,
     selected match {
       case Some(id) =>
         val item = getItem(id)
+        val parent = getParent(item)
         if (item.childrenIds.nonEmpty && item.expanded) toggleExpanded(item)
-        else if (item.parentId != ROOTID)
-          select(item.parentId).modify(_.instructions.left.completed).setTo(true)
+        else if (parent.id != ROOTID)
+          select(parent).modify(_.instructions.left.completed).setTo(true)
         else this
       case _ => this
     }
@@ -117,11 +122,11 @@ case class SimpleDatabase(tree: Tree,
     else res2
   }
 
-  private def deleteId(parentId: String, id: String): SimpleDatabase =
+  private def deleteId(parentId: ItemId, id: ItemId): SimpleDatabase =
     this.modify(_.tree.items.at(parentId).childrenIds).using(_.filter(_ != id))
 
   def addSibling(): SimpleDatabase =
-    if (getItem(ROOTID).childrenIds.isEmpty) addChild(getItem(ROOTID), 0)
+    if (rootItem.childrenIds.isEmpty) addChild(rootItem, 0)
     else {
       val item = getItem(selected.get)
       val parent = getParent(item)
@@ -130,18 +135,18 @@ case class SimpleDatabase(tree: Tree,
     }
 
   def addChild(): SimpleDatabase =
-    if (getItem(ROOTID).childrenIds.isEmpty) addChild(getItem(ROOTID), 0)
+    if (rootItem.childrenIds.isEmpty) addChild(rootItem, 0)
     else addChild(getItem(selected.get), 0).modify(_.instructions.createChild.completed).setTo(true)
 
   def addChild(parentItem: TreeItem, position: Int): SimpleDatabase = {
-    val newItem = TreeItem()
+    val newItem = TreeItem(parentItem.id)
     val res0 = this.modify(_.tree.items).using(_ + (newItem.id -> newItem))
     val res1 = res0.insertId(parentItem.id, position, newItem.id).select(newItem)
     res1.setExpanded(parentItem, expanded = true).copy(lastSelectDirection = Next)
   }
 
-  private def insertId(parentId: String, position: Int, id: String): SimpleDatabase = {
-    def insert(vector: Vector[String]) = {
+  private def insertId(parentId: ItemId, position: Int, id: ItemId): SimpleDatabase = {
+    def insert(vector: Vector[ItemId]) = {
       val splitted = vector.splitAt(position)
       splitted._1 ++ Vector(id) ++ splitted._2
     }
@@ -214,9 +219,10 @@ case class Instructions(
 
 case object SimpleDatabase {
   def simpleDatabase: SimpleDatabase = {
-    val rootItem = TreeItem(id = ROOTID)
-    SimpleDatabase(Tree(Map(ROOTID -> rootItem))).addChild(rootItem, 0)
+    // for the parent UUID of the root exists no TreeItem, so getting the root parent item will throw NoSuchElementException
+    val rootsParentId = ItemId(UUID.fromString("f52ac4f6-0aca-47f8-b9cc-f4a89599b005"))
+    val rootItem = TreeItem(rootsParentId, ROOTID)
+    SimpleDatabase(Tree(Map(rootItem.id -> rootItem))).addChild(rootItem, 0)
   }
-
-  def exampleDatabase: SimpleDatabase = decode[SimpleDatabase](ExampleDatabase.json).right.get
+//  def exampleDatabase: SimpleDatabase = decode[SimpleDatabase](ExampleDatabase.json).right.get
 }

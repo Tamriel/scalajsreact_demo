@@ -2,21 +2,23 @@ package app
 
 import java.util.UUID
 
-import scala.util.Random
-
 object DataModel {
-  case class TodoId(id: UUID)
+  case class ItemId(id: UUID)
 
-  case class TreeItem(text: String = "",
-                      id: String = Random.alphanumeric.take(10).mkString,
-                      parentId: String = "is set on insert",
-                      childrenIds: Vector[String] = Vector.empty,
+  object ItemId {
+    def random = ItemId(UUID.randomUUID)
+  }
+
+  case class TreeItem(parentId: ItemId,
+                      id: ItemId = ItemId.random,
+                      text: String = "",
+                      childrenIds: Vector[ItemId] = Vector.empty,
                       deleted: Boolean = false,
                       expanded: Boolean = true) {
     def indexOf(item: TreeItem): Int = childrenIds.indexOf(item.id)
   }
 
-  case class Tree(items: Map[String, TreeItem])
+  case class Tree(items: Map[ItemId, TreeItem])
 
-  val ROOTID = "root"
+  val ROOTID = ItemId(UUID.fromString("03e405e1-0750-418b-bf08-1cdb1d5bd25b"))
 }

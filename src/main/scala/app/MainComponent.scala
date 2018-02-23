@@ -1,9 +1,9 @@
 package app
 
 import app.BeforeNext.{Before, Next}
-import app.DataModel.ROOTID
 import io.circe.generic.auto._
 import io.circe.syntax._
+import app.DataModel.{ItemId, ROOTID}
 import japgolly.scalajs.react.component.Scala.Unmounted
 import japgolly.scalajs.react.extra.StateSnapshot
 import japgolly.scalajs.react.vdom.html_<^.{<, _}
@@ -16,7 +16,7 @@ import scalacss.ScalaCssReact._
 
 object MainComponent {
 
-  case class Props(stateSnap: StateSnapshot[SimpleDatabase], itemId: String)
+  case class Props(stateSnap: StateSnapshot[SimpleDatabase], itemId: ItemId)
 
   private val InstructionComponent = ScalaComponent
     .builder[Instruction]("Instruction")
@@ -95,11 +95,11 @@ object MainComponent {
       val item = snap.tree.items(props.itemId)
 
       val children = item.childrenIds.toVdomArray(childId =>
-        TreeItemComponent.withKey(childId)(props.copy(itemId = childId)))
+        TreeItemComponent.withKey(childId.toString)(props.copy(itemId = childId)))
 
-      if (item.id == ROOTID)
+      if (item.id == ROOTID) {
         <.ul(CSS.maximize, children) // the root item is invisible, just show its children
-      else {
+      } else {
         def mod(fn: SimpleDatabase => SimpleDatabase): Callback = props.stateSnap.modState(fn)
 
         def updateText(e: ReactEventFromInput) =
@@ -165,8 +165,7 @@ object MainComponent {
 
     def render(db: SimpleDatabase): VdomElement = {
       val snap = StateSnapshot(db).setStateVia($)
-      val rootItem =
-        TreeItemComponent.withKey(ROOTID)(Props(snap, ROOTID))
+      val rootItem = TreeItemComponent.withKey(ROOTID.toString)(Props(snap, ROOTID))
 
       def handleKey(e: ReactKeyboardEvent): Callback = {
         def plainKey: CallbackOption[Unit] = // CallbackOption will stop if a key isn't matched
@@ -236,7 +235,7 @@ object MainComponent {
 
   private val Component = ScalaComponent
     .builder[Unit]("TreeNote")
-    .initialState(SimpleDatabase.exampleDatabase)
+    .initialState(SimpleDatabase.simpleDatabase)
     .renderBackend[MainBackend]
     .componentDidMount(_.backend.init)
     .componentDidUpdate(x => x.backend.init.when(x.currentState.editing.isEmpty).void)
