@@ -32,7 +32,10 @@ case class SimpleDatabase(tree: Tree,
 
   def completeEdit(): SimpleDatabase = copy(editing = None)
 
-  def getParent(item: TreeItem): TreeItem = getItem(item.parentId)
+  def getParent(item: TreeItem): TreeItem =
+    if (item.id == ROOTID)
+      throw new Exception("Could not get parent of the root item, since it has no parent.")
+    else getItem(item.parentId)
 
   def getItem(id: ItemId): TreeItem = tree.items(id)
 
@@ -40,35 +43,41 @@ case class SimpleDatabase(tree: Tree,
 
   def selectedItem: TreeItem = getItem(selected)
 
-  def select(beforeNext: BeforeNext): SimpleDatabase = select(selectedItem, beforeNext)
-
   def select(item: TreeItem): SimpleDatabase = select(item.id)
 
   def select(id: ItemId): SimpleDatabase =
     copy(selected = id).modify(_.instructions.upDown.completed).setTo(true)
 
-  private def select(fromItem: TreeItem, beforeNext: BeforeNext): SimpleDatabase = {
+  def select(beforeNext: BeforeNext): SimpleDatabase =
+    select(selectedItem, beforeNext).getOrElse(this)
+
+  /** Returns true if the selection was successful. */
+  private def select(fromItem: TreeItem, beforeNext: BeforeNext): Option[SimpleDatabase] = {
     val parent = getParent(fromItem)
     val newIndex = parent.indexOf(fromItem) + beforeNext.value
     // if has children and expanded: select first child
     if (beforeNext == Next && fromItem.expanded && fromItem.childrenIds.nonEmpty)
-      select(fromItem.childrenIds.head).copy(lastSelectDirection = Next)
+      Some(select(fromItem.childrenIds.head).copy(lastSelectDirection = Next))
     else if (newIndex < 0) {
-      if (parent.id == ROOTID) this // don't change selection if at top
-      else select(parent).copy(lastSelectDirection = Before)
+      if (parent.id == ROOTID) None // don't change selection if at top
+      else Some(select(parent).copy(lastSelectDirection = Before))
     } else if (newIndex >= parent.childrenIds.length) {
-      if (parent.id == ROOTID) this // don't change selection if at bottom
+      if (parent.id == ROOTID) None
       else {
-        def selectNextParentFromChild(parentItem: TreeItem, lastChild: TreeItem): SimpleDatabase =
+        def selectNextParentFromChild(parentItem: TreeItem,
+                                      lastChild: TreeItem): Option[SimpleDatabase] =
+          // get child if it exists, else try one level up
           parentItem.childrenIds.lift(parentItem.indexOf(lastChild) + 1) match {
-            case Some(childId) => select(childId).copy(lastSelectDirection = Next)
-            case None          => selectNextParentFromChild(getParent(parentItem), parentItem)
+            case Some(childId) => Some(select(childId).copy(lastSelectDirection = Next))
+            case None =>
+              if (parentItem.id == ROOTID) None // don't change selection if at bottom
+              else selectNextParentFromChild(getParent(parentItem), parentItem)
           }
         selectNextParentFromChild(getParent(parent), parent)
       }
     } else {
       val newId = parent.childrenIds(newIndex)
-      if (beforeNext == Next) select(newId).copy(lastSelectDirection = Next)
+      if (beforeNext == Next) Some(select(newId).copy(lastSelectDirection = Next))
       else {
         def selectBeforeChildFromParent(id: ItemId): SimpleDatabase = {
           val beforeItem = getItem(id)
@@ -76,7 +85,7 @@ case class SimpleDatabase(tree: Tree,
             selectBeforeChildFromParent(beforeItem.childrenIds.last)
           else select(beforeItem).copy(lastSelectDirection = Before)
         }
-        selectBeforeChildFromParent(newId)
+        Some(selectBeforeChildFromParent(newId))
       }
     }
   }
@@ -105,12 +114,14 @@ case class SimpleDatabase(tree: Tree,
     this.modify(_.tree.items.at(item.id).text).setTo(newText)
 
   def deleteItem(): SimpleDatabase = {
-    val res0 = select(Before).modify(_.tree.items).using(_.filter(_._2 != selectedItem))
-    val res1 = res0.deleteId(selectedItem.parentId, selectedItem.id)
-    val res2 = res1.modify(_.instructions.delete.completed).setTo(true)
-    if (res2.selected == selectedItem.id) // if not changed due to being the top item
-      res2.select(selectedItem, Next)
-    else res2
+    // if selection is not successful due to being the top item: select the next item
+    val res0 = select(selectedItem, Before) match {
+      case Some(db) => db
+      case None     => select(Next)
+    }
+    val res1 = res0.modify(_.tree.items).using(_.filter(_._2 != selectedItem))
+    val res2 = res1.deleteId(selectedItem.parentId, selectedItem.id)
+    res2.modify(_.instructions.delete.completed).setTo(true)
   }
 
   private def deleteId(parentId: ItemId, id: ItemId): SimpleDatabase =
