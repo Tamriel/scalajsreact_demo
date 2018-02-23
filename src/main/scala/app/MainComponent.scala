@@ -74,7 +74,7 @@ object MainComponent {
       }
 
       // scroll to selection if it's outside the viewport
-      if (db.selected.contains(props.itemId) && rowRef != null) {
+      if (db.selected == props.itemId && rowRef != null) {
         val rect = rowRef.getBoundingClientRect()
         val isInViewport = rect.top.toInt >= 0 && rect.bottom.toInt <= dom.window.innerHeight
         if (!isInViewport) {
@@ -126,7 +126,7 @@ object MainComponent {
         <.div(
           <.div(
             CSS.row,
-            if (snap.selected.contains(item.id)) CSS.selected else CSS.hover,
+            if (snap.selected == item.id) CSS.selected else CSS.hover,
             ^.onDoubleClick --> mod(_.startEditing(item)),
             ^.onClick --> mod(_.select(item)),
             expandIcon,
@@ -188,7 +188,7 @@ object MainComponent {
 
         def ctrlKey: CallbackOption[Unit] =
           CallbackOption.keyCodeSwitch(e, ctrlKey = true) {
-            case KeyCode.I => snap.modState(x => x.addFromPlainText(x.getItem(x.selected.get).text))
+            case KeyCode.I => snap.modState(x => x.addFromPlainText(x.selectedItem.text))
             case KeyCode.P =>
               Callback {
                 println(snap.value.toJson)
