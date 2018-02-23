@@ -10,10 +10,10 @@ import io.circe.generic.auto._
 import io.circe.parser._
 import io.circe.syntax._
 
-sealed trait BeforeNext
+sealed trait BeforeNext { def value: Int }
 object BeforeNext {
-  case object Before extends BeforeNext
-  case object Next extends BeforeNext
+  case object Before extends BeforeNext { val value = -1 }
+  case object Next extends BeforeNext { val value = +1 }
 }
 
 case class SimpleDatabase(tree: Tree,
@@ -49,8 +49,7 @@ case class SimpleDatabase(tree: Tree,
 
   private def select(fromItem: TreeItem, beforeNext: BeforeNext): SimpleDatabase = {
     val parent = getParent(fromItem)
-    val diff = if (beforeNext == Before) -1 else +1
-    val newIndex = parent.indexOf(fromItem) + diff
+    val newIndex = parent.indexOf(fromItem) + beforeNext.value
     // if has children and expanded: select first child
     if (beforeNext == Next && fromItem.expanded && fromItem.childrenIds.nonEmpty)
       select(fromItem.childrenIds.head).copy(lastSelectDirection = Next)
@@ -152,8 +151,7 @@ case class SimpleDatabase(tree: Tree,
 
   private def moveVertically(beforeNext: BeforeNext): SimpleDatabase = {
     val parent = getParent(selectedItem)
-    val diff = if (beforeNext == Before) -1 else +1
-    val newPosition = parent.indexOf(selectedItem) + diff
+    val newPosition = parent.indexOf(selectedItem) + beforeNext.value
     if (newPosition >= 0 && newPosition <= parent.childrenIds.length) {
       val res0 = deleteId(parent.id, selectedItem.id)
       val res1 = res0.insertId(selectedItem.parentId, newPosition, selectedItem.id)
