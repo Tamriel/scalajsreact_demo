@@ -9,6 +9,13 @@ object DataModel {
     def random = ItemId(UUID.randomUUID)
   }
 
+  implicit class InsertVector(vector: Vector[ItemId]) {
+    def insert(position: Int, t: ItemId): Vector[ItemId] = {
+      val splitted = vector.splitAt(position)
+      splitted._1 ++ Vector(t) ++ splitted._2
+    }
+  }
+
   case class TreeItem(parentId: ItemId,
                       id: ItemId = ItemId.random,
                       text: String = "",

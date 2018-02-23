@@ -142,11 +142,7 @@ case class SimpleDatabase(tree: Tree,
   }
 
   private def insertId(parentId: ItemId, position: Int, id: ItemId): SimpleDatabase = {
-    def insert(vector: Vector[ItemId]) = {
-      val splitted = vector.splitAt(position)
-      splitted._1 ++ Vector(id) ++ splitted._2
-    }
-    val res = this.modify(_.tree.items.at(parentId).childrenIds).using(insert)
+    val res = this.modify(_.tree.items.at(parentId).childrenIds).using(_.insert(position, id))
     res.modify(_.tree.items.at(id).parentId).setTo(parentId)
   }
 
