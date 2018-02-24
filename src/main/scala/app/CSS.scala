@@ -31,7 +31,7 @@ object CSS extends StyleSheet.Inline {
   val row = style(
     borderRadius(4 px),
     height(47 px),
-    // https://stackoverflow.com/a/13075912
+    // vertically center content in the row (doc: https://stackoverflow.com/a/13075912 )
     &.before(content := """""""", display.inlineBlock, height(100 %%), verticalAlign.middle)
   )
   val centerVertically = style(display.inlineBlock, verticalAlign.middle)
@@ -52,7 +52,7 @@ object CSS extends StyleSheet.Inline {
                       borderColor(c"#ddd"))
 
   style(
-    unsafeRoot("kbd")(
+    unsafeRoot("kbd")( // style for keyboard keys
       padding(3 px, 5 px),
       border(1 px, solid, c"#c6cbd1"),
       fontSize(17 px),
@@ -66,7 +66,7 @@ object CSS extends StyleSheet.Inline {
       boxShadow := "inset 0 -1px 0 #959da5"
     ),
     unsafeRoot("html")(maximize, style(fontSize(24 px))),
-    unsafeRoot("body")(maximize, overflowY.scroll, backgroundColor(backgroundGrey)), // always show the scrollbar
+    unsafeRoot("body")(maximize, backgroundColor(backgroundGrey), overflowY.scroll), // always show the scrollbar
     unsafeRoot("#root")(maximize)
   )
 }

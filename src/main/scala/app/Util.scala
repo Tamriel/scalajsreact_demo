@@ -5,6 +5,9 @@ import scala.collection.mutable
 import scala.scalajs.js
 
 case object Util {
+
+  /** Can be used to generate pretty printed and colored console output in the Chrome browser.
+    * Source: https://gist.github.com/lihaoyi/7e6c429bf0c18465479450c0a351e8f5 */
   def debug[T](value: sourcecode.Text[T], tag: String = "")(implicit path: sourcecode.Enclosing,
                                                             line: sourcecode.Line): Unit = {
     val titleIter = path.value.split(" |#|\\.").filter(!_.contains("$")).last

@@ -16,6 +16,12 @@ object BeforeNext {
   case object Next extends BeforeNext { val value = +1 }
 }
 
+/** @param selected is the Id of the currently selected item.
+  * @param editing is None if the user does not edit an item. If he edits an item, it is set to the id of the item.
+  * @param instructions is a list of textual instructions. They are marked as completed on special events.
+  *
+  * To modify deeply nested fields of immutable objects, we use a lens library:
+  * http://www.warski.org/blog/2015/02/quicklens-modify-deeply-nested-case-class-fields/ */
 case class SimpleDatabase(tree: Tree,
                           selected: ItemId = ROOTID,
                           editing: Option[ItemId] = None,
@@ -142,7 +148,7 @@ case class SimpleDatabase(tree: Tree,
   def addChild(parentItem: TreeItem, position: Int): SimpleDatabase =
     addChild(parentItem, position, "")
 
-  def addChild(parentItem: TreeItem, position: Int, text: String = ""): SimpleDatabase = {
+  def addChild(parentItem: TreeItem, position: Int, text: String): SimpleDatabase = {
     val newItem = TreeItem(parentItem.id, text = text)
     val res0 = this.modify(_.tree.items).using(_ + (newItem.id -> newItem))
     val res1 = res0.insertId(parentItem.id, position, newItem.id).select(newItem)
@@ -197,6 +203,7 @@ case class SimpleDatabase(tree: Tree,
     this.asJson.toString()
   }
 
+  /** Creates a plaintext version of the tree. Items get indented with tabs. */
   def toPlainText: String = {
     def itemString(item: TreeItem, level: Int): String = {
       val buf = new StringBuilder
@@ -209,11 +216,11 @@ case class SimpleDatabase(tree: Tree,
     itemString(rootItem, 0)
   }
 
+  /** Takes a plaintext tree (where the items are indented with tabs) and adds them to the database. */
   def addFromPlainText(text: String): SimpleDatabase = addFromPlainText(text.split('\n').toList)
 
-  /** Builds a tree structure out of with \t indented rows, each starting with a dash.
-    * New items are inserted from top to bottom. */
   private def addFromPlainText(lines: List[String]): SimpleDatabase =
+    // New items are inserted from top to bottom.
     lines match {
       case line :: remainingLines =>
         val strippedLine = line.dropWhile(_.toString == "\t")
@@ -233,11 +240,15 @@ case class SimpleDatabase(tree: Tree,
 }
 
 case object SimpleDatabase {
+
+  /** Loads a previously saved JSON version of the tree. */
   def exampleDatabase: SimpleDatabase = {
     implicit val itemIdKeyDecoder: KeyDecoder[ItemId] =
       (key: String) => Some(ItemId(UUID.fromString(key)))
     decode[SimpleDatabase](ExampleDatabase.json).right.get
   }
+
+  /** Creates a new database with just one item. */
   def simpleDatabase: SimpleDatabase = {
     // for the parent UUID of the root exists no TreeItem, so getting the root parent item will throw NoSuchElementException
     val rootsParentId = ItemId(UUID.fromString("f52ac4f6-0aca-47f8-b9cc-f4a89599b005"))

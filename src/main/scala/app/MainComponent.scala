@@ -16,6 +16,7 @@ object MainComponent {
 
   case class Props(stateSnap: StateSnapshot[SimpleDatabase], itemId: ItemId)
 
+  /** Displays a single instruction / a task with a checkbox in front. Gets checked and greyed out when accomplished. */
   private val InstructionComponent = ScalaComponent
     .builder[Instruction]("Instruction")
     .render_P { instruction =>
@@ -27,8 +28,9 @@ object MainComponent {
     }
     .build
 
-  private val IntroComponent = ScalaComponent
-    .builder[Instructions]("Intro")
+  /** Displays all instructions in a list with a few headings. */
+  private val ManualComponent = ScalaComponent
+    .builder[Instructions]("Manual")
     .render_P { ins =>
       def comp(instruction: Instruction) =
         InstructionComponent.withKey(instruction.text)(instruction)
@@ -55,25 +57,31 @@ object MainComponent {
   private val TreeItemComponent = ScalaComponent
     .builder[Props]("TreeItem")
     .renderBackend[TreeItemBackend]
-    .componentDidMount(x => x.backend.focusInputAndScrollTo(x.props))
-    .componentDidUpdate(x => x.backend.focusInputAndScrollTo(x.currentProps, Some(x.prevProps)))
+    // when the user creates an item, it shall get focused and get scrolled into the visible area
+    .componentDidMount(x => x.backend.focusInput(x.props) >> x.backend.scrollIntoView(x.props))
+    // do the same when the user starts editing (which is equal to "do it, unless he was editing before")
+    .componentDidUpdate(x =>
+      (x.backend.focusInput(x.currentProps) >> x.backend.scrollIntoView(x.currentProps))
+        .unless_(x.prevProps.stateSnap.value.isEditing(x.currentProps.itemId)))
     .build
 
   class TreeItemBackend($ : BackendScope[Props, Unit]) {
     var inputRef: html.TextArea = _
     var rowRef: html.Element = _
 
-    def focusInputAndScrollTo(props: Props, prevPropsOpt: Option[Props] = None) = Callback {
+    /** Focus the input and sets the cursor position to the end of the text of the edited item.*/
+    def focusInput(props: Props) = Callback {
       val db = props.stateSnap.value
-
-      if (db.isEditing(props.itemId) &&
-          (prevPropsOpt.isEmpty || !prevPropsOpt.get.stateSnap.value.isEditing(props.itemId))) {
+      if (db.isEditing(props.itemId)) {
         inputRef.focus()
-        val end = db.getItem(props.itemId).text.length
-        inputRef.setSelectionRange(end, end)
+        val textLength = db.getItem(props.itemId).text.length
+        inputRef.setSelectionRange(textLength, textLength)
       }
+    }
 
-      // scroll to selection if it's outside the viewport
+    /** Scroll to selection if it's outside the viewport. */
+    def scrollIntoView(props: Props) = Callback {
+      val db = props.stateSnap.value
       if (db.selected == props.itemId && rowRef != null) {
         val rect = rowRef.getBoundingClientRect()
         val isInViewport = rect.top.toInt >= 0 && rect.bottom.toInt <= dom.window.innerHeight
@@ -110,7 +118,9 @@ object MainComponent {
           }
 
         def toggleExpanded(e: ReactEvent) = {
-          e.stopPropagation() // the select on click handler shall not be called
+          // when clicking the toggle arrow, the underlying item gets selected due to the click handler in the div
+          // prevent that:
+          e.stopPropagation()
           mod(_.toggleExpanded(item))
         }
 
@@ -141,7 +151,7 @@ object MainComponent {
               ^.value := item.text,
               ^.onChange ==> updateText,
               ^.onKeyDown ==> editFieldKeyDown,
-              ^.onBlur --> mod(_.completeEdit()),
+              ^.onBlur --> mod(_.completeEdit()) // onBlur is called when clicking outside the textarea / input
             ).ref(inputRef = _)
           ).ref(rowRef = _),
           <.ul(CSS.ulMargins, children).when(item.expanded)
@@ -153,9 +163,9 @@ object MainComponent {
   class MainBackend($ : BackendScope[Unit, SimpleDatabase]) {
     private var mainDivRef: html.Element = _
 
-    def init: Callback =
-      Callback { // The mainDiv needs focus to capture keys. But focus without scrolling.
-        val x = dom.window.pageXOffset.toInt
+    def focus: Callback =
+      Callback {
+        val x = dom.window.pageXOffset.toInt // Disable scrolling when focusing
         val y = dom.window.pageYOffset.toInt
         mainDivRef.focus()
         dom.window.scrollTo(x, y)
@@ -226,16 +236,18 @@ object MainComponent {
         <.div(
           CSS.columns,
           <.div(
-            ^.className := "column col-5 col-xl-6 col-ml-auto", // width of 5, but width of 6 on screens < 1280px
+            // "col-5 col-xl-6" results in a width of 5, but a width of 6 on screens < 1280px
+            // "col-ml-auto" means 'margin-left: auto' and results in right alignment
+            ^.className := "column col-5 col-xl-6 col-ml-auto",
             ^.paddingRight := "2em",
             ^.paddingLeft := "1em",
-            IntroComponent(db.instructions)
+            ManualComponent(db.instructions)
           ),
           <.div(^.className := "column col-5 col-xl-6 col-mr-auto",
                 ^.paddingLeft := "2em",
                 <.div(<.h5("Beispielbaum"), <.div(CSS.treeDiv, rootItem)))
         )
-      ).ref(mainDivRef = _)
+      ).ref(mainDivRef = _) // set reference (doc: https://github.com/japgolly/scalajs-react/blob/master/doc/REFS.md )
     }
   }
 
@@ -243,8 +255,9 @@ object MainComponent {
     .builder[Unit]("TreeNote")
     .initialState(SimpleDatabase.exampleDatabase)
     .renderBackend[MainBackend]
-    .componentDidMount(_.backend.init)
-    .componentDidUpdate(x => x.backend.init.when(x.currentState.editing.isEmpty).void)
+    .componentDidMount(_.backend.focus)
+    // The mainDiv needs to have focus to capture keys. So when the user is not editing: focus it
+    .componentDidUpdate(x => x.backend.focus.when(x.currentState.editing.isEmpty).void)
     .build
 
   def apply(): Unmounted[Unit, SimpleDatabase, MainBackend] = Component()
