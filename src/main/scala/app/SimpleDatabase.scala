@@ -140,15 +140,13 @@ case class SimpleDatabase(tree: Tree,
     else addChild(selectedItem, 0).modify(_.instructions.createChild.completed).setTo(true)
 
   def addChild(parentItem: TreeItem, position: Int): SimpleDatabase =
-    addChild(parentItem, position, "")._1
+    addChild(parentItem, position, "")
 
-  def addChild(parentItem: TreeItem,
-               position: Int,
-               text: String = ""): (SimpleDatabase, TreeItem) = {
+  def addChild(parentItem: TreeItem, position: Int, text: String = ""): SimpleDatabase = {
     val newItem = TreeItem(parentItem.id, text = text)
     val res0 = this.modify(_.tree.items).using(_ + (newItem.id -> newItem))
     val res1 = res0.insertId(parentItem.id, position, newItem.id).select(newItem)
-    (res1.setExpanded(parentItem, expanded = true).copy(lastSelectDirection = Next), newItem)
+    res1.setExpanded(parentItem, expanded = true).copy(lastSelectDirection = Next)
   }
 
   private def insertId(parentId: ItemId, position: Int, id: ItemId): SimpleDatabase = {
@@ -211,30 +209,27 @@ case class SimpleDatabase(tree: Tree,
     itemString(rootItem, 0)
   }
 
-  /** Builds a tree structure out of indented rows.
-    * Idea: Insert new items from top to bottom.
-    * When inserting a new item, the parent is the last inserted item with the same indention minus one.
-    * We save the last inserted index position per indention level, to know where to insert the next item. */
-  def addFromPlainText(text: String): SimpleDatabase = {
-    def add(db0: SimpleDatabase,
-            lines: List[String],
-            indentionToInsertIndex: Map[Int, Int],
-            indentionToParent: Map[Int, TreeItem]): SimpleDatabase =
-      lines match {
-        case line :: remainingLines =>
-          val strippedLine = line.dropWhile(_.toString == "\t")
-          val indention = line.length - strippedLine.length
-          val parent = indentionToParent(indention - 1)
-          val index = indentionToInsertIndex.getOrElse(indention, 0)
-          val (db1, newItem) = db0.addChild(parent, index, strippedLine.stripPrefix("- "))
-          add(db1,
-              remainingLines,
-              indentionToInsertIndex + (indention -> (index + 1)),
-              indentionToParent + (indention -> newItem))
-        case _ => db0
-      }
-    add(this, text.split('\n').toList, Map.empty, Map(-1 -> rootItem))
-  }
+  def addFromPlainText(text: String): SimpleDatabase = addFromPlainText(text.split('\n').toList)
+
+  /** Builds a tree structure out of with \t indented rows, each starting with a dash.
+    * New items are inserted from top to bottom. */
+  private def addFromPlainText(lines: List[String]): SimpleDatabase =
+    lines match {
+      case line :: remainingLines =>
+        val strippedLine = line.dropWhile(_.toString == "\t")
+        val indention = line.length - strippedLine.length
+        // get the bottom-most item for a specific indention
+        def getLowestItemOfIndention(currentItem: TreeItem, indention: Int): TreeItem =
+          indention match {
+            case 0 => currentItem
+            case i => getLowestItemOfIndention(getItem(currentItem.childrenIds.last), i - 1)
+          }
+        val parent = getLowestItemOfIndention(rootItem, indention)
+        val index = parent.childrenIds.length
+        val res = addChild(parent, index, strippedLine.stripPrefix("- "))
+        res.addFromPlainText(remainingLines)
+      case _ => this
+    }
 }
 
 case object SimpleDatabase {
