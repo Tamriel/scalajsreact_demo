@@ -715,15 +715,15 @@ object ExampleDatabase {
     "instructions" : {
       "upDown" : {
       "text" : "Wandere mit den Pfeiltasten <kbd><i class=\"fas fa-arrow-up fa-xs\"></i></kbd> und <kbd><i class=\"fas fa-arrow-down fa-xs\"></i></kbd> durch die Einträge.",
-      "completed" : true
+      "completed" : false
     },
       "right" : {
       "text" : "Klappe mit <kbd><i class=\"fas fa-arrow-right fa-xs\"></i></kbd> den selektierten Eintrag aus.",
-      "completed" : true
+      "completed" : false
     },
       "left" : {
       "text" : "Springe mit <kbd><i class=\"fas fa-arrow-left fa-xs\"></i></kbd> zum Eltern-Eintrag.",
-      "completed" : true
+      "completed" : false
     },
       "tabEdit" : {
       "text" : "Bearbeite den Text, indem du <kbd>Tab</kbd> drückst.",
@@ -731,7 +731,7 @@ object ExampleDatabase {
     },
       "clickEdit" : {
       "text" : "Oder indem du einen Eintrag doppelklickst.",
-      "completed" : true
+      "completed" : false
     },
       "create" : {
       "text" : "Erstelle einen Eintrag mit <kbd>Enter</kbd>.",
@@ -743,11 +743,11 @@ object ExampleDatabase {
     },
       "delete" : {
       "text" : "Lösche den selektierten Eintrag mit <kbd>Entf</kbd>.",
-      "completed" : true
+      "completed" : false
     },
       "moveVertically" : {
       "text" : "Bewege den selektierten Eintrag mit <kbd>W</kbd> und <kbd>S</kbd> nach oben und unten.",
-      "completed" : true
+      "completed" : false
     },
       "moveRight" : {
       "text" : "<kbd>D</kbd> verschiebt den selektierten Eintrag eine Ebene tiefer, in diese Richtung <i class=\"fas fa-hand-point-right\"></i>.",
@@ -755,7 +755,7 @@ object ExampleDatabase {
     },
       "moveLeft" : {
       "text" : "<kbd>A</kbd> verschiebt den selektierten Eintrag eine Ebene höher, in diese Richtung <i class=\"fas fa-hand-point-left\"></i>.",
-      "completed" : true
+      "completed" : false
     }
     },
     "lastSelectDirection" : {
