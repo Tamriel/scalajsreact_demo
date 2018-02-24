@@ -16,13 +16,17 @@ object CSS extends StyleSheet.Inline {
   val icon = style(addClassName("fas fa-lg"), width(16 px), marginLeft(8 px))
   val marginTextToIcon = style(marginLeft(9.3 px))
   val input =
-    style(marginLeft(6 px),
-          height(45 px).important,
-          addClassName("form-input"),
-          width(90 %%),
-          padding(2 px),
-          paddingTop(9.8 px),
-          resize.none)
+    style(
+      marginLeft(6 px),
+      height(45 px).important,
+      addClassName("form-input"),
+      width(90 %%),
+      paddingLeft(2 px),
+      paddingRight(2 px),
+      paddingBottom(2 px),
+      paddingTop(9.8 px),
+      resize.none
+    )
   val fontAwesomeUl = style(addClassName("fa-ul"))
   val row = style(
     borderRadius(4 px),
