@@ -44,7 +44,7 @@ object MainComponent {
                 <.ul(CSS.fontAwesomeUl, comp(ins.tabEdit), comp(ins.clickEdit))),
           <.div(<.h6(CSS.topMargin, "Hinzufügen"),
                 <.ul(CSS.fontAwesomeUl, comp(ins.create), comp(ins.createChild), comp(ins.delete))),
-          <.div(<.h6(CSS.topMargin, "Srukturieren"),
+          <.div(<.h6(CSS.topMargin, "Strukturieren"),
                 <.ul(CSS.fontAwesomeUl,
                      comp(ins.moveVertically),
                      comp(ins.moveRight),
