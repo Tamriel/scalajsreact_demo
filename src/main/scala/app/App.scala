@@ -13,6 +13,7 @@ case object Prototype extends Page { val title = "Prototyp" }
 case object Features extends Page { val title = "Features" }
 case object BusinessModel extends Page { val title = "Geschäftsmodell" }
 case object Contact extends Page { val title = "Kontakt" }
+case object Thanks extends Page { val title = "Danke" }
 
 object App {
   val startUrl = "/secret/"
@@ -31,7 +32,8 @@ object App {
       | staticRoute(root, Prototype) ~> render(MainComponent())
       | staticRoute("features", Features) ~> render(FeaturesComponent.component())
       | staticRoute("business-model", BusinessModel) ~> render(BusinessModelComponent.component())
-      | staticRoute("kontakt", Contact) ~> render(ContactComponent.component()))
+      | staticRoute("contact", Contact) ~> render(ContactComponent.component())
+      | staticRoute("thanks", Thanks) ~> render(ThanksComponent.component()))
       .notFound(redirectToPage(Prototype)(Redirect.Replace))
       .renderWith(layout)
       .setTitle(p => p.title + " | TreeNote - Kollaboratives Wissens- und Projektmanagement")

@@ -8,7 +8,7 @@ import scalacss.ScalaCssReact._
 
 object ContactComponent {
 
-  val component = ScalaComponent.static("BusinessModel")(
+  val component = ScalaComponent.static("Contact")(
     <.div(
       CSS.smallCenteredColumn,
       greySpan("Schreibe uns eine E-Mail an "),
