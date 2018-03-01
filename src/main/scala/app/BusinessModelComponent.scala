@@ -12,6 +12,7 @@ object BusinessModelComponent {
     <.div(
       CSS.bigCenteredColumn,
       <.h6("BusinessModel blabla"),
-      p("Bearbeitung von Inhalten findet in Baumstrukturen statt und ist damit von Grund auf strukturiert und systematisch")
+      greySpan(
+        "Bearbeitung von Inhalten findet in Baumstrukturen statt und ist damit von Grund auf strukturiert und systematisch")
     ))
 }

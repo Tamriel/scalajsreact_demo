@@ -12,6 +12,7 @@ sealed trait Page
 case object Prototype extends Page
 case object Features extends Page
 case object BusinessModel extends Page
+case object Contact extends Page
 
 object App {
   val startUrl = "/secret/"
@@ -29,7 +30,8 @@ object App {
     (trimSlashes
       | staticRoute(root, Prototype) ~> render(MainComponent())
       | staticRoute("features", Features) ~> render(FeaturesComponent.component())
-      | staticRoute("business-model", BusinessModel) ~> render(BusinessModelComponent.component()))
+      | staticRoute("business-model", BusinessModel) ~> render(BusinessModelComponent.component())
+      | staticRoute("kontakt", Contact) ~> render(ContactComponent.component()))
       .notFound(redirectToPage(Prototype)(Redirect.Replace))
       .renderWith(layout)
       .setTitle(p => s"$p | TreeNote - Kollaboratives Wissens- und Projektmanagement")
@@ -70,11 +72,14 @@ object App {
                  props.c.setOnClick(target),
                  name))
 
-      <.div(CSS.bigCenteredColumn,
-            <.ul(^.cls := "tab tab-block",
-                 nav("Prototyp", Prototype),
-                 nav("Features", Features),
-                 nav("Business Model", BusinessModel)))
+      <.div(
+        CSS.bigCenteredColumn,
+        <.ul(^.cls := "tab tab-block",
+             nav("Prototyp", Prototype),
+             nav("Features", Features),
+             nav("Business Model", BusinessModel),
+             nav("Kontakt", Contact))
+      )
     }
     .build
 

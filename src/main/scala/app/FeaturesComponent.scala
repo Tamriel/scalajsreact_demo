@@ -12,7 +12,8 @@ object FeaturesComponent {
     <.div(
       CSS.bigCenteredColumn,
       <.h6("Gamtlösung für die Bearbeitung und Gestaltung von Projekten"),
-      p("Bearbeitung von Inhalten findet in Baumstrukturen statt und ist damit von Grund auf strukturiert und systematisch"),
+      greySpan(
+        "Bearbeitung von Inhalten findet in Baumstrukturen statt und ist damit von Grund auf strukturiert und systematisch"),
       <.img(^.src := "res/features/feature_1.png")
     ))
 }

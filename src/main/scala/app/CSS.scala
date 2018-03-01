@@ -45,6 +45,7 @@ object CSS extends StyleSheet.Inline {
   val noOutline = style(outline.none)
   val columns = style(addClassName("columns"))
   val topMargin = style(marginTop(32 px))
+  val smallTopMargin = style(marginTop(10 px))
   val treeDiv = style(marginTop(1 em),
                       backgroundColor.white,
                       borderRadius(4 px),
@@ -54,6 +55,7 @@ object CSS extends StyleSheet.Inline {
   val tab = style(addClassName("tab-item"))
   val active = style(addClassName("active"))
   val bigCenteredColumn = style(addClassName("col-10 col-xl-12 col-mx-auto"))
+  val smallCenteredColumn = style(addClassName("col-6 col-mx-auto"))
 
   style(
     unsafeRoot("kbd")( // style for keyboard keys
