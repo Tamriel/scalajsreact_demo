@@ -41,7 +41,7 @@ object CSS extends StyleSheet.Inline {
   val hover = style(&.hover(backgroundColor(veryBrightViolet)))
   val ulMargins = style(marginTop.`0`, marginBottom.`0`, marginLeft(45 px))
   val maximize = style(height(100 %%), margin.`0`)
-  val mainContainer = style(addClassName("container"), outline.none)
+  val noOutline = style(outline.none)
   val columns = style(addClassName("columns"))
   val topMargin = style(marginTop(32 px))
   val treeDiv = style(marginTop(1 em),
@@ -50,6 +50,8 @@ object CSS extends StyleSheet.Inline {
                       borderStyle(solid),
                       borderWidth(1 px),
                       borderColor(c"#ddd"))
+  val tab = style(addClassName("tab-item"))
+  val active = style(addClassName("active"))
 
   style(
     unsafeRoot("kbd")( // style for keyboard keys
@@ -67,6 +69,5 @@ object CSS extends StyleSheet.Inline {
     ),
     unsafeRoot("html")(maximize, style(fontSize(24 px))),
     unsafeRoot("body")(maximize, backgroundColor(backgroundGrey), overflowY.scroll), // always show the scrollbar
-    unsafeRoot("#root")(maximize)
   )
 }

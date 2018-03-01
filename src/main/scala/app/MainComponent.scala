@@ -213,41 +213,20 @@ object MainComponent {
 
       <.div(
         CSS.maximize,
-        CSS.mainContainer,
+        CSS.noOutline,
+        CSS.columns,
         ^.tabIndex := 0, // needs to be focusable to receive key presses
         ^.onKeyDown ==> handleKey,
         <.div(
-          CSS.columns,
-          ^.paddingTop := "10px",
-          ^.paddingBottom := "55px",
-          <.div(^.className := "column col-5",
-                <.img(^.src := "res/logo_violett_90px.png", ^.className := "float-right")),
-          <.div(
-            ^.className := "column col-4",
-            <.h1("TreeNote",
-                 ^.fontSize := "1.6rem",
-                 ^.marginTop := ".05em",
-                 ^.marginBottom := ".2em"),
-            <.h2("Kollaboratives Wissens- und Projektmanagement",
-                 ^.fontSize := ".9rem",
-                 ^.fontWeight := "400")
-          )
+          ^.className := "column col-5 col-xl-6 col-ml-auto",
+          ^.paddingRight := "2em",
+          ^.paddingLeft := "1em",
+          ManualComponent(db.instructions)
         ),
-        <.div(
-          CSS.columns,
-          <.div(
-            // "col-5 col-xl-6" results in a width of 5, but a width of 6 on screens < 1280px
-            // "col-ml-auto" means 'margin-left: auto' and results in right alignment
-            ^.className := "column col-5 col-xl-6 col-ml-auto",
-            ^.paddingRight := "2em",
-            ^.paddingLeft := "1em",
-            ManualComponent(db.instructions)
-          ),
-          <.div(^.className := "column col-5 col-xl-6 col-mr-auto",
-                ^.paddingLeft := "2em",
-                <.div(<.h5("Beispielbaum"), <.div(CSS.treeDiv, rootItem)))
-        )
-      ).ref(mainDivRef = _) // set reference (doc: https://github.com/japgolly/scalajs-react/blob/master/doc/REFS.md )
+        <.div(^.className := "column col-5 col-xl-6 col-mr-auto",
+              ^.paddingLeft := "2em",
+              <.div(<.h5("Beispielbaum"), <.div(CSS.treeDiv, rootItem)))
+      ).ref(mainDivRef = _)
     }
   }
 
