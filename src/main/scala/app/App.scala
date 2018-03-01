@@ -14,9 +14,13 @@ case object Features extends Page
 case object BusinessModel extends Page
 
 object App {
+  val startUrl = "/secret/"
   val baseUrl = dom.window.location.hostname match {
-    case "localhost" | "127.0.0.1" | "0.0.0.0" => BaseUrl.fromWindowUrl(_.takeWhile(_ != '#'))
-    case _                                     => BaseUrl.fromWindowOrigin / "secret/"
+    // When developing, the url IntelliJ opens is something like
+    // `http://localhost:63342/TreeNote/index-dev.html?_ijt=nr2tnh5eia2r6oeqhffh3k21q4/`.
+    // It is 78 chars long, so to get the baseURL, we need to cut anything after 78 chars:
+    case "localhost" => BaseUrl.fromWindowUrl(s => s.take(78) + startUrl)
+    case _           => BaseUrl.fromWindowOrigin / startUrl
   }
 
   val routerConfig = RouterConfigDsl[Page].buildConfig { dsl =>
@@ -24,8 +28,8 @@ object App {
 
     (trimSlashes
       | staticRoute(root, Prototype) ~> render(MainComponent())
-      | staticRoute("#features", Features) ~> render(FeaturesComponent.component())
-      | staticRoute("#business-model", BusinessModel) ~> render(BusinessModelComponent.component()))
+      | staticRoute("features", Features) ~> render(FeaturesComponent.component())
+      | staticRoute("business-model", BusinessModel) ~> render(BusinessModelComponent.component()))
       .notFound(redirectToPage(Prototype)(Redirect.Replace))
       .renderWith(layout)
       .setTitle(p => s"$p | TreeNote - Kollaboratives Wissens- und Projektmanagement")
