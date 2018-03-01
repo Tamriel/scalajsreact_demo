@@ -1,6 +1,6 @@
 package app
 
-import japgolly.scalajs.react.vdom.html_<^.<
+import japgolly.scalajs.react.vdom.html_<^._
 import org.scalajs.dom
 
 import scala.collection.mutable
@@ -10,6 +10,8 @@ import scalacss.ScalaCssReact._
 case object Util {
 
   val greySpan = <.span(CSS.grey)
+  val awesomeUl = <.ul(CSS.fontAwesomeUl)
+  val topMarginH6 = <.h6(^.marginTop := "32 px")
 
   /** Can be used to generate pretty printed and colored console output in the Chrome browser.
     * Source: https://gist.github.com/lihaoyi/7e6c429bf0c18465479450c0a351e8f5 */

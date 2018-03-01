@@ -44,7 +44,6 @@ object CSS extends StyleSheet.Inline {
   val maximize = style(height(100 %%), margin.`0`)
   val noOutline = style(outline.none)
   val columns = style(addClassName("columns"))
-  val topMargin = style(marginTop(32 px))
   val smallTopMargin = style(marginTop(10 px))
   val treeDiv = style(marginTop(1 em),
                       backgroundColor.white,

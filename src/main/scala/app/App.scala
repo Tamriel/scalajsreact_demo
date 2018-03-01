@@ -8,11 +8,11 @@ import org.scalajs.dom
 
 import scalacss.ScalaCssReact._
 
-sealed trait Page
-case object Prototype extends Page
-case object Features extends Page
-case object BusinessModel extends Page
-case object Contact extends Page
+sealed trait Page { def title: String }
+case object Prototype extends Page { val title = "Prototyp" }
+case object Features extends Page { val title = "Features" }
+case object BusinessModel extends Page { val title = "Geschäftsmodell" }
+case object Contact extends Page { val title = "Kontakt" }
 
 object App {
   val startUrl = "/secret/"
@@ -34,28 +34,12 @@ object App {
       | staticRoute("kontakt", Contact) ~> render(ContactComponent.component()))
       .notFound(redirectToPage(Prototype)(Redirect.Replace))
       .renderWith(layout)
-      .setTitle(p => s"$p | TreeNote - Kollaboratives Wissens- und Projektmanagement")
+      .setTitle(p => p.title + " | TreeNote - Kollaboratives Wissens- und Projektmanagement")
   }
 
   def layout(c: RouterCtl[Page], r: Resolution[Page]) =
     <.div(
-      <.div(
-        CSS.columns,
-        ^.paddingTop := "10px",
-        ^.paddingBottom := "20px",
-        <.div(^.className := "column col-5",
-              <.img(^.src := "res/logo_violett_90px.png", ^.className := "float-right")),
-        <.div(
-          ^.className := "column col-4",
-          <.h1("TreeNote",
-               ^.fontSize := "1.6rem",
-               ^.marginTop := ".05em",
-               ^.marginBottom := ".2em"),
-          <.h2("Kollaboratives Wissens- und Projektmanagement",
-               ^.fontSize := ".9rem",
-               ^.fontWeight := "400")
-        )
-      ),
+      LogoComponent.component(),
       <.div(CSS.columns, ^.paddingBottom := "40px", navMenuComponent(MenuProps(c, r.page))),
       <.div(^.cls := "container", r.render())
     )
@@ -75,10 +59,10 @@ object App {
       <.div(
         CSS.bigCenteredColumn,
         <.ul(^.cls := "tab tab-block",
-             nav("Prototyp", Prototype),
-             nav("Features", Features),
-             nav("Business Model", BusinessModel),
-             nav("Kontakt", Contact))
+             nav(Prototype.title, Prototype),
+             nav(Features.title, Features),
+             nav(BusinessModel.title, BusinessModel),
+             nav(Contact.title, Contact))
       )
     }
     .build

@@ -2,10 +2,11 @@ package app
 
 import app.BeforeNext.{Before, Next}
 import app.DataModel.{ItemId, ROOTID}
+import app.Util._
+import japgolly.scalajs.react._
 import japgolly.scalajs.react.component.Scala.Unmounted
 import japgolly.scalajs.react.extra.StateSnapshot
-import japgolly.scalajs.react.vdom.html_<^.{<, _}
-import japgolly.scalajs.react.{Callback, ScalaComponent, _}
+import japgolly.scalajs.react.vdom.html_<^._
 import org.scalajs.dom
 import org.scalajs.dom.ext.KeyCode
 import org.scalajs.dom.html
@@ -38,17 +39,13 @@ object MainComponent {
         <.h5("Anleitung"),
         <.ul(
           ^.marginLeft := "0",
-          <.div(<.h6(CSS.topMargin, "Ansehen"),
-                <.ul(CSS.fontAwesomeUl, comp(ins.upDown), comp(ins.right), comp(ins.left))),
-          <.div(<.h6(CSS.topMargin, "Bearbeiten"),
-                <.ul(CSS.fontAwesomeUl, comp(ins.tabEdit), comp(ins.clickEdit))),
-          <.div(<.h6(CSS.topMargin, "Hinzufügen"),
-                <.ul(CSS.fontAwesomeUl, comp(ins.create), comp(ins.createChild), comp(ins.delete))),
-          <.div(<.h6(CSS.topMargin, "Strukturieren"),
-                <.ul(CSS.fontAwesomeUl,
-                     comp(ins.moveVertically),
-                     comp(ins.moveRight),
-                     comp(ins.moveLeft)))
+          <.div(topMarginH6("Ansehen"),
+                awesomeUl(comp(ins.upDown), comp(ins.right), comp(ins.left))),
+          <.div(topMarginH6("Bearbeiten"), awesomeUl(comp(ins.tabEdit), comp(ins.clickEdit))),
+          <.div(topMarginH6("Hinzufügen"),
+                awesomeUl(comp(ins.create), comp(ins.createChild), comp(ins.delete))),
+          <.div(topMarginH6("Strukturieren"),
+                awesomeUl(comp(ins.moveVertically), comp(ins.moveRight), comp(ins.moveLeft)))
         )
       )
     }
