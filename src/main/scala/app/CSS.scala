@@ -9,6 +9,7 @@ object CSS extends StyleSheet.Inline {
   val brightViolet = c"#e2e2ff"
   val veryBrightViolet = c"#f9f9ff"
   val veryLightGrey = style(color(c"#d9d9d9"))
+  val grey = style(color(rgb(105, 105, 105)))
   val checkSquare = style(addClassName("fa-li far fa-check-square"))
   val square = style(addClassName("fa-li far fa-square"))
   val angleRight = style(addClassName("fa-angle-right"))
@@ -52,6 +53,7 @@ object CSS extends StyleSheet.Inline {
                       borderColor(c"#ddd"))
   val tab = style(addClassName("tab-item"))
   val active = style(addClassName("active"))
+  val bigCenteredColumn = style(addClassName("col-10 col-xl-12 col-mx-auto"))
 
   style(
     unsafeRoot("kbd")( // style for keyboard keys

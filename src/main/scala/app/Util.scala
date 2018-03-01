@@ -1,10 +1,15 @@
 package app
 
+import japgolly.scalajs.react.vdom.html_<^.<
 import org.scalajs.dom
+
 import scala.collection.mutable
 import scala.scalajs.js
+import scalacss.ScalaCssReact._
 
 case object Util {
+
+  val p = <.p(CSS.grey)
 
   /** Can be used to generate pretty printed and colored console output in the Chrome browser.
     * Source: https://gist.github.com/lihaoyi/7e6c429bf0c18465479450c0a351e8f5 */

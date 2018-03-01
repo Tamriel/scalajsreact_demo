@@ -70,13 +70,11 @@ object App {
                  props.c.setOnClick(target),
                  name))
 
-      <.div(
-        ^.cls := "col-10 col-xl-12 col-mx-auto",
-        <.ul(^.cls := "tab tab-block",
-             nav("Prototyp", Prototype),
-             nav("Features", Features),
-             nav("Business Model", BusinessModel))
-      )
+      <.div(CSS.bigCenteredColumn,
+            <.ul(^.cls := "tab tab-block",
+                 nav("Prototyp", Prototype),
+                 nav("Features", Features),
+                 nav("Business Model", BusinessModel)))
     }
     .build
 
