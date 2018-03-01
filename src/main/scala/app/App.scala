@@ -61,8 +61,8 @@ object App {
     .render_P { props =>
       def nav(name: String, target: Page) =
         <.li(CSS.tab,
-             <.a(CSS.active.when(target == props.selectedPage),
-                 ^.href := "",
+             <.a(CSS.pointer,
+                 CSS.active.when(target == props.selectedPage),
                  props.c.setOnClick(target),
                  name))
 
