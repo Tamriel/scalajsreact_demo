@@ -1,6 +1,7 @@
 package app
 
 import app.BeforeNext.{Before, Next}
+import app.DataModel.ItemType.{DoneTask, Note, Task}
 import app.DataModel.{ItemId, ROOTID}
 import app.Util._
 import japgolly.scalajs.react._
@@ -122,15 +123,21 @@ object MainComponent {
           mod(_.toggleExpanded(item))
         }
 
+        def toggleType(e: ReactEvent) = {
+          e.stopPropagation()
+          mod(_.toggleType(item))
+        }
+
         val editing = snap.isEditing(item.id)
         val expandIcon =
           if (item.childrenIds.nonEmpty)
             <.i(if (item.expanded) CSS.angleDown else CSS.angleRight,
                 CSS.pointer,
                 CSS.centerVertically,
-                CSS.icon,
+                CSS.expandIcon,
                 ^.onClick ==> toggleExpanded)
-          else <.i(CSS.icon)
+          else <.i(CSS.expandIcon)
+
         <.div(
           <.div(
             CSS.row,
@@ -138,9 +145,19 @@ object MainComponent {
             ^.onDoubleClick --> mod(_.startEditing(item)),
             ^.onClick --> mod(_.select(item)),
             expandIcon,
-            <.span(CSS.centerVertically,
+            <.i(
+              CSS.taskIcon,
+              CSS.lightGrey.when(item.itemType == DoneTask),
+              CSS.checkedCheckBox.when(item.itemType == DoneTask),
+              CSS.checkBox.when(item.itemType == Task),
+              CSS.pointer,
+              CSS.centerVertically,
+              ^.onClick ==> toggleType
+            ).when(item.itemType != Note),
+            <.span(CSS.lightGrey.when(item.itemType == DoneTask),
+                   CSS.centerVertically,
                    CSS.invisible.when(editing),
-                   CSS.marginTextToIcon,
+                   CSS.marginBeforeText,
                    item.text),
             <.textarea(
               CSS.centerVertically,
@@ -178,6 +195,7 @@ object MainComponent {
           CallbackOption.keyCodeSwitch(e) {
             case KeyCode.Delete | KeyCode.Backspace => snap.modState(_.deleteItem())
             case KeyCode.Enter                      => snap.modState(_.addSibling().startEditing())
+            case KeyCode.Space                      => snap.modState(_.toggleType())
             case KeyCode.Up                         => snap.modState(_.select(Before))
             case KeyCode.Down                       => snap.modState(_.select(Next))
             case KeyCode.Left                       => snap.modState(_.collapseOrJumpUp())
@@ -230,7 +248,7 @@ object MainComponent {
 
   private val Component = ScalaComponent
     .builder[Unit]("TreeNote")
-    .initialState(SimpleDatabase.exampleDatabase)
+    .initialState(SimpleDatabase.simpleDatabase)
     .renderBackend[MainBackend]
     .componentDidMount(_.backend.focus)
     // The mainDiv needs to have focus to capture keys. So when the user is not editing: focus it

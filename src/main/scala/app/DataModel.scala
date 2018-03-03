@@ -2,6 +2,8 @@ package app
 
 import java.util.UUID
 
+import app.DataModel.ItemType._
+
 object DataModel {
   case class ItemId(id: UUID)
 
@@ -16,12 +18,20 @@ object DataModel {
     }
   }
 
+  sealed trait ItemType
+  object ItemType {
+    case object Note extends ItemType
+    case object Task extends ItemType
+    case object DoneTask extends ItemType
+  }
+
   case class TreeItem(parentId: ItemId,
                       id: ItemId = ItemId.random,
                       text: String = "",
                       childrenIds: Vector[ItemId] = Vector.empty,
                       deleted: Boolean = false,
-                      expanded: Boolean = true) {
+                      expanded: Boolean = true,
+                      itemType: ItemType = Note) {
     def indexOf(item: TreeItem): Int = childrenIds.indexOf(item.id)
   }
 

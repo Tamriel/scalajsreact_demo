@@ -3,12 +3,13 @@ package app
 import java.util.UUID
 
 import app.BeforeNext.{Before, Next}
-import app.DataModel.{ItemId, ROOTID, Tree, TreeItem}
+import app.DataModel.ItemType.{DoneTask, Note, Task}
+import app.DataModel.{ItemId, ItemType, ROOTID, Tree, TreeItem}
 import com.softwaremill.quicklens._
-import io.circe.{KeyDecoder, KeyEncoder}
 import io.circe.generic.auto._
 import io.circe.parser._
 import io.circe.syntax._
+import io.circe.{KeyDecoder, KeyEncoder}
 
 sealed trait BeforeNext { def value: Int }
 object BeforeNext {
@@ -118,6 +119,17 @@ case class SimpleDatabase(tree: Tree,
 
   def setText(item: TreeItem, newText: String): SimpleDatabase =
     this.modify(_.tree.items.at(item.id).text).setTo(newText)
+
+  def toggleType(): SimpleDatabase = toggleType(selectedItem)
+
+  def toggleType(item: TreeItem): SimpleDatabase = item.itemType match {
+    case Note     => setType(item, Task)
+    case Task     => setType(item, DoneTask)
+    case DoneTask => setType(item, Note)
+  }
+
+  def setType(item: TreeItem, newItemType: ItemType): SimpleDatabase =
+    this.modify(_.tree.items.at(item.id).itemType).setTo(newItemType)
 
   def deleteItem(): SimpleDatabase = {
     // if selection is not successful due to being the top item: select the next item
