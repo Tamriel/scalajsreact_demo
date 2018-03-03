@@ -43,9 +43,8 @@ object MainComponent {
           ^.marginLeft := "0",
           <.div(topMarginH6("Ansehen"),
                 awesomeUl(comp(ins.upDown), comp(ins.right), comp(ins.left))),
-          <.div(topMarginH6("Bearbeiten"), awesomeUl(comp(ins.tabEdit), comp(ins.clickEdit))),
-          <.div(topMarginH6("Hinzufügen"),
-                awesomeUl(comp(ins.create), comp(ins.createChild), comp(ins.delete))),
+          <.div(topMarginH6("Bearbeiten"),
+                awesomeUl(comp(ins.tabEdit), comp(ins.clickEdit), comp(ins.create))),
           <.div(topMarginH6("Strukturieren"),
                 awesomeUl(comp(ins.moveVertically), comp(ins.moveRight), comp(ins.moveLeft)))
         )

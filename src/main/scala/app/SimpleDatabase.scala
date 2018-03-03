@@ -138,8 +138,7 @@ case class SimpleDatabase(tree: Tree,
       case None     => select(Next)
     }
     val res1 = res0.modify(_.tree.items).using(_.filter(_._2 != selectedItem))
-    val res2 = res1.deleteId(selectedItem.parentId, selectedItem.id)
-    res2.modify(_.instructions.delete.completed).setTo(true)
+    res1.deleteId(selectedItem.parentId, selectedItem.id)
   }
 
   private def deleteId(parentId: ItemId, id: ItemId): SimpleDatabase =
@@ -155,7 +154,7 @@ case class SimpleDatabase(tree: Tree,
 
   def addChild(): SimpleDatabase =
     if (rootItem.childrenIds.isEmpty) addChild(rootItem, 0)
-    else addChild(selectedItem, 0).modify(_.instructions.createChild.completed).setTo(true)
+    else addChild(selectedItem, 0)
 
   def addChild(parentItem: TreeItem, position: Int): SimpleDatabase =
     addChild(parentItem, position, "")
@@ -280,9 +279,6 @@ case class Instructions(
     tabEdit: Instruction = Instruction("Bearbeite den Text, indem du <kbd>Tab</kbd> drückst"),
     clickEdit: Instruction = Instruction("Oder indem du einen Eintrag doppelklickst"),
     create: Instruction = Instruction("Erstelle einen Eintrag mit <kbd>Enter</kbd>"),
-    createChild: Instruction = Instruction(
-      "Erstelle einen Unter-Eintrag mit <kbd>Shift</kbd> + <kbd>Enter</kbd>"),
-    delete: Instruction = Instruction("Lösche den selektierten Eintrag mit <kbd>Entf</kbd>"),
     moveVertically: Instruction = Instruction(
       "Bewege den selektierten Eintrag mit <kbd>W</kbd> und <kbd>S</kbd> nach oben und unten"),
     moveRight: Instruction = Instruction(
