@@ -27,7 +27,8 @@ case class SimpleDatabase(tree: Tree,
                           selected: ItemId = ROOTID,
                           editing: Option[ItemId] = None,
                           instructions: Instructions = Instructions(),
-                          lastSelectDirection: BeforeNext = Before) {
+                          lastSelectDirection: BeforeNext = Before,
+                          currentRootOfView: ItemId = ROOTID) {
 
   def isEditing(itemId: ItemId): Boolean = editing.contains(itemId)
 
@@ -66,10 +67,10 @@ case class SimpleDatabase(tree: Tree,
     if (beforeNext == Next && fromItem.expanded && fromItem.childrenIds.nonEmpty)
       Some(select(fromItem.childrenIds.head).copy(lastSelectDirection = Next))
     else if (newIndex < 0) {
-      if (parent.id == ROOTID) None // don't change selection if at top
+      if (parent.id == currentRootOfView) None // don't change selection if at top
       else Some(select(parent).copy(lastSelectDirection = Before))
     } else if (newIndex >= parent.childrenIds.length) {
-      if (parent.id == ROOTID) None
+      if (parent.id == currentRootOfView) None
       else {
         def selectNextParentFromChild(parentItem: TreeItem,
                                       lastChild: TreeItem): Option[SimpleDatabase] =
@@ -77,7 +78,7 @@ case class SimpleDatabase(tree: Tree,
           parentItem.childrenIds.lift(parentItem.indexOf(lastChild) + 1) match {
             case Some(childId) => Some(select(childId).copy(lastSelectDirection = Next))
             case None =>
-              if (parentItem.id == ROOTID) None // don't change selection if at bottom
+              if (parentItem.id == currentRootOfView) None // don't change selection if at bottom
               else selectNextParentFromChild(getParent(parentItem), parentItem)
           }
         selectNextParentFromChild(getParent(parent), parent)
@@ -206,6 +207,12 @@ case class SimpleDatabase(tree: Tree,
       val res2 = res1.setExpanded(newParent, expanded = true)
       res2.modify(_.instructions.moveRight.completed).setTo(true)
     } else this
+  }
+
+  def zoomInto(item: TreeItem): SimpleDatabase = {
+    val res = copy(currentRootOfView = item.id)
+    if (item.childrenIds.nonEmpty) res.select(item.childrenIds.head)
+    else res.select(item)
   }
 
   def toJson: String = {

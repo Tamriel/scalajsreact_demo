@@ -95,13 +95,13 @@ object MainComponent {
     }
 
     def render(props: Props): VdomElement = {
-      val snap = props.stateSnap.value
-      val item = snap.tree.items(props.itemId)
+      val db = props.stateSnap.value
+      val item = db.tree.items(props.itemId)
 
       val children = item.childrenIds.toVdomArray(childId =>
         TreeItemComponent.withKey(childId.toString)(props.copy(itemId = childId)))
 
-      if (item.id == ROOTID) {
+      if (item.id == db.currentRootOfView) {
         <.ul(CSS.maximize, children) // the root item is invisible, just show its children
       } else {
         def mod(fn: SimpleDatabase => SimpleDatabase): Callback = props.stateSnap.modState(fn)
@@ -127,7 +127,7 @@ object MainComponent {
           mod(_.toggleType(item))
         }
 
-        val editing = snap.isEditing(item.id)
+        val editing = db.isEditing(item.id)
         val expandIcon =
           if (item.childrenIds.nonEmpty)
             <.i(if (item.expanded) CSS.angleDown else CSS.angleRight,
@@ -140,7 +140,7 @@ object MainComponent {
         <.div(
           <.div(
             CSS.row,
-            if (snap.selected == item.id) CSS.selected else CSS.hover,
+            if (db.selected == item.id) CSS.selected else CSS.hover,
             ^.onDoubleClick --> mod(_.startEditing(item)),
             ^.onClick --> mod(_.select(item)),
             expandIcon,
@@ -187,7 +187,8 @@ object MainComponent {
 
     def render(db: SimpleDatabase): VdomElement = {
       val snap = StateSnapshot(db).setStateVia($)
-      val rootItem = TreeItemComponent.withKey(ROOTID.toString)(Props(snap, ROOTID))
+      val rootItem =
+        TreeItemComponent.withKey(db.currentRootOfView.toString)(Props(snap, db.currentRootOfView))
 
       def handleKey(e: ReactKeyboardEvent): Callback = {
         def plainKey: CallbackOption[Unit] = // CallbackOption will stop if a key isn't matched
@@ -213,7 +214,8 @@ object MainComponent {
 
         def ctrlKey: CallbackOption[Unit] =
           CallbackOption.keyCodeSwitch(e, ctrlKey = true) {
-            case KeyCode.I => snap.modState(x => x.addFromPlainText(x.selectedItem.text))
+            case KeyCode.I     => snap.modState(x => x.addFromPlainText(x.selectedItem.text))
+            case KeyCode.Enter => snap.modState(x => x.zoomInto(x.selectedItem))
             case KeyCode.P =>
               Callback {
                 println(snap.value.toJson)
