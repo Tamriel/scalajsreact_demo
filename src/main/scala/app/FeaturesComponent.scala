@@ -14,6 +14,6 @@ object FeaturesComponent {
       <.h6("Gamtlösung für die Bearbeitung und Gestaltung von Projekten"),
       greySpan(
         "Bearbeitung von Inhalten findet in Baumstrukturen statt und ist damit von Grund auf strukturiert und systematisch"),
-      <.img(^.src := "res/features/feature_1.png")
+      <.img(^.src := "res/img/features/feature_1.png")
     ))
 }

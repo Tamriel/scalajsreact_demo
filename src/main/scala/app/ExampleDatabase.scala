@@ -714,47 +714,47 @@ object ExampleDatabase {
     "editing" : null,
     "instructions" : {
       "upDown" : {
-      "text" : "Wandere mit den Pfeiltasten <kbd><i class=\"fas fa-arrow-up fa-xs\"></i></kbd> und <kbd><i class=\"fas fa-arrow-down fa-xs\"></i></kbd> durch die Einträge.",
+      "text" : "Wandere mit den Pfeiltasten <kbd><i style=\"font-size: 12px;\" class=\"icon-up\"></i></kbd> und <kbd><i style=\"font-size: 12px;\" class=\"icon-down\"></i></kbd> durch die Einträge",
       "completed" : false
     },
       "right" : {
-      "text" : "Klappe mit <kbd><i class=\"fas fa-arrow-right fa-xs\"></i></kbd> den selektierten Eintrag aus.",
+      "text" : "Klappe mit <kbd><i style=\"font-size: 12px;\" class=\"icon-right\"></i></kbd> den selektierten Eintrag aus",
       "completed" : false
     },
       "left" : {
-      "text" : "Springe mit <kbd><i class=\"fas fa-arrow-left fa-xs\"></i></kbd> zum Eltern-Eintrag.",
+      "text" : "Springe mit <kbd><i style=\"font-size: 12px;\" class=\"icon-left\"></i></kbd> zum Eltern-Eintrag",
       "completed" : false
     },
       "tabEdit" : {
-      "text" : "Bearbeite den Text, indem du <kbd>Tab</kbd> drückst.",
+      "text" : "Bearbeite den Text, indem du <kbd>Tab</kbd> drückst",
       "completed" : false
     },
       "clickEdit" : {
-      "text" : "Oder indem du einen Eintrag doppelklickst.",
+      "text" : "Oder indem du einen Eintrag doppelklickst",
       "completed" : false
     },
       "create" : {
-      "text" : "Erstelle einen Eintrag mit <kbd>Enter</kbd>.",
+      "text" : "Erstelle einen Eintrag mit <kbd>Enter</kbd>",
       "completed" : false
     },
       "createChild" : {
-      "text" : "Erstelle einen Unter-Eintrag mit <kbd>Shift</kbd> + <kbd>Enter</kbd>.",
+      "text" : "Erstelle einen Unter-Eintrag mit <kbd>Shift</kbd> + <kbd>Enter</kbd>",
       "completed" : false
     },
       "delete" : {
-      "text" : "Lösche den selektierten Eintrag mit <kbd>Entf</kbd>.",
+      "text" : "Lösche den selektierten Eintrag mit <kbd>Entf</kbd>",
       "completed" : false
     },
       "moveVertically" : {
-      "text" : "Bewege den selektierten Eintrag mit <kbd>W</kbd> und <kbd>S</kbd> nach oben und unten.",
+      "text" : "Bewege den selektierten Eintrag mit <kbd>W</kbd> und <kbd>S</kbd> nach oben und unten",
       "completed" : false
     },
       "moveRight" : {
-      "text" : "<kbd>D</kbd> verschiebt den selektierten Eintrag eine Ebene tiefer, in diese Richtung <i class=\"fas fa-hand-point-right\"></i>.",
+      "text" : "<kbd>D</kbd> verschiebt den selektierten Eintrag eine Ebene tiefer, in diese Richtung <i class=\"icon-right-hand\"></i>",
       "completed" : false
     },
       "moveLeft" : {
-      "text" : "<kbd>A</kbd> verschiebt den selektierten Eintrag eine Ebene höher, in diese Richtung <i class=\"fas fa-hand-point-left\"></i>.",
+      "text" : "<kbd>A</kbd> verschiebt den selektierten Eintrag eine Ebene höher, in diese Richtung <i class=\"icon-left-hand\"></i>",
       "completed" : false
     }
     },

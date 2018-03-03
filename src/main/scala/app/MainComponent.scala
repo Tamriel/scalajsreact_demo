@@ -22,8 +22,9 @@ object MainComponent {
     .builder[Instruction]("Instruction")
     .render_P { instruction =>
       <.li(
+        if (instruction.completed) CSS.checkedCheckBox else CSS.checkBox,
+        CSS.iconLi,
         CSS.veryLightGrey.when(instruction.completed),
-        <.i(if (instruction.completed) CSS.checkSquare else CSS.square),
         <.span(^.dangerouslySetInnerHtml := " " + instruction.text)
       )
     }

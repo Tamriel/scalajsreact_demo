@@ -10,7 +10,7 @@ import scalacss.ScalaCssReact._
 case object Util {
 
   val greySpan = <.span(CSS.grey)
-  val awesomeUl = <.ul(CSS.fontAwesomeUl)
+  val awesomeUl = <.ul(CSS.iconUl)
   val topMarginH6 = <.h6(^.marginTop := "32 px")
 
   /** Can be used to generate pretty printed and colored console output in the Chrome browser.

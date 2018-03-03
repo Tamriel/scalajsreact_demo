@@ -10,11 +10,15 @@ object CSS extends StyleSheet.Inline {
   val veryBrightViolet = c"#f9f9ff"
   val veryLightGrey = style(color(c"#d9d9d9"))
   val grey = style(color(rgb(105, 105, 105)))
-  val checkSquare = style(addClassName("fa-li far fa-check-square"))
-  val square = style(addClassName("fa-li far fa-square"))
-  val angleRight = style(addClassName("fa-angle-right"))
-  val angleDown = style(addClassName("fa-angle-down"))
-  val icon = style(addClassName("fas fa-lg"), width(16 px), marginLeft(8 px))
+  // replace bullets with icons (doc: https://stackoverflow.com/a/25602272/1655547 )
+  val iconUl = style(listStyleType := "none")
+  val iconLi = style(position.relative, paddingLeft(33 px), &.before(position.absolute, left(0 px), top(2 px), fontSize(23 px)))
+  val checkBox = style(addClassName("icon-check-empty"))
+  val checkedCheckBox = style(addClassName("icon-check"))
+  val angleRight = style(addClassName("icon-right-open"))
+  val angleDown = style(addClassName("icon-down-open"))
+  // 'inlineBlock' aligns the text of items without expand arrow with the text of items with expand arrow
+  val icon = style(display.inlineBlock, width(16 px), marginLeft(8 px))
   val marginTextToIcon = style(marginLeft(9.3 px))
   val input =
     style(
@@ -28,11 +32,10 @@ object CSS extends StyleSheet.Inline {
       paddingTop(9.8 px),
       resize.none
     )
-  val fontAwesomeUl = style(addClassName("fa-ul"))
   val row = style(
     borderRadius(4 px),
     height(47 px),
-    // vertically center content in the row (doc: https://stackoverflow.com/a/13075912 )
+    // vertically center content in the row (doc: https://stackoverflow.com/a/13075912)
     &.before(content := """""""", display.inlineBlock, height(100 %%), verticalAlign.middle)
   )
   val centerVertically = style(display.inlineBlock, verticalAlign.middle)

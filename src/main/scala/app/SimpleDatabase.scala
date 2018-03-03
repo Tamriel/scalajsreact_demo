@@ -260,20 +260,20 @@ case object SimpleDatabase {
 case class Instruction(text: String, completed: Boolean = false)
 case class Instructions(
     upDown: Instruction = Instruction(
-      "Wandere mit den Pfeiltasten <kbd><i class=\"fas fa-arrow-up fa-xs\"></i></kbd> und <kbd><i class=\"fas fa-arrow-down fa-xs\"></i></kbd> durch die Einträge."),
+      "Wandere mit den Pfeiltasten <kbd><i style=\"font-size: 12px;\" class=\"icon-up\"></i></kbd> und <kbd><i style=\"font-size: 12px;\" class=\"icon-down\"></i></kbd> durch die Einträge"),
     right: Instruction = Instruction(
-      "Klappe mit <kbd><i class=\"fas fa-arrow-right fa-xs\"></i></kbd> den selektierten Eintrag aus."),
+      "Klappe mit <kbd><i style=\"font-size: 12px;\" class=\"icon-right\"></i></kbd> den selektierten Eintrag aus"),
     left: Instruction = Instruction(
-      "Springe mit <kbd><i class=\"fas fa-arrow-left fa-xs\"></i></kbd> zum Eltern-Eintrag."),
-    tabEdit: Instruction = Instruction("Bearbeite den Text, indem du <kbd>Tab</kbd> drückst."),
-    clickEdit: Instruction = Instruction("Oder indem du einen Eintrag doppelklickst."),
-    create: Instruction = Instruction("Erstelle einen Eintrag mit <kbd>Enter</kbd>."),
+      "Springe mit <kbd><i style=\"font-size: 12px;\" class=\"icon-left\"></i></kbd> zum Eltern-Eintrag"),
+    tabEdit: Instruction = Instruction("Bearbeite den Text, indem du <kbd>Tab</kbd> drückst"),
+    clickEdit: Instruction = Instruction("Oder indem du einen Eintrag doppelklickst"),
+    create: Instruction = Instruction("Erstelle einen Eintrag mit <kbd>Enter</kbd>"),
     createChild: Instruction = Instruction(
-      "Erstelle einen Unter-Eintrag mit <kbd>Shift</kbd> + <kbd>Enter</kbd>."),
-    delete: Instruction = Instruction("Lösche den selektierten Eintrag mit <kbd>Entf</kbd>."),
+      "Erstelle einen Unter-Eintrag mit <kbd>Shift</kbd> + <kbd>Enter</kbd>"),
+    delete: Instruction = Instruction("Lösche den selektierten Eintrag mit <kbd>Entf</kbd>"),
     moveVertically: Instruction = Instruction(
-      "Bewege den selektierten Eintrag mit <kbd>W</kbd> und <kbd>S</kbd> nach oben und unten."),
+      "Bewege den selektierten Eintrag mit <kbd>W</kbd> und <kbd>S</kbd> nach oben und unten"),
     moveRight: Instruction = Instruction(
-      "<kbd>D</kbd> verschiebt den selektierten Eintrag eine Ebene tiefer, in diese Richtung <i class=\"fas fa-hand-point-right\"></i>."),
+      "<kbd>D</kbd> verschiebt den selektierten Eintrag eine Ebene tiefer, in diese Richtung <i class=\"icon-right-hand\"></i>"),
     moveLeft: Instruction = Instruction(
-      "<kbd>A</kbd> verschiebt den selektierten Eintrag eine Ebene höher, in diese Richtung <i class=\"fas fa-hand-point-left\"></i>."))
+      "<kbd>A</kbd> verschiebt den selektierten Eintrag eine Ebene höher, in diese Richtung <i class=\"icon-left-hand\"></i>"))

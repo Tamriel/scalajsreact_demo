@@ -33,3 +33,9 @@ The app shall be deployed to a folder called `secret`, so the base url will be `
 ## CSS
 - `col-5 col-xl-6` results in a width of 5, but a width of 6 on screens < 1280px
 - `col-ml-auto` means 'margin-left: auto' and results in right alignment
+
+### Icons
+- We use [Fontello](http://fontello.com/) to supply just the icons we use in form of a font, from a range if icon packs:
+- On Fontello, click the settings symbol -> Import and upload the file `res/ss/config.json`. It defines the icons used in TreeNote.
+- Add icons, download the new font, replace `res/font/`, `res/css/config.json` and `res/css/fontello-icons.css`.
+- To change the size if icons, change the font size, e.g. in `CSS.scala` define `val myIcon = style(addClassName("icon-arrow"), fontSize(20 px))`
