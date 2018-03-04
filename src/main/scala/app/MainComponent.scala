@@ -101,7 +101,7 @@ object MainComponent {
       val children = item.childrenIds.toVdomArray(childId =>
         TreeItemComponent.withKey(childId.toString)(props.copy(itemId = childId)))
 
-      if (item.id == db.currentRootOfView) {
+      if (item.id == db.currentRootId) {
         <.ul(CSS.maximize, children) // the root item is invisible, just show its children
       } else {
         def mod(fn: SimpleDatabase => SimpleDatabase): Callback = props.stateSnap.modState(fn)
@@ -197,7 +197,7 @@ object MainComponent {
     def render(db: SimpleDatabase): VdomElement = {
       val snap = StateSnapshot(db).setStateVia($)
       val rootItem =
-        TreeItemComponent.withKey(db.currentRootOfView.toString)(Props(snap, db.currentRootOfView))
+        TreeItemComponent.withKey(db.currentRootId.toString)(Props(snap, db.currentRootId))
 
       def handleKey(e: ReactKeyboardEvent): Callback = {
         def plainKey: CallbackOption[Unit] = // CallbackOption will stop if a key isn't matched

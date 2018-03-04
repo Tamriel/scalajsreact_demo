@@ -14,7 +14,7 @@ object Breadcrumbs {
     .render_P { props =>
       val db = props.stateSnap.value
       val item = db.getItem(props.itemId)
-      val isRoot = item.id == db.currentRootOfView
+      val isRoot = item.id == db.currentRootId
 
       def zoom() =
         // the current root crumb shall not be clickable, since it is already zoomed into it

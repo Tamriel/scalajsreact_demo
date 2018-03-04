@@ -28,7 +28,7 @@ case class SimpleDatabase(tree: Tree,
                           editing: Option[ItemId] = None,
                           instructions: Instructions = Instructions(),
                           lastSelectDirection: BeforeNext = Before,
-                          currentRootOfView: ItemId = ROOTID) {
+                          currentRootId: ItemId = ROOTID) {
 
   def isEditing(itemId: ItemId): Boolean = editing.contains(itemId)
 
@@ -47,7 +47,7 @@ case class SimpleDatabase(tree: Tree,
 
   def getItem(id: ItemId): TreeItem = tree.items(id)
 
-  def currentRoot: TreeItem = getItem(currentRootOfView)
+  def currentRoot: TreeItem = getItem(currentRootId)
 
   def rootItem: TreeItem = getItem(ROOTID)
 
@@ -70,10 +70,10 @@ case class SimpleDatabase(tree: Tree,
     if (beforeNext == Next && fromItem.expanded && fromItem.childrenIds.nonEmpty)
       Some(select(fromItem.childrenIds.head).copy(lastSelectDirection = Next))
     else if (newIndex < 0) {
-      if (parent.id == currentRootOfView) None // don't change selection if at top
+      if (parent.id == currentRootId) None // don't change selection if at top
       else Some(select(parent).copy(lastSelectDirection = Before))
     } else if (newIndex >= parent.childrenIds.length) {
-      if (parent.id == currentRootOfView) None
+      if (parent.id == currentRootId) None
       else {
         def selectNextParentFromChild(parentItem: TreeItem,
                                       lastChild: TreeItem): Option[SimpleDatabase] =
@@ -81,7 +81,7 @@ case class SimpleDatabase(tree: Tree,
           parentItem.childrenIds.lift(parentItem.indexOf(lastChild) + 1) match {
             case Some(childId) => Some(select(childId).copy(lastSelectDirection = Next))
             case None =>
-              if (parentItem.id == currentRootOfView) None // don't change selection if at bottom
+              if (parentItem.id == currentRootId) None // don't change selection if at bottom
               else selectNextParentFromChild(getParent(parentItem), parentItem)
           }
         selectNextParentFromChild(getParent(parent), parent)
@@ -116,7 +116,7 @@ case class SimpleDatabase(tree: Tree,
       if (selectedItem.childrenIds.nonEmpty && selectedItem.expanded) toggleExpanded(selectedItem)
       else if (currentRoot.childrenIds.isEmpty) zoomInto(currentRoot.parentId)
       else if (parent.id != ROOTID)
-        if (parent.id == currentRootOfView) zoomInto(currentRoot.parentId)
+        if (parent.id == currentRootId) zoomInto(currentRoot.parentId)
         else select(parent).modify(_.instructions.left.completed).setTo(true)
       else this
     }
@@ -224,7 +224,7 @@ case class SimpleDatabase(tree: Tree,
 
   def zoomInto(id: ItemId): SimpleDatabase = {
     val item = getItem(id)
-    val res = copy(currentRootOfView = item.id)
+    val res = copy(currentRootId = item.id)
     if (item.childrenIds.nonEmpty) res.select(item.childrenIds.head)
     else res.select(item)
   }
