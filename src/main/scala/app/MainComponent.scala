@@ -205,6 +205,7 @@ object MainComponent {
             case KeyCode.A                          => snap.modState(_.moveLeft())
             case KeyCode.D                          => snap.modState(_.moveRight())
             case KeyCode.Tab | KeyCode.F2           => snap.modState(_.startEditing())
+            case KeyCode.Escape                     => snap.modState(x => x.zoomInto(ROOTID))
           }
 
         def shiftKey: CallbackOption[Unit] =
@@ -215,7 +216,7 @@ object MainComponent {
         def ctrlKey: CallbackOption[Unit] =
           CallbackOption.keyCodeSwitch(e, ctrlKey = true) {
             case KeyCode.I     => snap.modState(x => x.addFromPlainText(x.selectedItem.text))
-            case KeyCode.Enter => snap.modState(x => x.zoomInto(x.selectedItem))
+            case KeyCode.Enter => snap.modState(x => x.zoomInto(x.selected))
             case KeyCode.P =>
               Callback {
                 println(snap.value.toJson)
@@ -240,14 +241,17 @@ object MainComponent {
           ^.paddingLeft := "1em",
           ManualComponent(db.instructions)
         ),
-        <.div(^.className := "column col-5 col-xl-6 col-mr-auto",
-              ^.paddingLeft := "2em",
-              <.div(<.h5("Beispielbaum"), <.div(CSS.treeDiv, rootItem)))
+        <.div(
+          ^.className := "column col-5 col-xl-6 col-mr-auto",
+          ^.paddingLeft := "2em",
+          <.div(<.h5("Beispielbaum"),
+                <.div(CSS.treeDiv, Breadcrumbs.BreadcrumbsComponent(snap), rootItem))
+        )
       ).ref(mainDivRef = _)
     }
   }
 
-  private val Component = ScalaComponent
+  private val MainComponent = ScalaComponent
     .builder[Unit]("TreeNote")
     .initialState(SimpleDatabase.simpleDatabase)
     .renderBackend[MainBackend]
@@ -256,5 +260,5 @@ object MainComponent {
     .componentDidUpdate(x => x.backend.focus.when(x.currentState.editing.isEmpty).void)
     .build
 
-  def apply(): Unmounted[Unit, SimpleDatabase, MainBackend] = Component()
+  def apply() = MainComponent()
 }

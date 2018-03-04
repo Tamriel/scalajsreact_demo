@@ -47,6 +47,8 @@ case class SimpleDatabase(tree: Tree,
 
   def getItem(id: ItemId): TreeItem = tree.items(id)
 
+  def currentRoot: TreeItem = getItem(currentRootOfView)
+
   def rootItem: TreeItem = getItem(ROOTID)
 
   def selectedItem: TreeItem = getItem(selected)
@@ -209,11 +211,17 @@ case class SimpleDatabase(tree: Tree,
     } else this
   }
 
-  def zoomInto(item: TreeItem): SimpleDatabase = {
+  def zoomInto(id: ItemId): SimpleDatabase = {
+    val item = getItem(id)
     val res = copy(currentRootOfView = item.id)
     if (item.childrenIds.nonEmpty) res.select(item.childrenIds.head)
     else res.select(item)
   }
+
+  /** Returns a list of all parent item ids, starting with root. */
+  def parentIds(item: TreeItem, ret: List[ItemId] = List.empty): List[ItemId] =
+    if (item.id == ROOTID) item.id :: ret
+    else parentIds(getItem(item.parentId), item.id :: ret)
 
   def toJson: String = {
     // https://circe.github.io/circe/codec.html#custom-key-types
@@ -270,7 +278,7 @@ case object SimpleDatabase {
   def simpleDatabase: SimpleDatabase = {
     // for the parent UUID of the root exists no TreeItem, so getting the root parent item will throw NoSuchElementException
     val rootsParentId = ItemId(UUID.fromString("f52ac4f6-0aca-47f8-b9cc-f4a89599b005"))
-    val rootItem = TreeItem(rootsParentId, ROOTID)
+    val rootItem = TreeItem(rootsParentId, ROOTID, text = "Home")
     SimpleDatabase(Tree(Map(rootItem.id -> rootItem))).addChild(rootItem, 0)
   }
 }
