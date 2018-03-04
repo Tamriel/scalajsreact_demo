@@ -25,7 +25,7 @@ object CSS extends StyleSheet.Inline {
   val crumb = style(paddingLeft(8 px), paddingRight(8 px), paddingTop(6 px), paddingBottom(6 px), borderRadius(4 px))
   val crumbMargin = 5 px
   val crumbBar = style(paddingLeft(crumbMargin), paddingRight(crumbMargin), paddingTop(11 px), paddingBottom(crumbMargin))
-  val line = style(border(0 px), height(1 px), backgroundColor(borderGrey), margin(0 px), marginTop(10 px))
+  val line = style(border(0 px), height(1 px), backgroundColor(borderGrey), marginLeft(0 px), marginRight(0 px), marginBottom(0 px), marginTop(10 px))
   val semiBold = style(fontWeight._500)
   val angleDown = style(addClassName("icon-down-open"))
   val centerVertically = style(display.inlineBlock, verticalAlign.middle)

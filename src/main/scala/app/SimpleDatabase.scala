@@ -59,7 +59,8 @@ case class SimpleDatabase(tree: Tree,
     copy(selected = id).modify(_.instructions.upDown.completed).setTo(true)
 
   def select(beforeNext: BeforeNext): SimpleDatabase =
-    select(selectedItem, beforeNext).getOrElse(this)
+    if (currentRoot.childrenIds.isEmpty) this
+    else select(selectedItem, beforeNext).getOrElse(this)
 
   /** Returns true if the selection was successful. */
   private def select(fromItem: TreeItem, beforeNext: BeforeNext): Option[SimpleDatabase] = {
@@ -101,19 +102,24 @@ case class SimpleDatabase(tree: Tree,
   }
 
   def expandOrSelectChild(): SimpleDatabase =
-    if (selectedItem.childrenIds.nonEmpty) {
+    if (selectedItem.isProject) zoomInto(selected)
+    else if (selectedItem.childrenIds.nonEmpty) {
       if (!selectedItem.expanded)
         toggleExpanded(selectedItem).modify(_.instructions.right.completed).setTo(true)
       else select(Next)
     } else this
 
-  def collapseOrJumpUp(): SimpleDatabase = {
-    val parent = getParent(selectedItem)
-    if (selectedItem.childrenIds.nonEmpty && selectedItem.expanded) toggleExpanded(selectedItem)
-    else if (parent.id != ROOTID)
-      select(parent).modify(_.instructions.left.completed).setTo(true)
-    else this
-  }
+  def collapseOrJumpUp(): SimpleDatabase =
+    if (currentRoot.id == ROOTID && currentRoot.childrenIds.isEmpty) this
+    else {
+      val parent = getParent(selectedItem)
+      if (selectedItem.childrenIds.nonEmpty && selectedItem.expanded) toggleExpanded(selectedItem)
+      else if (currentRoot.childrenIds.isEmpty) zoomInto(currentRoot.parentId)
+      else if (parent.id != ROOTID)
+        if (parent.id == currentRootOfView) zoomInto(currentRoot.parentId)
+        else select(parent).modify(_.instructions.left.completed).setTo(true)
+      else this
+    }
 
   def toggleExpanded(item: TreeItem): SimpleDatabase = setExpanded(item, !item.expanded)
 
@@ -139,21 +145,21 @@ case class SimpleDatabase(tree: Tree,
     res.setExpanded(selectedItem, false)
   }
 
-  def deleteItem(): SimpleDatabase = {
-    // if selection is not successful due to being the top item: select the next item
-    val res0 = select(selectedItem, Before) match {
-      case Some(db) => db
-      case None     => select(Next)
+  def deleteItem(): SimpleDatabase =
+    if (currentRoot.childrenIds.isEmpty) this
+    else {
+      // if selection is not successful due to being the top item: select the next item
+      val res0 = select(selectedItem, Before).getOrElse(
+        select(selectedItem, Next).getOrElse(select(currentRoot)))
+      val res1 = res0.modify(_.tree.items).using(_.filter(_._2 != selectedItem))
+      res1.deleteId(selectedItem.parentId, selectedItem.id)
     }
-    val res1 = res0.modify(_.tree.items).using(_.filter(_._2 != selectedItem))
-    res1.deleteId(selectedItem.parentId, selectedItem.id)
-  }
 
   private def deleteId(parentId: ItemId, id: ItemId): SimpleDatabase =
     this.modify(_.tree.items.at(parentId).childrenIds).using(_.filter(_ != id))
 
   def addSibling(): SimpleDatabase =
-    if (rootItem.childrenIds.isEmpty) addChild(rootItem, 0)
+    if (currentRoot.childrenIds.isEmpty) addChild(currentRoot, 0)
     else {
       val parent = getParent(selectedItem)
       val ownPos = parent.indexOf(selectedItem)
