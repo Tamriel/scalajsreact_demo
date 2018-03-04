@@ -122,6 +122,11 @@ object MainComponent {
           mod(_.toggleExpanded(item))
         }
 
+        def zoom(e: ReactEvent) = {
+          e.stopPropagation()
+          mod(_.zoomInto(item.id))
+        }
+
         def toggleType(e: ReactEvent) = {
           e.stopPropagation()
           mod(_.toggleType(item))
@@ -129,10 +134,11 @@ object MainComponent {
 
         val editing = db.isEditing(item.id)
         val expandIcon =
-          if (item.childrenIds.nonEmpty)
+          if (item.isProject)
+            <.i(CSS.project, CSS.pointer, CSS.expandIcon, ^.onClick ==> zoom)
+          else if (item.childrenIds.nonEmpty)
             <.i(if (item.expanded) CSS.angleDown else CSS.angleRight,
                 CSS.pointer,
-                CSS.centerVertically,
                 CSS.expandIcon,
                 ^.onClick ==> toggleExpanded)
           else <.i(CSS.expandIcon)
@@ -153,11 +159,14 @@ object MainComponent {
               CSS.centerVertically,
               ^.onClick ==> toggleType
             ).when(item.itemType != Note),
-            <.span(CSS.lightGrey.when(item.itemType == DoneTask),
-                   CSS.centerVertically,
-                   CSS.invisible.when(editing),
-                   CSS.marginBeforeText,
-                   item.text),
+            <.span(
+              CSS.lightGrey.when(item.itemType == DoneTask),
+              CSS.centerVertically,
+              CSS.invisible.when(editing),
+              CSS.semiBold.when(item.isProject),
+              CSS.marginBeforeText,
+              item.text
+            ),
             <.textarea(
               CSS.centerVertically,
               CSS.input,
@@ -204,6 +213,7 @@ object MainComponent {
             case KeyCode.S                          => snap.modState(_.moveDown())
             case KeyCode.A                          => snap.modState(_.moveLeft())
             case KeyCode.D                          => snap.modState(_.moveRight())
+            case KeyCode.P                          => snap.modState(_.toggleProject())
             case KeyCode.Tab | KeyCode.F2           => snap.modState(_.startEditing())
             case KeyCode.Escape                     => snap.modState(x => x.zoomInto(ROOTID))
           }

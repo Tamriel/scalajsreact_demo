@@ -134,6 +134,11 @@ case class SimpleDatabase(tree: Tree,
   def setType(item: TreeItem, newItemType: ItemType): SimpleDatabase =
     this.modify(_.tree.items.at(item.id).itemType).setTo(newItemType)
 
+  def toggleProject(): SimpleDatabase = {
+    val res = this.modify(_.tree.items.at(selectedItem.id).isProject).setTo(!selectedItem.isProject)
+    res.setExpanded(selectedItem, false)
+  }
+
   def deleteItem(): SimpleDatabase = {
     // if selection is not successful due to being the top item: select the next item
     val res0 = select(selectedItem, Before) match {

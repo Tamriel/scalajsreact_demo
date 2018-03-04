@@ -31,7 +31,8 @@ object DataModel {
                       childrenIds: Vector[ItemId] = Vector.empty,
                       deleted: Boolean = false,
                       expanded: Boolean = true,
-                      itemType: ItemType = Note) {
+                      itemType: ItemType = Note,
+                      isProject: Boolean = false) {
     def indexOf(item: TreeItem): Int = childrenIds.indexOf(item.id)
   }
 

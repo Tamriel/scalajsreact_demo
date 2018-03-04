@@ -26,10 +26,13 @@ object CSS extends StyleSheet.Inline {
   val crumbMargin = 5 px
   val crumbBar = style(paddingLeft(crumbMargin), paddingRight(crumbMargin), paddingTop(11 px), paddingBottom(crumbMargin))
   val line = style(border(0 px), height(1 px), backgroundColor(borderGrey), margin(0 px), marginTop(10 px))
+  val semiBold = style(fontWeight._500)
   val angleDown = style(addClassName("icon-down-open"))
+  val centerVertically = style(display.inlineBlock, verticalAlign.middle)
   // 'inlineBlock' aligns the text of items without expand arrow with the text of items with expand arrow
-  val expandIcon = style(display.inlineBlock, width(18 px), marginLeft(9 px))
+  val expandIcon = style(centerVertically, display.inlineBlock, width(18 px), marginLeft(9 px))
   val taskIcon = style(display.inlineBlock, width(26 px), paddingLeft(3 px))
+  val project = style(expandIcon, addClassName("icon-right-big"))
   val marginBeforeText = style(marginLeft(9.2 px))
   val input =
     style(
@@ -49,7 +52,6 @@ object CSS extends StyleSheet.Inline {
     // vertically center content in the row (doc: https://stackoverflow.com/a/13075912)
     &.before(content := """""""", display.inlineBlock, height(100 %%), verticalAlign.middle)
   )
-  val centerVertically = style(display.inlineBlock, verticalAlign.middle)
   val invisible = style(display.none)
   val selected = style(backgroundColor(brightViolet))
   val pointer = style(cursor.pointer)
