@@ -174,6 +174,7 @@ object MainComponent {
               CSS.centerVertically,
               CSS.input,
               CSS.invisible.unless(editing),
+              CSS.semiBold.when(item.isProject),
               ^.value := item.text,
               ^.onChange ==> updateText,
               ^.onKeyDown ==> editFieldKeyDown,
