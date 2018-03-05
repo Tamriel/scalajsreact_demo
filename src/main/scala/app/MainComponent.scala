@@ -141,7 +141,19 @@ object MainComponent {
                 CSS.pointer,
                 CSS.expandIcon,
                 ^.onClick ==> toggleExpanded)
-          else <.i(CSS.expandIcon)
+          else <.i(CSS.blankExpandIcon)
+
+        val taskIcon =
+          if (item.itemType != Note)
+            <.i(
+              CSS.taskIcon,
+              CSS.lightGrey.when(item.itemType == DoneTask),
+              CSS.checkedCheckBox.when(item.itemType == DoneTask),
+              CSS.checkBox.when(item.itemType == Task),
+              CSS.pointer,
+              ^.onClick ==> toggleType
+            )
+          else <.i(CSS.blankTaskIcon)
 
         <.div(
           <.div(
@@ -150,21 +162,12 @@ object MainComponent {
             ^.onDoubleClick --> mod(_.startEditing(item)),
             ^.onClick --> mod(_.select(item)),
             expandIcon,
-            <.i(
-              CSS.taskIcon,
-              CSS.lightGrey.when(item.itemType == DoneTask),
-              CSS.checkedCheckBox.when(item.itemType == DoneTask),
-              CSS.checkBox.when(item.itemType == Task),
-              CSS.pointer,
-              CSS.centerVertically,
-              ^.onClick ==> toggleType
-            ).when(item.itemType != Note),
+            taskIcon,
             <.span(
               CSS.lightGrey.when(item.itemType == DoneTask),
               CSS.centerVertically,
               CSS.invisible.when(editing),
               CSS.semiBold.when(item.isProject),
-              CSS.marginBeforeText,
               item.text
             ),
             <.textarea(

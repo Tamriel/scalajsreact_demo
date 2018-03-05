@@ -290,7 +290,13 @@ case object SimpleDatabase {
     // for the parent UUID of the root exists no TreeItem, so getting the root parent item will throw NoSuchElementException
     val rootsParentId = ItemId(UUID.fromString("f52ac4f6-0aca-47f8-b9cc-f4a89599b005"))
     val rootItem = TreeItem(rootsParentId, ROOTID, text = "Home")
-    SimpleDatabase(Tree(Map(rootItem.id -> rootItem))).addChild(rootItem, 0)
+    val res0 = SimpleDatabase(Tree(Map(rootItem.id -> rootItem)))
+      .addChild(rootItem, 0, text = "Aufgabe")
+      .addChild(rootItem, 1, text = "Projekte")
+    res0
+      .toggleProject()
+      .addChild(res0.getItem(res0.rootItem.childrenIds.head), 0, text = "Unteraufgabe")
+      .toggleType()
   }
 }
 

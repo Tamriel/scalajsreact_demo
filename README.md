@@ -31,6 +31,7 @@ The app shall be deployed to a folder called `secret`, so the base url will be `
 `<div().ref(mainDivRef = _)` sets a reference ([doc](https://github.com/japgolly/scalajs-react/blob/master/doc/REFS.md)).
 
 ## CSS
+- CSS basics: The `margin` of an element is the space outside of the element to the next element, whereas `padding` is added space inside the element.
 - `col-5 col-xl-6` results in a width of 5, but a width of 6 on screens < 1280px
 - `col-ml-auto` means 'margin-left: auto' and results in right alignment
 

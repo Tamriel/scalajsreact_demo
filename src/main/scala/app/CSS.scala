@@ -30,13 +30,15 @@ object CSS extends StyleSheet.Inline {
   val angleDown = style(addClassName("icon-down-open"))
   val centerVertically = style(display.inlineBlock, verticalAlign.middle)
   // 'inlineBlock' aligns the text of items without expand arrow with the text of items with expand arrow
-  val expandIcon = style(centerVertically, display.inlineBlock, width(18 px), marginLeft(9 px))
-  val taskIcon = style(display.inlineBlock, width(26 px), paddingLeft(3 px))
+  private val icon = style(verticalAlign.middle, paddingTop(8 px), paddingBottom(8 px), paddingRight(2 px))
+  val expandIcon = style(icon, width(18 px), paddingLeft(9 px))
+  val blankExpandIcon = style(display.inlineBlock, width(39 px))
+  val taskIcon = style(icon, width(26 px), &.before(marginLeft(0 px), marginRight(2 px)))
+  val blankTaskIcon = style(display.inlineBlock, width(2 px))
   val project = style(expandIcon, addClassName("icon-right-big"))
-  val marginBeforeText = style(marginLeft(9.2 px))
   val input =
     style(
-      marginLeft(7 px),
+      marginLeft(-2.2 px),
       height(45 px).important,
       addClassName("form-input"),
       width(80 %%),
