@@ -56,7 +56,7 @@ object CSS extends StyleSheet.Inline {
                            paddingBottom(8 px),
                            paddingRight(2 px))
   val expandIcon = style(icon, width(18 px), paddingLeft(9 px))
-  val blankExpandIcon = style(display.inlineBlock, width(39 px))
+  val blankExpandIcon = style(display.inlineBlock, width(37.8 px))
   val taskIcon = style(icon, width(26 px), &.before(marginLeft(0 px), marginRight(2 px)))
   val blankTaskIcon = style(display.inlineBlock, width(2 px))
   val project = style(expandIcon, addClassName("icon-right-big"))

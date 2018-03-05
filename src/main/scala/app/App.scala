@@ -10,7 +10,7 @@ import scalacss.ScalaCssReact._
 
 sealed trait Page { def title: String }
 case object Prototype extends Page { val title = "Prototyp" }
-case object Features extends Page { val title = "Features" }
+case object Features extends Page { val title = "Funktionen" }
 case object BusinessModel extends Page { val title = "Geschäftsmodell" }
 case object Contact extends Page { val title = "Kontakt" }
 case object Thanks extends Page { val title = "Danke" }
