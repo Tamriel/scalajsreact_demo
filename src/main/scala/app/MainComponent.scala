@@ -158,7 +158,7 @@ object MainComponent {
         <.div(
           <.div(
             CSS.row,
-            if (db.selected == item.id) CSS.selected else CSS.hover,
+            if (db.selected == item.id) CSS.selected else CSS.hoverVeryBrightViolet,
             ^.onDoubleClick --> mod(_.startEditing(item)),
             ^.onClick --> mod(_.select(item)),
             expandIcon,

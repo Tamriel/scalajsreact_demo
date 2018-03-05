@@ -25,7 +25,7 @@ object Breadcrumbs {
 
       <.span(CSS.crumb,
              CSS.grey.unless(isRoot),
-             CSS.hoverDark.unless(isRoot),
+             CSS.hoverBrightViolet.unless(isRoot),
              CSS.pointer.unless(isRoot),
              item.text,
              ^.onClick --> zoom())

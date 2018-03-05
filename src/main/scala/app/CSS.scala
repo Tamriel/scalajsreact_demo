@@ -15,6 +15,11 @@ object CSS extends StyleSheet.Inline {
   val lightGrey = style(color(lightGreyColor))
   val grey = style(color(rgb(105, 105, 105)))
   val black = style(color.black)
+
+  val hoverVeryBrightViolet = style(&.hover(backgroundColor(veryBrightViolet)))
+  val hoverBrightViolet = style(&.hover(backgroundColor(brightViolet)))
+  val hoverBlack = style(&.hover(color.black))
+
   // replace bullets with icons (doc: https://stackoverflow.com/a/25602272/1655547 )
   val iconUl = style(listStyleType := "none")
   val iconLi = style(position.relative, paddingLeft(33 px), &.before(position.absolute, left(0 px), top(2 px)))
@@ -23,14 +28,14 @@ object CSS extends StyleSheet.Inline {
   val angleRight = style(addClassName("icon-right-open"))
   val crumbSeparator = style(grey, fontSize(15 px), &.before(margin(0 px), position.relative, top(-1 px)))
   val crumb = style(paddingLeft(8 px), paddingRight(8 px), paddingTop(6 px), paddingBottom(6 px), borderRadius(4 px))
-  val crumbMargin = 5 px
+  private val crumbMargin = 5 px
   val crumbBar = style(paddingLeft(crumbMargin), paddingRight(crumbMargin), paddingTop(11 px), paddingBottom(crumbMargin))
   val line = style(border(0 px), height(1 px), backgroundColor(borderGrey), marginLeft(0 px), marginRight(0 px), marginBottom(0 px), marginTop(10 px))
   val semiBold = style(fontWeight._500)
   val angleDown = style(addClassName("icon-down-open"))
   val centerVertically = style(display.inlineBlock, verticalAlign.middle)
   // 'inlineBlock' aligns the text of items without expand arrow with the text of items with expand arrow
-  private val icon = style(verticalAlign.middle, paddingTop(8 px), paddingBottom(8 px), paddingRight(2 px))
+  private val icon = style(CSS.hoverBlack, verticalAlign.middle, paddingTop(8 px), paddingBottom(8 px), paddingRight(2 px))
   val expandIcon = style(icon, width(18 px), paddingLeft(9 px))
   val blankExpandIcon = style(display.inlineBlock, width(39 px))
   val taskIcon = style(icon, width(26 px), &.before(marginLeft(0 px), marginRight(2 px)))
@@ -57,8 +62,6 @@ object CSS extends StyleSheet.Inline {
   val invisible = style(display.none)
   val selected = style(backgroundColor(brightViolet))
   val pointer = style(cursor.pointer)
-  val hover = style(&.hover(backgroundColor(veryBrightViolet)))
-  val hoverDark = style(&.hover(backgroundColor(brightViolet)))
   val ulMargins = style(marginTop.`0`, marginBottom.`0`, marginLeft(45 px))
   val maximize = style(height(100 %%), margin.`0`)
   val noOutline = style(outline.none)
