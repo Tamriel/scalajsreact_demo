@@ -124,7 +124,10 @@ case class SimpleDatabase(tree: Tree,
   def toggleExpanded(item: TreeItem): SimpleDatabase = setExpanded(item, !item.expanded)
 
   def setExpanded(item: TreeItem, expanded: Boolean): SimpleDatabase =
-    this.modify(_.tree.items.at(item.id).expanded).setTo(expanded)
+    // zoom in when moving an item into a project or when adding a child to listed project
+    if (item.id != currentRootId && item.isProject && expanded) zoomInto(item.id)
+    else if (item.isProject) this // projects are not expandable
+    else this.modify(_.tree.items.at(item.id).expanded).setTo(expanded)
 
   def setText(item: TreeItem, newText: String): SimpleDatabase =
     this.modify(_.tree.items.at(item.id).text).setTo(newText)
@@ -206,7 +209,10 @@ case class SimpleDatabase(tree: Tree,
       val newPosition = newParent.indexOf(parent) + 1
       val res0 = deleteId(parent.id, selectedItem.id)
       val res1 = res0.insertId(newParent.id, newPosition, selectedItem.id)
-      res1.modify(_.instructions.moveLeft.completed).setTo(true)
+      val res2 = res1.modify(_.instructions.moveLeft.completed).setTo(true)
+      // move out of zoomed in: zoom out
+      if (parent.id == currentRootId) res2.zoomInto(parent.parentId).select(selectedItem)
+      else res2
     } else this
   }
 
