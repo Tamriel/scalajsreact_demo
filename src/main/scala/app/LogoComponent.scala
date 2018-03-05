@@ -9,6 +9,7 @@ object LogoComponent {
 
   val component = ScalaComponent.static("Logo")(
     <.div(
+      CSS.dontShrink,
       CSS.columns,
       ^.paddingTop := "10px",
       ^.paddingBottom := "20px",

@@ -14,6 +14,7 @@ case object Features extends Page { val title = "Features" }
 case object BusinessModel extends Page { val title = "Geschäftsmodell" }
 case object Contact extends Page { val title = "Kontakt" }
 case object Thanks extends Page { val title = "Danke" }
+case object Licenses extends Page { val title = "Lizenzen" }
 
 object App {
   val startUrl = "/secret/"
@@ -33,7 +34,8 @@ object App {
       | staticRoute("features", Features) ~> render(FeaturesComponent.component())
       | staticRoute("business-model", BusinessModel) ~> render(BusinessModelComponent.component())
       | staticRoute("contact", Contact) ~> render(ContactComponent.component())
-      | staticRoute("thanks", Thanks) ~> render(ThanksComponent.component()))
+      | staticRoute("thanks", Thanks) ~> render(ThanksComponent.component())
+      | staticRoute("licenses", Licenses) ~> render(LicensesComponent.component()))
       .notFound(redirectToPage(Prototype)(Redirect.Replace))
       .renderWith(layout)
       .setTitle(p => p.title + " | TreeNote - Kollaboratives Wissens- und Projektmanagement")
@@ -41,9 +43,14 @@ object App {
 
   def layout(c: RouterCtl[Page], r: Resolution[Page]) =
     <.div(
+      CSS.mainContainer,
       LogoComponent.component(),
-      <.div(CSS.columns, ^.paddingBottom := "40px", navMenuComponent(MenuProps(c, r.page))),
-      <.div(^.cls := "container", r.render())
+      <.div(CSS.dontShrink,
+            CSS.columns,
+            ^.paddingBottom := "40px",
+            navMenuComponent(MenuProps(c, r.page))),
+      <.div(CSS.grow, CSS.container, r.render()),
+      <.div(CSS.dontShrink, CSS.columns, <.a(CSS.license, c.setOnClick(Licenses), "Lizenzen"))
     )
 
   case class MenuProps(c: RouterCtl[Page], selectedPage: Page)

@@ -22,20 +22,39 @@ object CSS extends StyleSheet.Inline {
 
   // replace bullets with icons (doc: https://stackoverflow.com/a/25602272/1655547 )
   val iconUl = style(listStyleType := "none")
-  val iconLi = style(position.relative, paddingLeft(33 px), &.before(position.absolute, left(0 px), top(2 px)))
+  val iconLi =
+    style(position.relative, paddingLeft(33 px), &.before(position.absolute, left(0 px), top(2 px)))
   val checkBox = style(addClassName("icon-check-empty"), fontSize(23 px))
   val checkedCheckBox = style(addClassName("icon-check"), fontSize(23 px))
   val angleRight = style(addClassName("icon-right-open"))
-  val crumbSeparator = style(grey, fontSize(15 px), &.before(margin(0 px), position.relative, top(-1 px)))
-  val crumb = style(paddingLeft(8 px), paddingRight(8 px), paddingTop(6 px), paddingBottom(6 px), borderRadius(4 px))
+  val crumbSeparator =
+    style(grey, fontSize(15 px), &.before(margin(0 px), position.relative, top(-1 px)))
+  val crumb = style(paddingLeft(8 px),
+                    paddingRight(8 px),
+                    paddingTop(6 px),
+                    paddingBottom(6 px),
+                    borderRadius(4 px))
   private val crumbMargin = 5 px
-  val crumbBar = style(paddingLeft(crumbMargin), paddingRight(crumbMargin), paddingTop(11 px), paddingBottom(crumbMargin))
-  val line = style(border(0 px), height(1 px), backgroundColor(borderGrey), marginLeft(0 px), marginRight(0 px), marginBottom(0 px), marginTop(10 px))
+  val crumbBar = style(paddingLeft(crumbMargin),
+                       paddingRight(crumbMargin),
+                       paddingTop(11 px),
+                       paddingBottom(crumbMargin))
+  val line = style(border(0 px),
+                   height(1 px),
+                   backgroundColor(borderGrey),
+                   marginLeft(0 px),
+                   marginRight(0 px),
+                   marginBottom(0 px),
+                   marginTop(10 px))
   val semiBold = style(fontWeight._500)
   val angleDown = style(addClassName("icon-down-open"))
   val centerVertically = style(display.inlineBlock, verticalAlign.middle)
   // 'inlineBlock' aligns the text of items without expand arrow with the text of items with expand arrow
-  private val icon = style(CSS.hoverBlack, verticalAlign.middle, paddingTop(8 px), paddingBottom(8 px), paddingRight(2 px))
+  private val icon = style(CSS.hoverBlack,
+                           verticalAlign.middle,
+                           paddingTop(8 px),
+                           paddingBottom(8 px),
+                           paddingRight(2 px))
   val expandIcon = style(icon, width(18 px), paddingLeft(9 px))
   val blankExpandIcon = style(display.inlineBlock, width(39 px))
   val taskIcon = style(icon, width(26 px), &.before(marginLeft(0 px), marginRight(2 px)))
@@ -77,6 +96,17 @@ object CSS extends StyleSheet.Inline {
   val active = style(addClassName("active"))
   val bigCenteredColumn = style(addClassName("col-10 col-xl-12 col-mx-auto"))
   val smallCenteredColumn = style(addClassName("col-6 col-mx-auto"))
+  val license = style(margin := "auto auto 0 auto",
+                      addClassName("text-center col-12"),
+                      pointer,
+                      lightGrey,
+                      fontSize(17 px),
+                      paddingBottom(3 px))
+  // https://dev.to/domysee/keeping-the-footer-at-the-bottom-with-css-flexbox-5h5f
+  val dontShrink = style(flexShrink(0))
+  val grow = style(dontShrink, flexGrow(1))
+  val container = style(addClassName("container"))
+  val mainContainer = style(maximize, minHeight(100 %%), display.flex, flexDirection.column)
 
   style(
     unsafeRoot("kbd")( // style for keyboard keys
@@ -94,5 +124,6 @@ object CSS extends StyleSheet.Inline {
     ),
     unsafeRoot("html")(maximize, style(fontSize(24 px))),
     unsafeRoot("body")(maximize, backgroundColor(backgroundGrey), overflowY.scroll), // always show the scrollbar
+    unsafeRoot("#root")(maximize)
   )
 }
