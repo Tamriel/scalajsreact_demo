@@ -14,7 +14,7 @@ object LogoComponent {
       ^.paddingTop := "10px",
       ^.paddingBottom := "20px",
       <.div(^.className := "column col-5",
-            <.img(^.src := "res/img/logo_violett_90px.png", ^.className := "float-right")),
+            <.img(CSS.floatRight, ^.src := "res/img/logo_violett_90px.png")),
       <.div(
         ^.className := "column col-4",
         <.h1("TreeNote", ^.fontSize := "1.6rem", ^.marginTop := ".05em", ^.marginBottom := ".2em"),

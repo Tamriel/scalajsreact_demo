@@ -47,6 +47,8 @@ object CSS extends StyleSheet.Inline {
                    marginBottom(0 px),
                    marginTop(10 px))
   val semiBold = style(fontWeight._500)
+  val floatRight = style(addClassName("float-right"))
+  val floatLeft = style(addClassName("float-left"))
   val angleDown = style(addClassName("icon-down-open"))
   val centerVertically = style(display.inlineBlock, verticalAlign.middle)
   // 'inlineBlock' aligns the text of items without expand arrow with the text of items with expand arrow
@@ -107,6 +109,9 @@ object CSS extends StyleSheet.Inline {
   val grow = style(dontShrink, flexGrow(1))
   val container = style(addClassName("container"))
   val mainContainer = style(maximize, minHeight(100 %%), display.flex, flexDirection.column)
+  val leftAlignCol = style(addClassName("col-mr-auto"))
+  val rightAlignCol = style(addClassName("col-ml-auto"))
+  val col56 = style(addClassName("column col-5 col-xl-6"))
 
   style(
     unsafeRoot("kbd")( // style for keyboard keys

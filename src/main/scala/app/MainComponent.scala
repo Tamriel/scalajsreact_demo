@@ -249,14 +249,14 @@ object MainComponent {
         CSS.columns,
         ^.tabIndex := 0, // needs to be focusable to receive key presses
         ^.onKeyDown ==> handleKey,
+        <.div(CSS.rightAlignCol,
+              CSS.col56,
+              ^.paddingRight := "2em",
+              ^.paddingLeft := "1em",
+              ManualComponent(db.instructions)),
         <.div(
-          ^.className := "column col-5 col-xl-6 col-ml-auto",
-          ^.paddingRight := "2em",
-          ^.paddingLeft := "1em",
-          ManualComponent(db.instructions)
-        ),
-        <.div(
-          ^.className := "column col-5 col-xl-6 col-mr-auto",
+          CSS.leftAlignCol,
+          CSS.col56,
           ^.paddingLeft := "2em",
           <.div(<.h5("Beispielbaum"),
                 <.div(CSS.treeDiv, Breadcrumbs.BreadcrumbsComponent(snap), rootItem))
