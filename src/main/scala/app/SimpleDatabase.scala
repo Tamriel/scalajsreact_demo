@@ -135,7 +135,7 @@ case class SimpleDatabase(tree: Tree,
   def toggleType(): SimpleDatabase = toggleType(selectedItem)
 
   def toggleType(item: TreeItem): SimpleDatabase = item.itemType match {
-    case Note     => setType(item, Task)
+    case Note     => setType(item, Task).modify(_.instructions.createTask.completed).setTo(true)
     case Task     => setType(item, DoneTask)
     case DoneTask => setType(item, Note)
   }
@@ -230,7 +230,7 @@ case class SimpleDatabase(tree: Tree,
 
   def zoomInto(id: ItemId): SimpleDatabase = {
     val item = getItem(id)
-    val res = copy(currentRootId = item.id)
+    val res = copy(currentRootId = item.id).modify(_.instructions.zoom.completed).setTo(true)
     if (item.childrenIds.nonEmpty) res.select(item.childrenIds.head)
     else res.select(item)
   }
@@ -322,4 +322,7 @@ case class Instructions(
     moveRight: Instruction = Instruction(
       "<kbd>D</kbd> verschiebt den selektierten Eintrag eine Ebene tiefer, in diese Richtung <i class=\"icon-right-hand\"></i>"),
     moveLeft: Instruction = Instruction(
-      "<kbd>A</kbd> verschiebt den selektierten Eintrag eine Ebene höher, in diese Richtung <i class=\"icon-left-hand\"></i>"))
+      "<kbd>A</kbd> verschiebt den selektierten Eintrag eine Ebene höher, in diese Richtung <i class=\"icon-left-hand\"></i>"),
+    createTask: Instruction = Instruction(
+      "Drücke die Leertaste, um aus einem Eintrag eine Aufgabe zu machen"),
+    zoom: Instruction = Instruction("Zoome in einen Teilbaum, indem du auf den Pfeil davor klickst"))
