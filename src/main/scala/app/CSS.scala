@@ -52,14 +52,13 @@ object CSS extends StyleSheet.Inline {
   val angleDown = style(addClassName("icon-down-open"))
   val centerVertically = style(display.inlineBlock, verticalAlign.middle)
   // 'inlineBlock' aligns the text of items without expand arrow with the text of items with expand arrow
-  private val icon = style(CSS.hoverBlack,
-                           verticalAlign.middle,
-                           paddingTop(8 px),
-                           paddingBottom(8 px),
-                           paddingRight(2 px))
-  val expandIcon = style(icon, width(18 px), paddingLeft(9 px))
+  private val icon =
+    style(verticalAlign.middle, paddingTop(8 px), paddingBottom(8 px), paddingRight(2 px))
+  val expandIcon = style(icon, CSS.hoverBlack, width(18 px), paddingLeft(9 px))
   val blankExpandIcon = style(display.inlineBlock, width(37.8 px))
-  val taskIcon = style(icon, width(26 px), &.before(marginLeft(0 px), marginRight(2 px)))
+  val taskIcon = style(icon, &.before(marginLeft(0 px), marginRight(2 px)))
+  val taskcheckedIconFix = style(
+    &.before(marginLeft(1.7 px).important, marginRight(0.3 px).important))
   val blankTaskIcon = style(display.inlineBlock, width(2 px))
   val project = style(expandIcon, addClassName("icon-right-big"))
   val input =

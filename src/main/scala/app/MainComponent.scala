@@ -147,10 +147,12 @@ object MainComponent {
           if (item.itemType != Note)
             <.i(
               CSS.taskIcon,
+              CSS.taskcheckedIconFix.when(item.itemType == DoneTask),
+              CSS.pointer,
+              CSS.hoverBlack.unless(item.itemType == DoneTask),
               CSS.lightGrey.when(item.itemType == DoneTask),
               CSS.checkedCheckBox.when(item.itemType == DoneTask),
               CSS.checkBox.when(item.itemType == Task),
-              CSS.pointer,
               ^.onClick ==> toggleType
             )
           else <.i(CSS.blankTaskIcon)
