@@ -108,8 +108,9 @@ object CSS extends StyleSheet.Inline {
   val grow = style(dontShrink, flexGrow(1))
   val container = style(addClassName("container"))
   val mainContainer = style(maximize, minHeight(100 %%), display.flex, flexDirection.column)
-  val leftAlignCol = style(addClassName("col-mr-auto"))
-  val rightAlignCol = style(addClassName("col-ml-auto"))
+  val zeroMargin = style(margin(0 px))
+  val leftAlignCol = style(zeroMargin, addClassName("col-mr-auto"))
+  val rightAlignCol = style(zeroMargin, addClassName("col-ml-auto"))
   val col56 = style(addClassName("column col-5 col-xl-6"))
 
   style(
