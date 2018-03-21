@@ -42,7 +42,7 @@ object Breadcrumbs {
           List(<.i(CSS.angleRight, CSS.crumbSeparator),
                CrumbComponent.withKey(id.toString)(Props(snap, id)).vdomElement))
         .tail
-      <.div(CSS.crumbBar, separatedCrumbs.toTagMod, Util.line)
+      <.div(CSS.crumbBar, separatedCrumbs.toTagMod, <.hr(CSS.line, ^.marginBottom := "0px"))
     }
     .build
 }
