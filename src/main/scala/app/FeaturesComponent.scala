@@ -28,7 +28,6 @@ object FeaturesComponent {
         <.img(if (imgLeft) CSS.floatRight else CSS.floatLeft, ^.src := basePath + source)
     )
     val explDiv = <.div(
-      CSS.grey,
       ^.padding := "30px",
       ^.cls := "column col-6 col-7-xl",
       if (imgLeft) CSS.rightAlignCol else CSS.leftAlignCol,

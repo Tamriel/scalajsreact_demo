@@ -20,6 +20,8 @@ object CSS extends StyleSheet.Inline {
   val hoverBrightViolet = style(&.hover(backgroundColor(brightViolet)))
   val hoverBlack = style(&.hover(color.black))
 
+  val marginP = style(marginTop(24 px)) // same margin as a spectre p element
+
   // replace bullets with icons (doc: https://stackoverflow.com/a/25602272/1655547 )
   val iconUl = style(listStyleType := "none")
   val iconLi =
@@ -44,7 +46,7 @@ object CSS extends StyleSheet.Inline {
                    backgroundColor(borderGrey),
                    marginLeft(0 px),
                    marginRight(0 px),
-                   marginBottom(0 px),
+                   marginBottom(24 px),
                    marginTop(10 px))
   val semiBold = style(fontWeight._500)
   val floatRight = style(addClassName("float-right"))
@@ -97,6 +99,7 @@ object CSS extends StyleSheet.Inline {
   val active = style(addClassName("active"))
   // on big screens 10 width, on smaller screens 12 width
   val bigCenteredColumn = style(addClassName("col-10 col-xl-12 col-mx-auto"))
+  val mediumCenteredColumn = style(addClassName("col-8 col-xl-10 col-mx-auto"))
   val smallCenteredColumn = style(addClassName("col-6 col-mx-auto"))
   val license = style(margin := "auto auto 0 auto",
                       addClassName("text-center col-12"),

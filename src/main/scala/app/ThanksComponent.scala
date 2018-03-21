@@ -11,6 +11,6 @@ object ThanksComponent {
   val component = ScalaComponent.static("Thanks")(
     <.div(
       CSS.smallCenteredColumn,
-      greySpan("Danke für deine Nachricht. Wir melden uns bald bei dir!")
+      <.span("Danke für deine Nachricht. Wir melden uns bald bei dir!")
     ))
 }

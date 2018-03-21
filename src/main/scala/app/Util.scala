@@ -9,7 +9,6 @@ import scalacss.ScalaCssReact._
 
 case object Util {
 
-  val greySpan = <.span(CSS.grey)
   val awesomeUl = <.ul(CSS.iconUl)
   val topMarginH6 = <.h6(^.marginTop := "32 px")
   val line = <.hr(CSS.line)

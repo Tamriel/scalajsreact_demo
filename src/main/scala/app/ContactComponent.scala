@@ -11,9 +11,9 @@ object ContactComponent {
   val component = ScalaComponent.static("Contact")(
     <.div(
       CSS.smallCenteredColumn,
-      greySpan("Schreibe uns eine E-Mail an "),
+      <.span("Schreibe uns eine E-Mail an "),
       <.a(^.href := "mailto:kontakt@treenote.org", "kontakt@treenote.org"),
-      greySpan(CSS.smallTopMargin, " oder nutze folgendes Formular:"),
+      <.span(CSS.smallTopMargin, " oder nutze folgendes Formular:"),
       <.form(
         ^.method := "POST",
         ^.action := "https://formcarry.com/s/SyJ2tnSdM",
