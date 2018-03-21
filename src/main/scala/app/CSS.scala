@@ -20,7 +20,7 @@ object CSS extends StyleSheet.Inline {
   val hoverBrightViolet = style(&.hover(backgroundColor(brightViolet)))
   val hoverBlack = style(&.hover(color.black))
 
-  val marginP = style(marginTop(24 px)) // same margin as a spectre p element
+  val marginPTop = style(marginTop(24 px)) // same margin as a spectre p element
 
   // replace bullets with icons (doc: https://stackoverflow.com/a/25602272/1655547 )
   val iconUl = style(listStyleType := "none")

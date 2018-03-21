@@ -10,7 +10,23 @@ object ContactComponent {
 
   val component = ScalaComponent.static("Contact")(
     <.div(
-      CSS.smallCenteredColumn,
+      CSS.mediumCenteredColumn,
+      <.p("Wir sind zwei Software-Entwickler: Jan Korte und Johannes Krauss. "),
+      <.p("Selbstmanagement mit Outlinern hat uns in den letzten Jahren dabei geholfen, umfangreiche Projekte zu meistern. Dazu haben wir eine einfachere Version der vorgestellten Software genutzt. Für Projektarbeit in Teams hätten wir gerne kollaborative Funktionen und ein erweitertern Funktionsumfang gehabt, welcher helfen würde, auch komplexere Projekte zu planen, umzusetzen und zu dokumentieren."),
+      <.p("Um unsere Ideen zu verwirklichen, bewerben wir und auf das Exist-Gründerstipendium."),
+      <.p("Dafür suchen wir einen Menschen, der / die"),
+      <.ul(
+        <.li("Kenntnisse in Marketing oder Betriebswirtschaftslehre hat."),
+        <.li("auch Spaß an dieser Arbeit hat."),
+        <.li("möglichst ab jetzt (März 2018) Zeit hat.")
+      ),
+      <.p("Wir bieten:"),
+      <.ul(
+        <.li("Flache Hierarchien & lockeres Arbeiten."),
+        <.li("Hohe Flexibilität."),
+        <.li("Bei erfolgreichem Projektantrag ein Gehalt von 2500 € pro Monat.")
+      ),
+      <.div(^.padding := "14px"),
       <.span("Schreibe uns eine E-Mail an "),
       <.a(^.href := "mailto:kontakt@treenote.org", "kontakt@treenote.org"),
       <.span(CSS.smallTopMargin, " oder nutze folgendes Formular:"),

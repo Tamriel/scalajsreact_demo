@@ -7,11 +7,6 @@ import scalacss.ScalaCssReact._
 
 object MotivationComponent {
 
-  private def card(header: String, body: TagMod) =
-    <.div(^.cls := "card",
-          <.div(^.cls := "card-header", <.div(^.cls := "card-title h5", header)),
-          <.div(^.cls := "card-body", body))
-
   val component = ScalaComponent.static("Motivation")(
     <.div(
       CSS.mediumCenteredColumn,
@@ -34,13 +29,13 @@ object MotivationComponent {
       <.span(
         " um Stefan Hagen, den meistgelesenen deutschsprachigen Projektmanagement Blogger, glauben an:"),
       <.div(
-        CSS.marginP,
+        CSS.marginPTop,
         CSS.columns,
         <.div(
           CSS.col6,
           <.div(
             ^.marginBottom := "16px",
-            card(
+            Util.card(
               "Flexibilität",
               <.div(
                 <.p("\"Wir brauchen Tools, die wir einfach anpassen und verändern können. Starre IT Strukturen und komplexe Projekte widersprechen sich.\""),
@@ -51,7 +46,7 @@ object MotivationComponent {
               )
             )
           ),
-          card(
+          Util.card(
             "Kollaboration",
             <.div(
               <.p("\"Hervorragende Leistungen entstehen ausschließlich in Teamwork – besonders in einem zunehmend komplexen und unsicheren Umfeld.\""),
@@ -62,7 +57,7 @@ object MotivationComponent {
         ),
         <.div(
           CSS.col6,
-          card(
+          Util.card(
             "Transparenz",
             <.div(
               <.p("\"Wir brauchen Tools, die wir einfach anpassen und verändern können. Starre IT Strukturen und komplexe Projekte widersprechen sich.\""),
@@ -72,7 +67,7 @@ object MotivationComponent {
           )
         )
       ),
-      <.div(CSS.marginP),
+      <.div(CSS.marginPTop),
       <.p("Essentiell für die Koordination im Team ist:"),
       <.ul(
         <.li("eine gemeinsam verwaltete Dateiablage (z.B. Dropbox)"),
@@ -89,7 +84,7 @@ object MotivationComponent {
         ^.href := "http://pm-blog.com/2015/05/09/schoene-neue-arbeitswelt-projektmanagement-und-zusammenarbeit-2-0/#more-7314"),
       <.span(^.dangerouslySetInnerHtml :=
         " Projektmanagement-Tools <b>Trello</b> und <b>Jira</b>. Die Verwaltung von Aufgaben in TreeNote funktioniert genau wie bei diesen Tools, allerdings kann man in TreeNote deutlich einfacher und schneller Informationen und Unteraufgaben ergänzen."),
-      <.div(CSS.marginP)
+      <.div(CSS.marginPTop)
     )
   )
 }
