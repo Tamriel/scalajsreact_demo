@@ -84,7 +84,7 @@ object CSS extends StyleSheet.Inline {
   val pointer = style(cursor.pointer)
   val ulMargins = style(marginTop.`0`, marginBottom.`0`, marginLeft(45 px))
   val maximize = style(height(100 %%), margin.`0`)
-  val noOutline = style(outline.none)
+  val noOutline = style(outline.none) // hide focus line around app
   val columns = style(addClassName("columns"))
   val smallTopMargin = style(marginTop(10 px))
   val treeDiv = style(marginTop(1 em),
@@ -95,6 +95,7 @@ object CSS extends StyleSheet.Inline {
                       borderColor(borderGrey))
   val tab = style(addClassName("tab-item"))
   val active = style(addClassName("active"))
+  // on big screens 10 width, on smaller screens 12 width
   val bigCenteredColumn = style(addClassName("col-10 col-xl-12 col-mx-auto"))
   val smallCenteredColumn = style(addClassName("col-6 col-mx-auto"))
   val license = style(margin := "auto auto 0 auto",
@@ -111,6 +112,7 @@ object CSS extends StyleSheet.Inline {
   val zeroMargin = style(margin(0 px))
   val leftAlignCol = style(zeroMargin, addClassName("col-mr-auto"))
   val rightAlignCol = style(zeroMargin, addClassName("col-ml-auto"))
+  val col6 = style(addClassName("column col-6"))
   val col56 = style(addClassName("column col-5 col-xl-6"))
 
   style(

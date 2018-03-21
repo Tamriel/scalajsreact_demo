@@ -12,6 +12,7 @@ case object Util {
   val greySpan = <.span(CSS.grey)
   val awesomeUl = <.ul(CSS.iconUl)
   val topMarginH6 = <.h6(^.marginTop := "32 px")
+  val line = <.hr(CSS.line)
 
   /** Can be used to generate pretty printed and colored console output in the Chrome browser.
     * Source: https://gist.github.com/lihaoyi/7e6c429bf0c18465479450c0a351e8f5 */

@@ -9,10 +9,11 @@ import org.scalajs.dom
 import scalacss.ScalaCssReact._
 
 sealed trait Page { def title: String }
+case object Motivation extends Page { val title = "Motivation" }
 case object Prototype extends Page { val title = "Prototyp" }
 case object Features extends Page { val title = "Funktionen" }
 case object BusinessModel extends Page { val title = "Geschäftsmodell" }
-case object Contact extends Page { val title = "Kontakt" }
+case object Contact extends Page { val title = "Mitmachen" }
 case object Thanks extends Page { val title = "Danke" }
 case object Licenses extends Page { val title = "Lizenzen" }
 
@@ -30,10 +31,11 @@ object App {
     import dsl._
 
     (trimSlashes
-      | staticRoute(root, Prototype) ~> render(MainComponent())
+      | staticRoute(root, Motivation) ~> render(MotivationComponent.component())
       | staticRoute("features", Features) ~> render(FeaturesComponent.component())
+      | staticRoute("prototype", Prototype) ~> render(MainComponent())
       | staticRoute("business-model", BusinessModel) ~> render(BusinessModelComponent.component())
-      | staticRoute("contact", Contact) ~> render(ContactComponent.component())
+      | staticRoute("take-part", Contact) ~> render(ContactComponent.component())
       | staticRoute("thanks", Thanks) ~> render(ThanksComponent.component())
       | staticRoute("licenses", Licenses) ~> render(LicensesComponent.component()))
       .notFound(redirectToPage(Prototype)(Redirect.Replace))
@@ -67,11 +69,14 @@ object App {
 
       <.div(
         CSS.bigCenteredColumn,
-        <.ul(^.cls := "tab tab-block",
-             nav(Prototype.title, Prototype),
-             nav(Features.title, Features),
-             nav(BusinessModel.title, BusinessModel),
-             nav(Contact.title, Contact))
+        <.ul(
+          ^.cls := "tab tab-block",
+          nav(Motivation.title, Motivation),
+          nav(Features.title, Features),
+          nav(Prototype.title, Prototype),
+          nav(BusinessModel.title, BusinessModel),
+          nav(Contact.title, Contact)
+        )
       )
     }
     .build

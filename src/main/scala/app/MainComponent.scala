@@ -249,33 +249,21 @@ object MainComponent {
       }
 
       <.div(
-        CSS.maximize,
-        CSS.noOutline,
-        CSS.columns,
-        ^.tabIndex := 0, // needs to be focusable to receive key presses
-        ^.onKeyDown ==> handleKey,
+        CSS.bigCenteredColumn,
         <.div(
-          CSS.bigCenteredColumn,
-          ^.paddingRight := "2em",
-          ^.paddingLeft := "1em",
-          ^.paddingBottom := "1em",
-          <.p(
-            "Treenote ist eine Webanwendung, mit der Gruppen Projekte verwalten können. Zentrales Element ist ein intuitives und effizientes Bedienkonzept, dass es ermöglicht, Wissen und Aufgaben zu verbinden. Neben den täglichen Herausforderungen des Projektmanagements, wie die Verteilung von Aufgaben, das Planen von Abläufen und die Koordination von Gruppenmitgliedern, stehen hier zusätzlich Inhalte im Vordergrund, z.B. die gemeinsame Dokumentation von Arbeitsprozessen."),
-          <.p("Treenote eignet sich für kleine und mittlere Unternehmen, Initiativen und Organisationen, die Wert auf Datensicherheit legen.")
-        ),
-        <.div(CSS.rightAlignCol,
-              CSS.col56,
-              ^.paddingRight := "2em",
-              ^.paddingLeft := "1em",
-              ManualComponent(db.instructions)),
-        <.div(
-          CSS.leftAlignCol,
-          CSS.col56,
-          ^.paddingLeft := "2em",
-          <.div(<.h5("Beispielbaum"),
-                <.div(CSS.treeDiv, Breadcrumbs.BreadcrumbsComponent(snap), rootItem))
-        )
-      ).ref(mainDivRef = _)
+          CSS.columns,
+          CSS.noOutline,
+          ^.tabIndex := 0, // needs to be focusable to receive key presses
+          ^.onKeyDown ==> handleKey,
+          <.div(CSS.rightAlignCol, CSS.col6, ManualComponent(db.instructions)),
+          <.div(
+            CSS.leftAlignCol,
+            CSS.col6,
+            <.div(<.h5("Beispielbaum"),
+                  <.div(CSS.treeDiv, Breadcrumbs.BreadcrumbsComponent(snap), rootItem))
+          )
+        ).ref(mainDivRef = _)
+      )
     }
   }
 
