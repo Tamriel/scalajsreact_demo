@@ -16,11 +16,13 @@ case object Util {
   def card(body: TagMod, header: Option[String] = None, imageSource: Option[String] = None) =
     <.div(
       ^.cls := "card",
-//          <.div(^.cls := "card-header", <.div(^.cls := "card-title h5", header.get)),
-      <.div(^.cls := "card-body", body)
-//          <.div(
-//            ^.cls := "card-image",
-//            <.img(^.src := imageSource.get, ^.cls := "img-responsive").when(imageSource.isDefined))
+      header.whenDefined(h => <.div(^.cls := "card-header", <.div(^.cls := "card-title h5", h))),
+      <.div(^.cls := "card-body", body),
+      imageSource.whenDefined(
+        i =>
+          <.div(^.cls := "card-image",
+                ^.padding := "19.2px",
+                <.img(^.src := i, ^.cls := "img-responsive")))
     )
 
   /** Can be used to generate pretty printed and colored console output in the Chrome browser.

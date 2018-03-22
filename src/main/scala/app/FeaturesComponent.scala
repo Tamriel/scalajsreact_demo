@@ -111,26 +111,28 @@ object FeaturesComponent {
       Util.line,
       <.h4("Alleinstellungsmerkmale"),
       <.div(
-        CSS.columns,
-        <.div(^.cls := "column col-7",
-              Util.card("Die Eingabe wiederkehrender Datenstrukturen",
-                        imageSource = Some(basePath + "kontakte.png")),
-        ),
-        <.div(^.cls := "column col-7", <.img(^.src := basePath + "trello.png")),
-        <.div(^.cls := "column col-7", <.img(^.src := basePath + "tabelle.png")),
-        <.div(^.cls := "column col-7", <.img(^.src := basePath + "doc.png")),
+        ^.padding := "20px",
+        <.h5("1. Vorlagen"),
+        <.p("Die Verwendung von Vorlagen ermöglicht..."),
         <.div(
-          ^.cls := "column col-5",
-          ^.padding := "20px",
-          <.h5("1. Vorlagen"),
+          CSS.columns,
           <.div(
-            <.p("Die Verwendung von Vorlagen ermöglicht:"),
-            <.ul(
-              <.li(
-                "die übersichtliche Darstellung von Inhalten. Beispielsweise geben Spalten (wie bei Trello) eine Übersicht über den Projektfortschritt."),
-              <.li("das Exportieren von Bäumen in Berichte und Dokumentationen.")
+            CSS.col6,
+            <.div(^.marginBottom := "16px",
+                  Util.card("Die Eingabe wiederkehrender Datenstrukturen:",
+                            imageSource = Some(basePath + "kontakte.png"))),
+            Util.card(
+              "Die übersichtliche Darstellung von Inhalten. Beispielsweise geben Spalten (wie bei Trello) eine Übersicht über den Projektfortschritt:",
+              imageSource = Some(basePath + "trello.png")
             )
           ),
+          <.div(
+            CSS.col6,
+            <.div(^.marginBottom := "16px",
+                  Util.card("Tabellen:", imageSource = Some(basePath + "tabelle.png"))),
+            Util.card("Das Exportieren von Bäumen in Berichte und Dokumentationen:",
+                      imageSource = Some(basePath + "doc.png")),
+          )
         )
       ),
       <.div(
