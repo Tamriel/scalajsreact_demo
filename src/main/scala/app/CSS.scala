@@ -26,8 +26,8 @@ object CSS extends StyleSheet.Inline {
   val iconUl = style(listStyleType := "none")
   val iconLi =
     style(position.relative, paddingLeft(33 px), &.before(position.absolute, left(0 px), top(6 px)))
-  val checkBox = style(addClassName("icon-check-empty"), fontSize(23 px))
-  val checkedCheckBox = style(addClassName("icon-check"), fontSize(23 px))
+  val checkBox = style(addClassName("icon-check-empty"))
+  val checkedCheckBox = style(addClassName("icon-check"))
   val angleRight = style(addClassName("icon-right-open"))
   val crumbSeparator =
     style(grey, fontSize(15 px), &.before(margin(0 px), position.relative, top(-1 px)))
