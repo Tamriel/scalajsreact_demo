@@ -5,8 +5,7 @@ import app.DataModel.ItemType.{DoneTask, Note, Task}
 import app.DataModel.{ItemId, ROOTID}
 import app.Util._
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.component.Scala.Unmounted
-import japgolly.scalajs.react.extra.StateSnapshot
+import japgolly.scalajs.react.extra._
 import japgolly.scalajs.react.vdom.html_<^._
 import org.scalajs.dom
 import org.scalajs.dom.ext.KeyCode
@@ -59,42 +58,41 @@ object MainComponent {
     .builder[Props]("TreeItem")
     .renderBackend[TreeItemBackend]
     // when the user creates an item, it shall get focused and get scrolled into the visible area
-    .componentDidMount(x => x.backend.focusInput(x.props) >> x.backend.scrollIntoView(x.props))
+    .componentDidMount(x => x.backend.focusInput(x.props) >> x.backend.scrollInView(x.props))
     // do the same when the user starts editing (which is equal to "do it, unless he was editing before")
     .componentDidUpdate(x =>
-      (x.backend.focusInput(x.currentProps) >> x.backend.scrollIntoView(x.currentProps))
+      (x.backend.focusInput(x.currentProps) >> x.backend.scrollInView(x.currentProps))
         .unless_(x.prevProps.stateSnap.value.isEditing(x.currentProps.itemId)))
     .build
 
   class TreeItemBackend($ : BackendScope[Props, Unit]) {
-    var inputRef: html.TextArea = _
-    var rowRef: html.Element = _
+    private val inputRef = Ref[html.TextArea]
+    private val rowRef = Ref[html.Element]
 
     /** Focus the input and sets the cursor position to the end of the text of the edited item.*/
-    def focusInput(props: Props) = Callback {
+    def focusInput(props: Props): Callback = {
       val db = props.stateSnap.value
       if (db.isEditing(props.itemId)) {
-        inputRef.focus()
         val textLength = db.getItem(props.itemId).text.length
-        inputRef.setSelectionRange(textLength, textLength)
-      }
+        inputRef.foreach(_.setSelectionRange(textLength, textLength)) >> inputRef.foreach(_.focus())
+      } else Callback.empty
     }
 
     /** Scroll to selection if it's outside the viewport. */
-    def scrollIntoView(props: Props) = Callback {
+    def scrollInView(props: Props): Callback = {
       val db = props.stateSnap.value
       if (db.selected == props.itemId && rowRef != null) {
-        val rect = rowRef.getBoundingClientRect()
+        val rect = rowRef.unsafeGet.getBoundingClientRect()
         val isInViewport = rect.top.toInt >= 0 && rect.bottom.toInt <= dom.window.innerHeight
         if (!isInViewport) {
           db.lastSelectDirection match {
             case (Before) => // top of the element will be aligned to the top of the visible area
-              rowRef.scrollIntoView(true)
+              rowRef.foreach(_.scrollIntoView(true))
             case Next => //  the bottom of the element will be aligned to the bottom of the visible area
-              rowRef.scrollIntoView(false)
+              rowRef.foreach(_.scrollIntoView(false))
           }
-        }
-      }
+        } else Callback.empty
+      } else Callback.empty
     }
 
     def render(props: Props): VdomElement = {
@@ -184,8 +182,8 @@ object MainComponent {
               ^.onChange ==> updateText,
               ^.onKeyDown ==> editFieldKeyDown,
               ^.onBlur --> mod(_.completeEdit()) // onBlur is called when clicking outside the textarea / input
-            ).ref(inputRef = _)
-          ).ref(rowRef = _),
+            ).withRef(inputRef)
+          ).withRef(rowRef),
           <.ul(CSS.ulMargins, children).when(item.expanded)
         )
       }
@@ -193,15 +191,13 @@ object MainComponent {
   }
 
   class MainBackend($ : BackendScope[Unit, SimpleDatabase]) {
-    private var mainDivRef: html.Element = _
+    private val mainDivRef = Ref[html.Element]
 
-    def focus: Callback =
-      Callback {
-        val x = dom.window.pageXOffset.toInt // Disable scrolling when focusing
-        val y = dom.window.pageYOffset.toInt
-        mainDivRef.focus()
-        dom.window.scrollTo(x, y)
-      }
+    def focus: Callback = {
+      val x = dom.window.pageXOffset.toInt // Disable scrolling when focusing
+      val y = dom.window.pageYOffset.toInt
+      mainDivRef.foreach(_.focus()) >> Callback(dom.window.scrollTo(x, y))
+    }
 
     def render(db: SimpleDatabase): VdomElement = {
       val snap = StateSnapshot(db).setStateVia($)
@@ -262,7 +258,7 @@ object MainComponent {
             <.div(<.h5("Beispielbaum"),
                   <.div(CSS.treeDiv, Breadcrumbs.BreadcrumbsComponent(snap), rootItem))
           )
-        ).ref(mainDivRef = _)
+        ).withRef(mainDivRef)
       )
     }
   }
