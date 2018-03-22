@@ -16,9 +16,10 @@ object FeaturesComponent {
                       html: TagMod,
                       imgLeft: Boolean = true,
                       video: Boolean = false,
-                      paddingTop: Int = 0) = {
+                      paddingTop: Int = 0,
+                      textWidthInColumns: Int = 7) = {
     val imgDiv = <.div(
-      ^.cls := "column col-5",
+      ^.cls := s"column col-${12 - textWidthInColumns}",
       ^.paddingTop := paddingTop + "px",
       if (imgLeft) CSS.leftAlignCol else CSS.rightAlignCol,
       if (video)
@@ -31,7 +32,7 @@ object FeaturesComponent {
     )
     val explDiv = <.div(
       ^.padding := "30px",
-      ^.cls := "column col-7",
+      ^.cls := s"column col-$textWidthInColumns",
       if (imgLeft) CSS.rightAlignCol else CSS.leftAlignCol,
       <.h5(heading),
       html
@@ -90,7 +91,8 @@ object FeaturesComponent {
         "filter.png",
         "",
         <.p("Nach der Anwendung von Filtern werden nur die eigenen Aufgaben angezeigt."),
-        paddingTop = 30
+        paddingTop = 30,
+        textWidthInColumns = 5
       ),
       feature(
         "unteraufgaben.png",
