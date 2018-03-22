@@ -59,7 +59,7 @@ object MotivationComponent {
           CSS.col6,
           Util.card(
             <.div(
-              <.p("\"Wir brauchen Tools, die wir einfach anpassen und verändern können. Starre IT Strukturen und komplexe Projekte widersprechen sich.\""),
+              <.p(^.dangerouslySetInnerHtml := "\"Wir brauchen Tools, die Transparenz schaffen. <b>Alle</b> Projektbeteiligten müssen auf die aktuellen Projektinformationen zugreifen können.\""),
               <.p("Die meisten Projektmanagement-Tools sind komplex und haben eine umständliche Bedienung, was die Hürde zur aktiven Mitarbeit erhöht. Die Bedienung von TreeNote hingegen ist einfach und effektiv."),
               <.p("Die meisten Projektmanagement-Tools bilden nur grobe Arbeitspakete ab. In TreeNote hingegen ist detailliert der aktuelle Stand sichtbar, weil man aktuelle Ergebnisse und Unteraufgaben auf einfachste Weise ergänzen kann.")
             ),
