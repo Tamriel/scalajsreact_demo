@@ -31,12 +31,12 @@ object App {
 
     (trimSlashes
       | staticRoute(root, Motivation) ~> render(MotivationComponent.component())
-      | staticRoute("features", Features) ~> render(FeaturesComponent.component())
-      | staticRoute("prototype", Prototype) ~> render(MainComponent())
-      | staticRoute("business-model", BusinessModel) ~> render(BusinessModelComponent.component())
-      | staticRoute("take-part", Contact) ~> render(ContactComponent.component())
-      | staticRoute("thanks", Thanks) ~> render(ThanksComponent.component())
-      | staticRoute("licenses", Licenses) ~> render(LicensesComponent.component()))
+      | staticRoute("#features", Features) ~> render(FeaturesComponent.component())
+      | staticRoute("#prototype", Prototype) ~> render(MainComponent())
+      | staticRoute("#business-model", BusinessModel) ~> render(BusinessModelComponent.component())
+      | staticRoute("#take-part", Contact) ~> render(ContactComponent.component())
+      | staticRoute("#thanks", Thanks) ~> render(ThanksComponent.component())
+      | staticRoute("#licenses", Licenses) ~> render(LicensesComponent.component()))
       .notFound(redirectToPage(Prototype)(Redirect.Replace))
       .renderWith(layout)
       .setTitle(p => p.title + " | TreeNote - Kollaboratives Wissens- und Projektmanagement")
