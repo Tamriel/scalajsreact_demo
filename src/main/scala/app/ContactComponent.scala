@@ -23,8 +23,7 @@ object ContactComponent {
       <.p("Wir bieten:"),
       <.ul(
         <.li("Flache Hierarchien & lockeres Arbeiten."),
-        <.li("Hohe Flexibilität."),
-        <.li("Bei erfolgreichem Projektantrag ein Gehalt von 2500 € pro Monat.")
+        <.li("Hohe Flexibilität.")
       ),
       <.div(^.padding := "14px"),
       <.span("Schreibe uns eine E-Mail an "),

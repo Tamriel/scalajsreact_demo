@@ -36,34 +36,34 @@ object MotivationComponent {
           <.div(
             ^.marginBottom := "16px",
             Util.card(
-              "Flexibilität",
               <.div(
                 <.p("\"Wir brauchen Tools, die wir einfach anpassen und verändern können. Starre IT Strukturen und komplexe Projekte widersprechen sich.\""),
                 <.p(
                   CSS.zeroMargin,
                   "Im Herzen ist TreeNote ein Outliner. Mit einem Outliner kann man jede beliebige Form von Information frei abbilden. Damit ist TreeNote flexibler als jede andere Projektmanagesoftware."
                 )
-              )
+              ),
+              Some("Flexibilität")
             )
           ),
           Util.card(
-            "Kollaboration",
             <.div(
               <.p("\"Hervorragende Leistungen entstehen ausschließlich in Teamwork – besonders in einem zunehmend komplexen und unsicheren Umfeld.\""),
               <.p(CSS.zeroMargin,
                   "Alle anderen Projekt- und Wissensmanagament-Tools sowie alle anderen Outliner haben keine Echtzeit-Kollaboration. Wir schon.")
-            )
+            ),
+            Some("Kollaboration")
           )
         ),
         <.div(
           CSS.col6,
           Util.card(
-            "Transparenz",
             <.div(
               <.p("\"Wir brauchen Tools, die wir einfach anpassen und verändern können. Starre IT Strukturen und komplexe Projekte widersprechen sich.\""),
               <.p("Die meisten Projektmanagement-Tools sind komplex und haben eine umständliche Bedienung, was die Hürde zur aktiven Mitarbeit erhöht. Die Bedienung von TreeNote hingegen ist einfach und effektiv."),
               <.p("Die meisten Projektmanagement-Tools bilden nur grobe Arbeitspakete ab. In TreeNote hingegen ist detailliert der aktuelle Stand sichtbar, weil man aktuelle Ergebnisse und Unteraufgaben auf einfachste Weise ergänzen kann.")
-            )
+            ),
+            Some("Transparenz")
           )
         )
       ),

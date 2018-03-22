@@ -9,14 +9,16 @@ object FeaturesComponent {
 
   private val basePath = "res/img/features/"
 
+  def pList(texts: List[String]): TagMod = texts.toTagMod(t => <.p(^.marginBottom := "20px", t))
+
   private def feature(source: String,
                       heading: String,
-                      text: List[String],
+                      html: TagMod,
                       imgLeft: Boolean = true,
                       video: Boolean = false,
                       paddingTop: Int = 0) = {
     val imgDiv = <.div(
-      ^.cls := "column col-4 col-5-xl",
+      ^.cls := "column col-5",
       ^.paddingTop := paddingTop + "px",
       if (imgLeft) CSS.leftAlignCol else CSS.rightAlignCol,
       if (video)
@@ -29,10 +31,10 @@ object FeaturesComponent {
     )
     val explDiv = <.div(
       ^.padding := "30px",
-      ^.cls := "column col-6 col-7-xl",
+      ^.cls := "column col-7",
       if (imgLeft) CSS.rightAlignCol else CSS.leftAlignCol,
       <.h5(heading),
-      text.toTagMod(t => <.p(^.marginBottom := "20px", t))
+      html
     )
     <.div(
       ^.padding := "20px",
@@ -42,76 +44,117 @@ object FeaturesComponent {
     )
   }
 
+  private def column(source: String, heading: String, html: TagMod) = <.div(
+    ^.cls := "column col-6",
+    ^.padding := "20px",
+    <.h5(<.img(^.src := basePath + source, ^.marginRight := "10px"), heading),
+    html
+  )
+
   val component = ScalaComponent.static("Features")(
     <.div(
-      CSS.bigCenteredColumn,
+      CSS.mediumCenteredColumn,
       feature(
-        "feature_1.png",
+        "brainstorm.mp4",
         "Brainstorming mit Bäumen",
-        List(
-          "Die Bearbeitung von Inhalten findet in Baumstrukturen statt und ist damit von Grund auf strukturiert und systematisch. Dies ermöglicht die intuitive Erstellung von Projektplänen, sowie die Struktierung und Dokumentation ihrer Abläufe.")
+        <.p(
+          "Die Bearbeitung von Inhalten findet in Baumstrukturen statt und ist damit von Grund auf strukturiert und systematisch. Dies ermöglicht die intuitive Erstellung von Projektplänen, sowie die Struktierung und Dokumentation ihrer Abläufe."),
+        video = true
       ),
       feature(
         "collab_typing.mp4",
         "Kollaborativ schreiben",
-        List(
-          "Die Texte können von mehreren Anwendern gleichzeitig bearbeitet werden.",
-          "Neben der Website kann TreeNote auch in Desktop- und Smartphone Apps genutzt werden. Mit ihnen sind die Daten auch offline verfügbar.",
-          "Einzelne Projekte können per Link mit Partnern oder Stakeholdern geteilt werden."
-        ),
+        pList(
+          List(
+            "Die Texte können von mehreren Anwendern gleichzeitig bearbeitet werden.",
+            "Neben der Website kann TreeNote auch in Desktop- und Smartphone Apps genutzt werden. Mit ihnen sind die Daten auch offline verfügbar.",
+            "Einzelne Projekte können per Link mit Partnern oder Stakeholdern geteilt werden."
+          )),
         imgLeft = false,
         video = true,
         paddingTop = 80
       ),
       feature(
-        "feature_1.png",
+        "aufbau.png",
         "Aufbau von TreeNote",
-        List(
-          "Durch eine übergeordnete Struktur werden Projektmanagement und Organisation von Wissen verbunden. Es werden mehrere Projekte verwaltet, wobei in jedem Projekt Listen von Aufgaben, Meilensteinen und Zielen verwaltet werden.")
+        <.p("Durch eine übergeordnete Struktur werden Projektmanagement und Organisation von Wissen verbunden. Es werden mehrere Projekte verwaltet, wobei in jedem Projekt Listen von Aufgaben, Meilensteinen und Zielen verwaltet werden.")
       ),
       feature(
-        "feature_1.png",
-        "Anwendungsfall: Planung eines Projekts",
-        List("Einträge können als Aufgabe deklariert und Personen zugewiesen werden."),
-        imgLeft = false
-      ),
-      feature(
-        "feature_1.png",
+        "zuweisen.png",
         "Anwendungsfall: Steuerung eines Projekts",
-        List("Nach der Anwendung von Filtern werden nur die eigenen Aufgaben angezeigt.")
+        <.p("Einträge können als Aufgabe deklariert und Personen zugewiesen werden."),
+        imgLeft = false,
+        paddingTop = 30
       ),
       feature(
-        "feature_1.png",
+        "filter.png",
         "",
-        List(
-          "Beim Ausführen einer Aufgabe notiert der Anwender Informationen, Erkenntnisse und Probleme. Dabei kann er beliebig Unterpunkte und Unteraufgaben erstellen. Das hat folgende Vorteile:")
+        <.p("Nach der Anwendung von Filtern werden nur die eigenen Aufgaben angezeigt."),
+        paddingTop = 30
+      ),
+      feature(
+        "unteraufgaben.png",
+        "",
+        <.div(
+          <.p(
+            "Beim Ausführen einer Aufgabe notiert der Anwender Informationen, Erkenntnisse und Probleme. Dabei kann er beliebig Unterpunkte und Unteraufgaben erstellen. Das hat folgende Vorteile:"),
+          <.ul(
+            <.li("Entscheidungsprozesse sind nachvollziehbar."),
+            <.li(
+              "Das Festhalten aktueller Fragestellungen erleichtert die Koordination und Zusammenarbeit im Team."),
+            <.li("Die Erstellung von Zwischen- und Abschlussberichten wird vereinfacht, weil die nötigen Informationen bereits vorhanden sind.")
+          )
+        ),
+        imgLeft = false,
+        paddingTop = 50
       ),
       Util.line,
       <.h4("Alleinstellungsmerkmale"),
-      feature(
-        "feature_1.png",
-        "Vorlagen",
-        List("Die Verwendung von Vorlagen ermöglicht")
-      ),
-      feature(
-        "feature_1.png",
-        "Echtzeit-Kollaboration",
-        List(
-          "Beim gleichzeiten Bearbeiten können Anwender die Eingaben der anderen live mitverfolgen.",
-          "Wir verwenden einen innovativen Algorithmus zur Auflösung von Bearbeitungskonflikten. Dadurch wird Datenverlust vorgebeugt."
+      <.div(
+        CSS.columns,
+        <.div(^.cls := "column col-7",
+              Util.card("Die Eingabe wiederkehrender Datenstrukturen",
+                        imageSource = Some(basePath + "kontakte.png")),
         ),
-        imgLeft = false
+        <.div(^.cls := "column col-7", <.img(^.src := basePath + "trello.png")),
+        <.div(^.cls := "column col-7", <.img(^.src := basePath + "tabelle.png")),
+        <.div(^.cls := "column col-7", <.img(^.src := basePath + "doc.png")),
+        <.div(
+          ^.cls := "column col-5",
+          ^.padding := "20px",
+          <.h5("1. Vorlagen"),
+          <.div(
+            <.p("Die Verwendung von Vorlagen ermöglicht:"),
+            <.ul(
+              <.li(
+                "die übersichtliche Darstellung von Inhalten. Beispielsweise geben Spalten (wie bei Trello) eine Übersicht über den Projektfortschritt."),
+              <.li("das Exportieren von Bäumen in Berichte und Dokumentationen.")
+            )
+          ),
+        )
       ),
-      feature(
-        "feature_1.png",
-        "Ende-zu-Ende-Verschlüsselung",
-        List(
-          "Durch die zugrundeliegende Architektur werden alle Daten bereits beim Anwender verschlüsselt. Die Server leiten also lediglich verschlüsselte Daten weiter und Dritten wird der Zugriff auf die Daten grundsätzlich verwehrt.",
-          "Damit ist TreeNote besonders für Unternehmen geeignet, die ihre Kundendaten, ihr Wissen und ihre Geschäftsprozesse geschützt wissen wollen."
+      <.div(
+        CSS.columns,
+        column(
+          "team.png",
+          "2. Echtzeit-Kollaboration",
+          pList(List(
+            "Beim gleichzeiten Bearbeiten können Anwender die Eingaben der anderen live mitverfolgen.",
+            "Wir verwenden einen innovativen Algorithmus zur Auflösung von Bearbeitungskonflikten. Dadurch wird Datenverlust vorgebeugt."
+          ))
+        ),
+        column(
+          "padlock.png",
+          "3. Ende-zu-Ende-Verschlüsselung",
+          pList(List(
+            "Durch die zugrundeliegende Architektur werden alle Daten bereits beim Anwender verschlüsselt. Die Server leiten also lediglich verschlüsselte Daten weiter und Dritten wird der Zugriff auf die Daten grundsätzlich verwehrt.",
+            "Damit ist TreeNote besonders für Unternehmen geeignet, die ihre Kundendaten, ihr Wissen und ihre Geschäftsprozesse geschützt wissen wollen."
+          ))
         )
       ),
       Util.line,
-      <.p("Insgesamt sind die Stärken von TreeNote:"),
+      <.p(^.paddingTop := "1px"),
+      <.p(^.dangerouslySetInnerHtml := "Insgesamt sind die <b>Stärken</b> von TreeNote:"),
       <.ul(
         <.li("Einfach: Eine niedrige Einstiegshürde und eine effektive Bedienung der Anwendung."),
         <.li("Kollaborativ: In Echtzeit gemeinsam Schreiben und Strukturieren."),

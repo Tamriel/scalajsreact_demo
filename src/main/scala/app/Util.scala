@@ -12,10 +12,16 @@ case object Util {
   val awesomeUl = <.ul(CSS.iconUl)
   val topMarginH6 = <.h6(^.marginTop := "32 px")
   val line = <.hr(CSS.line)
-  def card(header: String, body: TagMod) =
-    <.div(^.cls := "card",
-          <.div(^.cls := "card-header", <.div(^.cls := "card-title h5", header)),
-          <.div(^.cls := "card-body", body))
+
+  def card(body: TagMod, header: Option[String] = None, imageSource: Option[String] = None) =
+    <.div(
+      ^.cls := "card",
+//          <.div(^.cls := "card-header", <.div(^.cls := "card-title h5", header.get)),
+      <.div(^.cls := "card-body", body)
+//          <.div(
+//            ^.cls := "card-image",
+//            <.img(^.src := imageSource.get, ^.cls := "img-responsive").when(imageSource.isDefined))
+    )
 
   /** Can be used to generate pretty printed and colored console output in the Chrome browser.
     * Source: https://gist.github.com/lihaoyi/7e6c429bf0c18465479450c0a351e8f5 */

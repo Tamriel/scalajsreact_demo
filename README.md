@@ -24,8 +24,6 @@
 - In IntelliJ: Rightlick the file `index-dev.html` and select 'Open in browser'
 
 # Documentation
-## Routes
-The app shall be deployed to a folder called `secret`, so the base url will be `www.treenote.org/secret`.
 
 ## React
 `<div().ref(mainDivRef = _)` sets a reference ([doc](https://github.com/japgolly/scalajs-react/blob/master/doc/REFS.md)).

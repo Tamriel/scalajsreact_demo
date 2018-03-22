@@ -1,6 +1,5 @@
 package app
 
-import app.Util._
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
 
@@ -20,7 +19,15 @@ object BusinessModelComponent {
       ),
       <.p("Die Webanwendung ist aus technischer Sicht skalierbar. Damit kann auch die Anzahl der Kunden / das Einkommen uneingeschränkt wachsen."),
       <.h4("Konkurrenz"),
-      <.p("Im Herzen ist TreeNote ein Outliner. Zur Zeit existieren drei kollaborative Outliner: Workflowy, Moo.do und Dynalist (Links). Diese Unternehmen haben jeweils weniger als zehn Mitarbeitern."),
+      <.p(
+        "Im Herzen ist TreeNote ein Outliner. Zur Zeit existieren drei kollaborative Outliner: ",
+        <.a("Workflowy", ^.href := "https://workflowy.com/"),
+        ", ",
+        <.a("Moo.do", ^.href := "https://www.moo.do/"),
+        " und ",
+        <.a("Dynalist", ^.href := "https://dynalist.io/"),
+        ". Diese Unternehmen haben jeweils weniger als zehn Mitarbeiter."
+      ),
       <.p("Das erklärte Ziel dieser Outliner ist Selbstmanagement."),
       <.p("TreeNote deckt selbstverständlich deren Standardfunktionen wie z.B. Suche, Zoom und Formatierungsmöglichkeiten ab."),
       <.p("Die konkurrierenden Outliner haben zwei Probleme:"),
@@ -29,20 +36,19 @@ object BusinessModelComponent {
         <.div(
           CSS.col6,
           Util.card(
-            "Datenverlust bei Bearbeitungskonflikten",
             <.div(
               <.p("Workflowy und Dynalist synchronisieren sich alle 10 Sekunden mit dem Server. Bei Moo.do kommt eine Änderung nach rund 2 Sekunden bei anderen Anwendern an."),
               <.p(
                 CSS.zeroMargin,
                 "Bei allen drei Outlinern gewinnt bei einem Bearbeitungskonflikt eine Seite, die Änderungen der anderen Seite gehen ohne Hinweis verloren. Das ist besonders fatal beim Umstrukturieren von Einträgen."
               )
-            )
+            ),
+            Some("Datenverlust bei Bearbeitungskonflikten")
           )
         ),
         <.div(
           CSS.col6,
           Util.card(
-            "Keine Datensicherheit",
             <.div(
               <.p("Moo.do speichert die Nutzerdaten unverschlüsselt bei Google, Workflowy speichert sie unverschlüsselt bei Amazon. Damit sind die persönliche Informationen der Anwender sowie ggf. Geschäftsgeheimnisse ungeschützt."),
               <.span(
@@ -56,15 +62,23 @@ object BusinessModelComponent {
                 CSS.marginPTop,
                 ^.marginBottom := "0px",
                 "Deshalb sollten gerade deutsche Unternehmen das Thema IT-Sicherheit ernst nehmen.")
-            )
+            ),
+            Some("Keine Datensicherheit")
           )
         )
       ),
       <.div(CSS.marginPTop),
       <.p(^.dangerouslySetInnerHtml := "Dank der beiden technischen Innovationen <b>Echtzeit-Kollaboration</b> und <b>Ende-zu-Ende-Verschlüsselung</b> ist TreeNote den anderen Outlinern voraus."),
       Util.line,
-      <.p("Unsere Zielgruppe sind allerdings Unternehmen für Projektmanagement, weil das lohnender ist."),
-      <.p("Konkurrenten im Bereich Projektmanagement sind beispielsweise Trello, Asana und Basecamp (Links). Diese Unternehmen haben jeweils 50 bis 300 Mitarbeiter."),
+      <.p(
+        "Unsere Zielgruppe sind allerdings Unternehmen für Projektmanagement. Konkurrenten in diesem Bereich sind beispielsweise ",
+        <.a("Jira", ^.href := "https://de.atlassian.com/software/jira"),
+        ", ",
+        <.a("Trello", ^.href := "https://trello.com/"),
+        " und ",
+        <.a("Asana", ^.href := "https://asana.com/de/"),
+        ". Diese Unternehmen haben jeweils 50 bis 300 Mitarbeiter."
+      ),
       <.ul(
         <.li("Auch diese Konkurrenten legen keinen Wert auf Datensicherheit."),
         <.li("Deren Software ist sehr starr, es gibt feste Vorgaben, Denk- und Bedienweisen."),

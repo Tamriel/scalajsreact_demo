@@ -72,7 +72,7 @@ object CSS extends StyleSheet.Inline {
       paddingLeft(1 px),
       paddingRight(2 px),
       paddingBottom(2 px),
-      paddingTop(10 px),
+      paddingTop(9.8 px),
       resize.none
     )
   val row = style(

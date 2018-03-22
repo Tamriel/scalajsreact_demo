@@ -18,13 +18,12 @@ case object Thanks extends Page { val title = "Danke" }
 case object Licenses extends Page { val title = "Lizenzen" }
 
 object App {
-  val startUrl = "/secret/"
   val baseUrl = dom.window.location.hostname match {
     // When developing, the url IntelliJ opens is something like
     // `http://localhost:63342/TreeNote/index-dev.html?_ijt=nr2tnh5eia2r6oeqhffh3k21q4/`.
     // It is 78 chars long, so to get the baseURL, we need to cut anything after 78 chars:
-    case "localhost" => BaseUrl.fromWindowUrl(s => s.take(78) + startUrl)
-    case _           => BaseUrl.fromWindowOrigin / startUrl
+    case "localhost" => BaseUrl.fromWindowUrl(s => s.take(78))
+    case _           => BaseUrl.fromWindowOrigin
   }
 
   val routerConfig = RouterConfigDsl[Page].buildConfig { dsl =>

@@ -12,9 +12,18 @@ object LicensesComponent {
     <.div(
       CSS.smallCenteredColumn,
       <.h4("Lizenzen"),
-      <.span("Unter der SIL Open Font License:"),
+      <.div(CSS.marginPTop),
+      <.span("CSS Framework:"),
+      <.ul(<.li(<.a(^.href := "https://picturepan2.github.io/spectre/", "Spectre.css"))),
+      <.span("Fonts:"),
       <.ul(<.li(<.a(^.href := "https://fontawesome.com/", "Font Awesome")),
-           <.li(<.a(^.href := "https://mfglabs.github.io/mfglabs-iconset/", "MFG Labs")))
+           <.li(<.a(^.href := "https://mfglabs.github.io/mfglabs-iconset/", "MFG Labs"))),
+      <.span("Icons:"),
+      <.ul(
+        <.li(<.a(^.href := "https://www.flaticon.com/authors/pixel-buddha", "Pixel Buddha")),
+        <.li(<.a(^.href := "https://www.flaticon.com/authors/pixel-perfect", "Pixel perfect")),
+        <.li(<.a(^.href := "http://www.freepik.com", "Freepik"))
+      )
     )
   )
 }
