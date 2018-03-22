@@ -25,7 +25,7 @@ object CSS extends StyleSheet.Inline {
   // replace bullets with icons (doc: https://stackoverflow.com/a/25602272/1655547 )
   val iconUl = style(listStyleType := "none")
   val iconLi =
-    style(position.relative, paddingLeft(33 px), &.before(position.absolute, left(0 px), top(2 px)))
+    style(position.relative, paddingLeft(33 px), &.before(position.absolute, left(0 px), top(6 px)))
   val checkBox = style(addClassName("icon-check-empty"), fontSize(23 px))
   val checkedCheckBox = style(addClassName("icon-check"), fontSize(23 px))
   val angleRight = style(addClassName("icon-right-open"))
@@ -118,6 +118,7 @@ object CSS extends StyleSheet.Inline {
   val col6 = style(addClassName("column col-6"))
   val col56 = style(addClassName("column col-5 col-xl-6"))
 
+  private val normalList = style(paddingLeft(0.5 rem), listStylePosition.outside)
   style(
     unsafeRoot("kbd")( // style for keyboard keys
       padding(3 px, 5 px),
@@ -132,6 +133,8 @@ object CSS extends StyleSheet.Inline {
       verticalAlign.middle,
       boxShadow := "inset 0 -1px 0 #959da5"
     ),
+    unsafeRoot("ol")(normalList),
+    unsafeRoot("ul")(normalList),
     unsafeRoot("html")(maximize, style(fontSize(24 px))),
     unsafeRoot("body")(maximize, backgroundColor(backgroundGrey), overflowY.scroll), // always show the scrollbar
     unsafeRoot("#root")(maximize)
