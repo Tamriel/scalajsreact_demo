@@ -59,7 +59,7 @@ object FeaturesComponent {
         "brainstorm.mp4",
         "Brainstorming mit Bäumen",
         <.p(
-          "Die Bearbeitung von Inhalten findet in Baumstrukturen statt und ist damit von Grund auf strukturiert und systematisch. Dies ermöglicht die intuitive Erstellung von Projektplänen, sowie die Struktierung und Dokumentation ihrer Abläufe."),
+          "Die Bearbeitung von Inhalten findet in Baumstrukturen statt und ist damit von Grund auf strukturiert und systematisch. Dies ermöglicht die intuitive Erstellung von Projektplänen, sowie die Strukturierung und Dokumentation von Abläufen."),
         video = true
       ),
       feature(
