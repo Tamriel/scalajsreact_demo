@@ -209,20 +209,24 @@ object MainComponent {
       def handleKey(e: ReactKeyboardEvent): Callback = {
         def plainKey: CallbackOption[Unit] = // CallbackOption will stop if a key isn't matched
           CallbackOption.keyCodeSwitch(e) {
-            case KeyCode.Delete | KeyCode.Backspace => snap.modState(_.deleteItem())
-            case KeyCode.Enter                      => snap.modState(_.addSibling().startEditing())
-            case KeyCode.Space                      => snap.modState(_.toggleType())
-            case KeyCode.Up                         => snap.modState(_.selectAndEdit(Before))
-            case KeyCode.Down                       => snap.modState(_.selectAndEdit(Next))
-            case KeyCode.Left                       => snap.modState(_.collapseOrJumpUp())
-            case KeyCode.Right                      => snap.modState(_.expandOrSelectChild())
-            case KeyCode.W                          => snap.modState(_.moveUp())
-            case KeyCode.S                          => snap.modState(_.moveDown())
-            case KeyCode.A                          => snap.modState(_.moveLeft())
-            case KeyCode.D                          => snap.modState(_.moveRight())
-            case KeyCode.P                          => snap.modState(_.toggleProject())
-            case KeyCode.Tab | KeyCode.F2           => snap.modState(_.startEditing())
-            case KeyCode.Escape                     => snap.modState(x => x.zoomInto(ROOTID))
+//            case KeyCode.Delete | KeyCode.Backspace => snap.modState(_.deleteItem())
+            case KeyCode.Enter => snap.modState(_.addSibling().startEditing())
+//            case KeyCode.Space                      => snap.modState(_.toggleType())
+//            case KeyCode.Up                         => snap.modState(_.selectAndEdit(Before))
+//            case KeyCode.Down                       => snap.modState(_.selectAndEdit(Next))
+//            case KeyCode.Left                       => snap.modState(_.collapseOrJumpUp())
+//            case KeyCode.Right                      => snap.modState(_.expandOrSelectChild())
+//            case KeyCode.P                          => snap.modState(_.toggleProject())
+            case KeyCode.Tab | KeyCode.F2 => snap.modState(_.startEditing())
+            case KeyCode.Escape           => snap.modState(x => x.zoomInto(ROOTID))
+          }
+
+        def altKey: CallbackOption[Unit] =
+          CallbackOption.keyCodeSwitch(e, altKey = true) {
+            case KeyCode.Up    => snap.modState(_.moveUp())
+            case KeyCode.Down  => snap.modState(_.moveDown())
+            case KeyCode.Left  => snap.modState(_.moveLeft())
+            case KeyCode.Right => snap.modState(_.moveRight())
           }
 
         def shiftKey: CallbackOption[Unit] =
@@ -241,9 +245,7 @@ object MainComponent {
               }
           }
 
-        if (db.editing.isEmpty)
-          (plainKey orElse shiftKey orElse ctrlKey) >> e.preventDefaultCB
-        else Callback()
+        (plainKey orElse altKey orElse shiftKey orElse ctrlKey) >> e.preventDefaultCB
       }
 
       <.div(

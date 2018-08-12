@@ -62,7 +62,7 @@ case class SimpleDatabase(tree: Tree,
     val res =
       if (currentRoot.childrenIds.isEmpty) this
       else select(selectedItem, beforeNext).getOrElse(this)
-    res.startEditing(res.selectedItem)
+    res.startEditing()
   }
 
   /** Returns true if the selection was successful. */
@@ -214,8 +214,10 @@ case class SimpleDatabase(tree: Tree,
       val res1 = res0.insertId(newParent.id, newPosition, selectedItem.id)
       val res2 = res1.modify(_.instructions.moveLeft.completed).setTo(true)
       // move out of zoomed in: zoom out
-      if (parent.id == currentRootId) res2.zoomInto(parent.parentId).select(selectedItem)
-      else res2
+      val res3 =
+        if (parent.id == currentRootId) res2.zoomInto(parent.parentId).select(selectedItem)
+        else res2
+      res3.startEditing()
     } else this
   }
 
