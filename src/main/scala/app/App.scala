@@ -30,29 +30,14 @@ object App {
     import dsl._
 
     (trimSlashes
-      | staticRoute(root, Motivation) ~> render(MotivationComponent.component())
-      | staticRoute("#features", Features) ~> render(FeaturesComponent.component())
-      | staticRoute("#prototype", Prototype) ~> render(MainComponent())
-      | staticRoute("#business-model", BusinessModel) ~> render(BusinessModelComponent.component())
-      | staticRoute("#take-part", Contact) ~> render(ContactComponent.component())
-      | staticRoute("#thanks", Thanks) ~> render(ThanksComponent.component())
-      | staticRoute("#licenses", Licenses) ~> render(LicensesComponent.component()))
-      .notFound(redirectToPage(Prototype)(Redirect.Replace))
+      | staticRoute(root, Motivation) ~> render(MainComponent()))
+      .notFound(redirectToPage(Motivation)(Redirect.Replace))
       .renderWith(layout)
-      .setTitle(p => p.title + " | TreeNote - Kollaboratives Wissens- und Projektmanagement")
+      .setTitle(p => "TreeNote - Kollaboratives Wissensmanagement")
   }
 
   def layout(c: RouterCtl[Page], r: Resolution[Page]) =
-    <.div(
-      CSS.mainContainer,
-      LogoComponent.component(),
-      <.div(CSS.dontShrink,
-            CSS.columns,
-            ^.paddingBottom := "40px",
-            navMenuComponent(MenuProps(c, r.page))),
-      <.div(CSS.grow, CSS.container, r.render()),
-      <.div(CSS.dontShrink, CSS.columns, <.a(CSS.license, c.setOnClick(Licenses), "Lizenzen"))
-    )
+    <.div(<.div(CSS.grow, CSS.container, r.render()))
 
   case class MenuProps(c: RouterCtl[Page], selectedPage: Page)
 

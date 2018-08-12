@@ -63,16 +63,21 @@ object CSS extends StyleSheet.Inline {
     &.before(marginLeft(1.7 px).important, marginRight(0.3 px).important))
   val blankTaskIcon = style(display.inlineBlock, width(2 px))
   val project = style(expandIcon, addClassName("icon-right-big"))
+  val selected = style(backgroundColor(brightViolet))
   val input =
     style(
+      color(rgb(80, 89, 108)),
       marginLeft(-2.2 px),
       height(45 px).important,
-      addClassName("form-input"),
+//      addClassName("form-input"),
       width(80 %%),
       paddingLeft(1 px),
       paddingRight(2 px),
       paddingBottom(2 px),
       paddingTop(9.8 px),
+      border := "0",
+      outline := "none",
+      boxShadow := "none",
       resize.none
     )
   val row = style(
@@ -82,7 +87,6 @@ object CSS extends StyleSheet.Inline {
     &.before(content := """""""", display.inlineBlock, height(100 %%), verticalAlign.middle)
   )
   val invisible = style(display.none)
-  val selected = style(backgroundColor(brightViolet))
   val pointer = style(cursor.pointer)
   val ulMargins = style(marginTop.`0`, marginBottom.`0`, marginLeft(45 px))
   val maximize = style(height(100 %%), margin.`0`)

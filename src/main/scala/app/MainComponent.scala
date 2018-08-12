@@ -162,21 +162,21 @@ object MainComponent {
           <.div(
             CSS.row,
             if (db.selected == item.id) CSS.selected else CSS.hoverVeryBrightViolet,
-            ^.onDoubleClick --> mod(_.startEditing(item)),
-            ^.onClick --> mod(_.select(item)),
+            ^.onClick --> mod(_.select(item).startEditing(item)),
+//            ^.onClick --> mod(_.select(item)),
             expandIcon,
             taskIcon,
-            <.span(
-              CSS.lightGrey.when(item.itemType == DoneTask),
-              CSS.centerVertically,
-              CSS.invisible.when(editing),
-              CSS.semiBold.when(item.isProject),
-              item.text
-            ),
+//            <.span(
+//              CSS.lightGrey.when(item.itemType == DoneTask),
+//              CSS.centerVertically,
+//              CSS.invisible.when(editing),
+//              CSS.semiBold.when(item.isProject),
+//              item.text
+//            ),
             <.textarea(
               CSS.centerVertically,
               CSS.input,
-              CSS.invisible.unless(editing),
+              CSS.selected.when(db.selected == item.id),
               CSS.semiBold.when(item.isProject),
               ^.value := item.text,
               ^.onChange ==> updateText,
@@ -251,7 +251,6 @@ object MainComponent {
           CSS.noOutline,
           ^.tabIndex := 0, // needs to be focusable to receive key presses
           ^.onKeyDown ==> handleKey,
-          <.div(CSS.rightAlignCol, CSS.col6, ManualComponent(db.instructions)),
           <.div(
             CSS.leftAlignCol,
             CSS.col6,
