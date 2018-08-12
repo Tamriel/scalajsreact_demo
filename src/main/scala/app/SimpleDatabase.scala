@@ -58,9 +58,12 @@ case class SimpleDatabase(tree: Tree,
   def select(id: ItemId): SimpleDatabase =
     copy(selected = id).modify(_.instructions.upDown.completed).setTo(true)
 
-  def select(beforeNext: BeforeNext): SimpleDatabase =
-    if (currentRoot.childrenIds.isEmpty) this
-    else select(selectedItem, beforeNext).getOrElse(this)
+  def selectAndEdit(beforeNext: BeforeNext): SimpleDatabase = {
+    val res =
+      if (currentRoot.childrenIds.isEmpty) this
+      else select(selectedItem, beforeNext).getOrElse(this)
+    res.startEditing(res.selectedItem)
+  }
 
   /** Returns true if the selection was successful. */
   private def select(fromItem: TreeItem, beforeNext: BeforeNext): Option[SimpleDatabase] = {
@@ -106,7 +109,7 @@ case class SimpleDatabase(tree: Tree,
     else if (selectedItem.childrenIds.nonEmpty) {
       if (!selectedItem.expanded)
         toggleExpanded(selectedItem).modify(_.instructions.right.completed).setTo(true)
-      else select(Next)
+      else selectAndEdit(Next)
     } else this
 
   def collapseOrJumpUp(): SimpleDatabase =

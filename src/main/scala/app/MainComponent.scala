@@ -114,6 +114,8 @@ object MainComponent {
           CallbackOption.keyCodeSwitch(e) {
             case KeyCode.Escape | KeyCode.Enter | KeyCode.Tab =>
               mod(_.completeEdit()) >> e.preventDefaultCB
+            case KeyCode.Up   => mod(_.selectAndEdit(Before)) >> e.preventDefaultCB
+            case KeyCode.Down => mod(_.selectAndEdit(Next)) >> e.preventDefaultCB
           }
 
         def toggleExpanded(e: ReactEvent) = {
@@ -210,8 +212,8 @@ object MainComponent {
             case KeyCode.Delete | KeyCode.Backspace => snap.modState(_.deleteItem())
             case KeyCode.Enter                      => snap.modState(_.addSibling().startEditing())
             case KeyCode.Space                      => snap.modState(_.toggleType())
-            case KeyCode.Up                         => snap.modState(_.select(Before))
-            case KeyCode.Down                       => snap.modState(_.select(Next))
+            case KeyCode.Up                         => snap.modState(_.selectAndEdit(Before))
+            case KeyCode.Down                       => snap.modState(_.selectAndEdit(Next))
             case KeyCode.Left                       => snap.modState(_.collapseOrJumpUp())
             case KeyCode.Right                      => snap.modState(_.expandOrSelectChild())
             case KeyCode.W                          => snap.modState(_.moveUp())
@@ -268,7 +270,7 @@ object MainComponent {
     .renderBackend[MainBackend]
     .componentDidMount(_.backend.focus)
     // The mainDiv needs to have focus to capture keys. So when the user is not editing: focus it
-    .componentDidUpdate(x => x.backend.focus.when(x.currentState.editing.isEmpty).void)
+//    .componentDidUpdate(x => x.backend.focus.when(x.currentState.editing.isEmpty).void)
     .build
 
   def apply() = MainComponent()
