@@ -112,10 +112,9 @@ object MainComponent {
 
         def editFieldKeyDown(e: ReactKeyboardEvent): Callback =
           CallbackOption.keyCodeSwitch(e) {
-            case KeyCode.Escape | KeyCode.Enter | KeyCode.Tab =>
-              mod(_.completeEdit()) >> e.preventDefaultCB
             case KeyCode.Up   => mod(_.selectAndEdit(Before)) >> e.preventDefaultCB
             case KeyCode.Down => mod(_.selectAndEdit(Next)) >> e.preventDefaultCB
+            case KeyCode.Tab  => mod(_.toggleExpanded(item)) >> e.preventDefaultCB
           }
 
         def toggleExpanded(e: ReactEvent) = {
@@ -217,8 +216,7 @@ object MainComponent {
 //            case KeyCode.Left                       => snap.modState(_.collapseOrJumpUp())
 //            case KeyCode.Right                      => snap.modState(_.expandOrSelectChild())
 //            case KeyCode.P                          => snap.modState(_.toggleProject())
-            case KeyCode.Tab | KeyCode.F2 => snap.modState(_.startEditing())
-            case KeyCode.Escape           => snap.modState(x => x.zoomInto(ROOTID))
+            case KeyCode.Escape => snap.modState(x => x.zoomInto(ROOTID))
           }
 
         def altKey: CallbackOption[Unit] =
