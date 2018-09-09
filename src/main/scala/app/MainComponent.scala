@@ -74,7 +74,8 @@ object MainComponent {
       val db = props.stateSnap.value
       if (db.isEditing(props.itemId)) {
         val textLength = db.getItem(props.itemId).text.length
-        inputRef.foreach(_.setSelectionRange(textLength, textLength)) >> inputRef.foreach(_.focus())
+//        inputRef.foreach(_.setSelectionRange(textLength, textLength)) >>
+        inputRef.foreach(_.focus())
       } else Callback.empty
     }
 
