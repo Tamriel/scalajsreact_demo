@@ -267,9 +267,9 @@ object MainComponent {
 
   private val MainComponent = ScalaComponent
     .builder[Unit]("TreeNote")
-    .initialState(SimpleDatabase.exampleDatabase)
+    .initialState(SimpleDatabase.simpleDatabase)
     .renderBackend[MainBackend]
-    .componentDidMount(_.backend.focus)
+//    .componentDidMount(_.backend.focus)
     // The mainDiv needs to have focus to capture keys. So when the user is not editing: focus it
 //    .componentDidUpdate(x => x.backend.focus.when(x.currentState.editing.isEmpty).void)
     .build

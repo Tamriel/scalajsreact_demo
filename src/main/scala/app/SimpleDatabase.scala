@@ -308,6 +308,7 @@ case object SimpleDatabase {
       .toggleProject()
       .addChild(res0.getItem(res0.rootItem.childrenIds.head), 0, text = "Unteraufgabe")
       .toggleType()
+      .startEditing()
   }
 }
 
